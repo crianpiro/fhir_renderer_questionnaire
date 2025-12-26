@@ -1,8 +1,9 @@
-import 'package:fhir_renderer_questionnaire/src/core/data/questionnaire_renderer_data.dart';
-import 'package:fhir_renderer_questionnaire/src/ui/components/base_decorator.dart';
-import 'package:fhir_renderer_questionnaire/src/ui/components/questionnaire_base_item.dart';
 import 'package:flutter/material.dart';
-import 'package:fhir_renderer_questionnaire/src/core/utils/fhir_renderer_questionnaire_response_utils.dart';
+
+import '../../core/data/questionnaire_renderer_data.dart';
+import '../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
+import 'base_decorator.dart';
+import 'questionnaire_base_item.dart';
 
 class QuestionnaireChoiceItem extends QuestionnaireBaseItem {
   const QuestionnaireChoiceItem({

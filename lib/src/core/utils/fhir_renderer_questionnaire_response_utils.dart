@@ -1,5 +1,5 @@
 import 'package:fhir_r4/fhir_r4.dart';
-import 'package:fhir_renderer_questionnaire/src/core/extensions/fhir_extensions.dart';
+import '../extensions/fhir_extensions.dart';
 
 class FhirRendererQuestionnaireResponseUtils {
   static QuestionnaireResponse setResponseAnswerInQuestionnaireResponse(

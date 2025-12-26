@@ -1,6 +1,6 @@
-import 'package:fhir_renderer_questionnaire/src/ui/components/base_decorator.dart';
-import 'package:fhir_renderer_questionnaire/src/ui/components/questionnaire_base_item.dart';
 import 'package:flutter/material.dart';
+import 'base_decorator.dart';
+import 'questionnaire_base_item.dart';
 
 class QuestionnaireDisplayItem extends QuestionnaireBaseItem {
   const QuestionnaireDisplayItem({

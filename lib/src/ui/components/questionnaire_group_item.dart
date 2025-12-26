@@ -1,10 +1,11 @@
 import 'package:fhir_r4/fhir_r4.dart';
-import 'package:fhir_renderer_questionnaire/src/core/data/questionnaire_renderer_data.dart';
-import 'package:fhir_renderer_questionnaire/src/core/extensions/mapping_extension.dart';
-import 'package:fhir_renderer_questionnaire/src/core/utils/fhir_renderer_questionnaire_utils.dart';
-import 'package:fhir_renderer_questionnaire/src/ui/components/questionnaire_base_item.dart';
-import 'package:fhir_renderer_questionnaire/src/ui/components/questionnaire_item_wrapper.dart';
 import 'package:flutter/material.dart';
+
+import '../../core/data/questionnaire_renderer_data.dart';
+import '../../core/extensions/mapping_extension.dart';
+import '../../core/utils/fhir_renderer_questionnaire_utils.dart';
+import 'questionnaire_base_item.dart';
+import 'questionnaire_item_wrapper.dart';
 
 class QuestionnaireGroupItem extends QuestionnaireBaseItem {
   const QuestionnaireGroupItem({

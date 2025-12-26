@@ -1,12 +1,11 @@
 import 'package:fhir_r4/fhir_r4.dart';
-import 'package:fhir_renderer_questionnaire/src/core/controllers/internal_questionnaire_controller.dart';
-import 'package:fhir_renderer_questionnaire/src/core/data/questionnaire_renderer_data.dart';
-import 'package:fhir_renderer_questionnaire/src/core/definitions/type_definitions.dart';
-import 'package:fhir_renderer_questionnaire/src/core/utils/fhir_renderer_questionnaire_response_utils.dart';
-import 'package:fhir_renderer_questionnaire/src/core/controllers/questionnaire_renderer_controller.dart';
-import 'package:fhir_renderer_questionnaire/src/ui/renderers/list_view_renderer/questionnaire_list_view_renderer.dart';
-import 'package:fhir_renderer_questionnaire/src/ui/renderers/page_view_renderer/questionnaire_page_view_renderer.dart';
 import 'package:flutter/widgets.dart';
+
+import '../../../fhir_renderer_questionnaire.dart';
+import '../../core/controllers/internal_questionnaire_controller.dart';
+import '../../core/data/questionnaire_renderer_data.dart';
+import '../../core/definitions/type_definitions.dart';
+import '../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
 
 abstract class BaseQuestionnaireRenderer extends StatefulWidget {
   const BaseQuestionnaireRenderer({

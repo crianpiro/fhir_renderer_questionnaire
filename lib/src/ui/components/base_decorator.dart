@@ -16,7 +16,7 @@ class BaseDecorator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       alignment: Alignment.centerLeft,
       decoration: BoxDecoration(
         color: Colors.blueGrey[50],
@@ -29,7 +29,7 @@ class BaseDecorator extends StatelessWidget {
         children: [
           Text(
             title ?? "",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           if (child != null) child!,
           if (children != null) ...children!,

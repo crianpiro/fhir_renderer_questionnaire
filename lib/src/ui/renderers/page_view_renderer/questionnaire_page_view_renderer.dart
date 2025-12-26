@@ -1,8 +1,9 @@
-import 'package:fhir_renderer_questionnaire/src/core/data/questionnaire_renderer_data.dart';
-import 'package:fhir_renderer_questionnaire/src/ui/layout/base_questionnaire_renderer.dart';
-import 'package:fhir_renderer_questionnaire/src/core/controllers/questionnaire_renderer_controller.dart';
-import 'package:fhir_renderer_questionnaire/src/ui/views/questionnaire_page_view.dart';
 import 'package:flutter/material.dart';
+
+import '../../../../fhir_renderer_questionnaire.dart';
+import '../../../core/data/questionnaire_renderer_data.dart';
+import '../../layout/base_questionnaire_renderer.dart';
+import '../../views/questionnaire_page_view.dart';
 
 class QuestionnairePageViewRenderer extends BaseQuestionnaireRenderer {
   const QuestionnairePageViewRenderer({

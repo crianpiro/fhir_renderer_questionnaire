@@ -1,6 +1,7 @@
 import 'package:fhir_r4/fhir_r4.dart';
-import 'package:fhir_renderer_questionnaire/src/core/utils/fhir_renderer_questionnaire_response_utils.dart';
 import 'package:flutter/material.dart';
+
+import '../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
 
 abstract class QuestionnaireBaseItem extends StatelessWidget {
   final QuestionnaireItem questionnaireItem;

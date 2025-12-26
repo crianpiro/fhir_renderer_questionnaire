@@ -1,16 +1,17 @@
 import 'package:fhir_r4/fhir_r4.dart';
-import 'package:fhir_renderer_questionnaire/src/core/data/field_behavioral_data.dart';
-import 'package:fhir_renderer_questionnaire/src/core/data/questionnaire_renderer_data.dart';
-import 'package:fhir_renderer_questionnaire/src/core/utils/fhir_renderer_questionnaire_response_utils.dart';
-import 'package:fhir_renderer_questionnaire/src/ui/components/questionnaire_base_item.dart';
-import 'package:fhir_renderer_questionnaire/src/ui/components/questionnaire_boolean_item.dart';
-import 'package:fhir_renderer_questionnaire/src/ui/components/questionnaire_choice_item.dart';
-import 'package:fhir_renderer_questionnaire/src/ui/components/questionnaire_date_time_item.dart';
-import 'package:fhir_renderer_questionnaire/src/ui/components/questionnaire_display_item.dart';
-import 'package:fhir_renderer_questionnaire/src/ui/components/questionnaire_field_item.dart';
-import 'package:fhir_renderer_questionnaire/src/ui/components/questionnaire_group_item.dart';
-import 'package:fhir_renderer_questionnaire/src/ui/components/questionnaire_open_choice_item.dart';
 import 'package:flutter/material.dart';
+
+import '../../core/data/field_behavioral_data.dart';
+import '../../core/data/questionnaire_renderer_data.dart';
+import '../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
+import 'questionnaire_base_item.dart';
+import 'questionnaire_boolean_item.dart';
+import 'questionnaire_choice_item.dart';
+import 'questionnaire_date_time_item.dart';
+import 'questionnaire_display_item.dart';
+import 'questionnaire_field_item.dart';
+import 'questionnaire_group_item.dart';
+import 'questionnaire_open_choice_item.dart';
 
 class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
   const QuestionnaireItemWrapper({
