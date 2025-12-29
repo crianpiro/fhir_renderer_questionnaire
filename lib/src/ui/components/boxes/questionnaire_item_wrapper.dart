@@ -1,10 +1,10 @@
 import 'package:fhir_r4/fhir_r4.dart';
 import 'package:flutter/material.dart';
 
-import '../../core/data/field_behavioral_data.dart';
-import '../../core/data/questionnaire_renderer_data.dart';
-import '../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
-import 'questionnaire_base_item.dart';
+import '../../../core/data/field_behavioral_data.dart';
+import '../../../core/data/questionnaire_renderer_data.dart';
+import '../../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
+import '../questionnaire_base_item.dart';
 import 'questionnaire_boolean_item.dart';
 import 'questionnaire_choice_item.dart';
 import 'questionnaire_date_time_item.dart';
@@ -24,6 +24,10 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
   Widget assignQuestionnaireWidget(BuildContext context) {
     switch (questionnaireItem.type) {
       case QuestionnaireItemType.display_:
+        if (QuestionnaireRendererData.of(context).displayItemBuilder != null) {
+          return QuestionnaireRendererData.of(context).displayItemBuilder!(
+              index, isLastItem, questionnaireItem);
+        }
         return QuestionnaireDisplayItem(
           index: index,
           questionnaireItem: questionnaireItem,
@@ -185,7 +189,7 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
             },
           );
         }
-        return QuestionnaireOpenFieldItem(
+        return QuestionnaireFieldItem(
           index: index,
           questionnaireItem: questionnaireItem,
           isLastItem: isLastItem,

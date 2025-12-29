@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'base_decorator.dart';
-import 'questionnaire_base_item.dart';
+import '../boxes/questionnaire_display_item.dart';
+import 'sliver_base_decorator.dart';
 
-class QuestionnaireDisplayItem extends QuestionnaireBaseItem {
-  const QuestionnaireDisplayItem({
+class QuestionnaireSliverDisplayItem extends QuestionnaireDisplayItem {
+  const QuestionnaireSliverDisplayItem({
     super.key,
     required super.questionnaireItem,
     required super.index,
@@ -12,7 +12,7 @@ class QuestionnaireDisplayItem extends QuestionnaireBaseItem {
 
   @override
   Widget build(BuildContext context) {
-    return BaseDecorator(
+    return SliverBaseDecorator(
       title: questionnaireItem.text?.valueString,
       roundBottomBorder: isLastItem,
     );

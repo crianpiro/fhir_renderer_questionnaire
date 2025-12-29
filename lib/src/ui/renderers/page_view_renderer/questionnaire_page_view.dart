@@ -1,11 +1,11 @@
-import 'package:fhir_renderer_questionnaire/src/ui/components/base_decorator.dart';
+import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/base_decorator.dart';
 import 'package:flutter/material.dart';
 
 import 'package:fhir_r4/fhir_r4.dart';
 
-import '../../core/data/questionnaire_renderer_data.dart';
-import '../../core/utils/fhir_renderer_questionnaire_utils.dart';
-import '../components/questionnaire_item_wrapper.dart';
+import '../../../core/data/questionnaire_renderer_data.dart';
+import '../../../core/utils/fhir_renderer_questionnaire_utils.dart';
+import '../../components/boxes/questionnaire_item_wrapper.dart';
 
 class QuestionnairePageView extends StatelessWidget {
   const QuestionnairePageView({super.key});

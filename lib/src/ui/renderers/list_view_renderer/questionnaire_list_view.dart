@@ -1,10 +1,10 @@
 import 'package:fhir_r4/fhir_r4.dart';
 import 'package:flutter/material.dart';
 
-import '../../core/data/questionnaire_renderer_data.dart';
-import '../../core/utils/fhir_renderer_questionnaire_utils.dart';
-import '../components/base_decorator.dart';
-import '../components/questionnaire_item_wrapper.dart';
+import '../../../core/data/questionnaire_renderer_data.dart';
+import '../../../core/utils/fhir_renderer_questionnaire_utils.dart';
+import '../../components/boxes/base_decorator.dart';
+import '../../components/boxes/questionnaire_item_wrapper.dart';
 
 class QuestionnaireListView extends StatelessWidget {
   const QuestionnaireListView({super.key});

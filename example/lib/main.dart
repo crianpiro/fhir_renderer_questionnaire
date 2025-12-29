@@ -1,6 +1,7 @@
 import 'package:example/data/mocks.dart';
 import 'package:example/views/list_view_renderer.dart';
 import 'package:example/views/page_view_renderer.dart';
+import 'package:example/views/slivers_view_renderer.dart';
 import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 import 'package:flutter/material.dart';
 
@@ -76,6 +77,19 @@ class HomePage extends StatelessWidget {
                   );
                 },
                 child: Text("PageView Renderer"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder:
+                          (context) => SliversViewRenderer(
+                            questionnaire: mockAnamneseQuestionnaire,
+                          ),
+                    ),
+                  );
+                },
+                child: Text("SliversView Renderer"),
               ),
             ],
           ),

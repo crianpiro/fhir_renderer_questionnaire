@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import '../../../../fhir_renderer_questionnaire.dart';
 import '../../../core/data/questionnaire_renderer_data.dart';
 import '../../layout/base_questionnaire_renderer.dart';
-import 'questionnaire_list_view.dart';
+import 'questionnaire_slivers_view.dart';
 
-class QuestionnaireListViewRenderer extends BaseQuestionnaireRenderer {
-  const QuestionnaireListViewRenderer({
+class QuestionnaireSliversViewRenderer extends BaseQuestionnaireRenderer {
+  const QuestionnaireSliversViewRenderer({
     required super.getRendererControllerInstance,
     required super.questionnaire,
     super.choiceItemBuilder,
@@ -20,10 +20,11 @@ class QuestionnaireListViewRenderer extends BaseQuestionnaireRenderer {
   });
 
   @override
-  BaseQuestionnaireState createState() => _QuestionnaireListViewRendererState();
+  BaseQuestionnaireState createState() =>
+      _QuestionnaireSliversViewRendererState();
 }
 
-class _QuestionnaireListViewRendererState extends BaseQuestionnaireState {
+class _QuestionnaireSliversViewRendererState extends BaseQuestionnaireState {
   @override
   Widget build(BuildContext context) {
     return QuestionnaireRendererData(
@@ -43,7 +44,7 @@ class _QuestionnaireListViewRendererState extends BaseQuestionnaireState {
         builder: (innerContext) {
           widget.getRendererControllerInstance(
               QuestionnaireRendererController(controller));
-          return const QuestionnaireListView();
+          return const QuestionnaireSliversView();
         },
       ),
     );
