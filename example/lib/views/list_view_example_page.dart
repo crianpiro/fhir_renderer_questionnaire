@@ -2,11 +2,17 @@ import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 import 'package:flutter/material.dart';
 
-class ListViewRenderer extends StatelessWidget {
-  final Questionnaire questionnaire;
-  ListViewRenderer({super.key, required this.questionnaire});
+//Cubit or Bloc or Controller for the view to assign
+//the QuestionnaireRendererController instance.
+class CubitOrBlocOrController {
+  QuestionnaireRendererController? rendererController;
+}
 
-  QuestionnaireRendererController? controller;
+class ListViewExamplePage extends StatelessWidget {
+  final Questionnaire questionnaire;
+  ListViewExamplePage({super.key, required this.questionnaire});
+
+  final CubitOrBlocOrController controller = CubitOrBlocOrController();
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +22,11 @@ class ListViewRenderer extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              var a = controller?.getGeneratedQuestionnaireResponse();
+              final generatedQuestionnaireResponse =
+                  controller.rendererController
+                      ?.getGeneratedQuestionnaireResponse();
+
+              //Do something with the generated response
             },
             icon: Icon(Icons.check),
           ),
@@ -26,7 +36,7 @@ class ListViewRenderer extends StatelessWidget {
         questionnaire: questionnaire,
         getRendererControllerInstance:
             (QuestionnaireRendererController controller) =>
-                this.controller = controller,
+                this.controller.rendererController = controller,
       ),
     );
   }

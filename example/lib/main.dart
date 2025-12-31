@@ -1,7 +1,7 @@
 import 'package:example/data/mocks.dart';
-import 'package:example/views/list_view_renderer.dart';
-import 'package:example/views/page_view_renderer.dart';
-import 'package:example/views/slivers_view_renderer.dart';
+import 'package:example/views/list_view_example_page.dart';
+import 'package:example/views/page_view_renderer_page.dart';
+import 'package:example/views/slivers_view_example_page.dart';
 import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 import 'package:flutter/material.dart';
 
@@ -46,22 +46,12 @@ class HomePage extends StatelessWidget {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder:
-                          (context) => ListViewRenderer(questionnaire: example),
+                          (context) =>
+                              ListViewExamplePage(questionnaire: example),
                     ),
                   );
                 },
-                child: Text("ListView Renderer"),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder:
-                          (context) => PageViewRenderer(questionnaire: example),
-                    ),
-                  );
-                },
-                child: Text("PageView Renderer"),
+                child: Text("ListViewRenderer"),
               ),
               ElevatedButton(
                 onPressed: () {
@@ -69,11 +59,23 @@ class HomePage extends StatelessWidget {
                     MaterialPageRoute(
                       builder:
                           (context) =>
-                              SliversViewRenderer(questionnaire: example),
+                              PageViewExamplePage(questionnaire: example),
                     ),
                   );
                 },
-                child: Text("SliversView Renderer"),
+                child: Text("PageViewRenderer"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder:
+                          (context) =>
+                              SliversViewExamplePage(questionnaire: example),
+                    ),
+                  );
+                },
+                child: Text("SliversViewRenderer"),
               ),
             ],
           ),
