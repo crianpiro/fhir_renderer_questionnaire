@@ -12,6 +12,7 @@ abstract class BaseQuestionnaireRenderer extends StatefulWidget {
     super.key,
     required this.questionnaire,
     required this.getRendererControllerInstance,
+    this.questionnaireResponse,
     this.choiceItemBuilder,
     this.openChoiceItemBuilder,
     this.fieldItemBuilder,
@@ -22,6 +23,7 @@ abstract class BaseQuestionnaireRenderer extends StatefulWidget {
   });
 
   final Questionnaire questionnaire;
+  final QuestionnaireResponse? questionnaireResponse;
   final void Function(QuestionnaireRendererController controller)
       getRendererControllerInstance;
 
@@ -53,15 +55,6 @@ class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer> {
   }
 
   @override
-  void didChangeDependencies() {
-    // questionnaireResponse = FhirRendererQuestionnaireResponseUtils
-    //     .generateInitialQuestionnaireResponse(
-    //   widget.questionnaire,
-    // );
-    super.didChangeDependencies();
-  }
-
-  @override
   void initState() {
     controller = InternalQuestionnaireController(
       listViewScrollController:
@@ -88,10 +81,11 @@ class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer> {
     );
     widget.getRendererControllerInstance(
         QuestionnaireRendererController(controller));
-    questionnaireResponse = FhirRendererQuestionnaireResponseUtils
-        .generateInitialQuestionnaireResponse(
-      widget.questionnaire,
-    );
+    questionnaireResponse = widget.questionnaireResponse ??
+        FhirRendererQuestionnaireResponseUtils
+            .generateInitialQuestionnaireResponse(
+          widget.questionnaire,
+        );
     super.initState();
   }
 

@@ -9,6 +9,7 @@ class QuestionnairePageViewRenderer extends BaseQuestionnaireRenderer {
   const QuestionnairePageViewRenderer({
     required super.getRendererControllerInstance,
     required super.questionnaire,
+    super.questionnaireResponse,
     super.choiceItemBuilder,
     super.openChoiceItemBuilder,
     super.fieldItemBuilder,

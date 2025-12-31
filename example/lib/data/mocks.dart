@@ -63,6 +63,22 @@ Questionnaire example = Questionnaire.fromJson({
             },
           ],
         },
+        {
+          "linkId": "alcohol",
+          "type": "choice",
+          "text": "Alcohol consumption",
+          "answerOption": [
+            {
+              "valueCoding": {"code": "none", "display": "None"},
+            },
+            {
+              "valueCoding": {"code": "moderate", "display": "Moderate"},
+            },
+            {
+              "valueCoding": {"code": "high", "display": "High"},
+            },
+          ],
+        },
       ],
     },
     {

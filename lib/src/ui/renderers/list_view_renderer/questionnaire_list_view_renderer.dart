@@ -8,6 +8,7 @@ class QuestionnaireListViewRenderer extends BaseQuestionnaireRenderer {
   const QuestionnaireListViewRenderer({
     required super.getRendererControllerInstance,
     required super.questionnaire,
+    super.questionnaireResponse,
     super.choiceItemBuilder,
     super.openChoiceItemBuilder,
     super.fieldItemBuilder,
