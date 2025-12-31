@@ -23,7 +23,7 @@ This package was inspired by [fhir_questionnaire](https://pub.dev/packages/fhir_
 ### 💫 QuestionnaireListViewRenderer
 
 <div align="center">
-<img src="assets/list_view_renderer_example.gif" width="220"/>
+<img src="example/assets/list_view_renderer_example.gif" width="220"/>
 </a>
 </div>
 
@@ -42,7 +42,7 @@ QuestionnaireListViewRenderer(
 ### 💫 QuestionnairePageViewRenderer
 
 <div align="center">
-<img src="assets/page_view_renderer_example.gif" width="220"/>
+<img src="example/assets/page_view_renderer_example.gif" width="220"/>
 </a>
 </div>
 
@@ -60,7 +60,7 @@ QuestionnairePageViewRenderer(
 ### 💫 QuestionnaireSliversViewRenderer
 
 <div align="center">
-<img src="assets/slivers_view_renderer_example.gif" width="220"/>
+<img src="example/assets/slivers_view_renderer_example.gif" width="220"/>
 </a>
 </div>
 
@@ -184,10 +184,10 @@ class ListViewExamplePage extends StatelessWidget {
 <div align="center" style="align-items:center;">
 
 Default UI:
-<img src="assets/default_choice_builder_example.gif" width="300"/>
+<img src="example/assets/default_choice_builder_example.gif" width="300"/>
 
 Using choiceItemBuilder:
-<img src="assets/choice_builder_example.gif" width="300"/>
+<img src="example/assets/choice_builder_example.gif" width="300"/>
 </div>
 
 ## 🔆 Supported Questionnaire Items
