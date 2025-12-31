@@ -1,5 +1,6 @@
 import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/questionnaire_item_wrapper.dart';
+import 'package:fhir_renderer_questionnaire/src/ui/components/slivers/sliver_base_decorator.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/data/questionnaire_renderer_data.dart';
@@ -161,6 +162,7 @@ class QuestionnaireSliverItemWrapper extends QuestionnaireItemWrapper {
       case QuestionnaireItemType.quantity:
       case QuestionnaireItemType.decimal:
       case QuestionnaireItemType.integer:
+      case QuestionnaireItemType.url:
       case QuestionnaireItemType.string:
         if (QuestionnaireRendererData.of(context).fieldItemBuilder != null) {
           return QuestionnaireRendererData.of(context).fieldItemBuilder!(
@@ -194,8 +196,11 @@ class QuestionnaireSliverItemWrapper extends QuestionnaireItemWrapper {
           isLastItem: isLastItem,
         );
       default:
-        return SliverToBoxAdapter(
-            child: Text("Unimplemented: ${questionnaireItem.type}"));
+        return SliverBaseDecorator(
+          title: "Unimplemented type: ${questionnaireItem.type}",
+          useNotImplementedStyle: true,
+          roundBottomBorder: false,
+        );
     }
   }
 

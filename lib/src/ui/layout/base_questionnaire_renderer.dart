@@ -54,10 +54,10 @@ class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer> {
 
   @override
   void didChangeDependencies() {
-    questionnaireResponse = FhirRendererQuestionnaireResponseUtils
-        .generateInitialQuestionnaireResponse(
-      widget.questionnaire,
-    );
+    // questionnaireResponse = FhirRendererQuestionnaireResponseUtils
+    //     .generateInitialQuestionnaireResponse(
+    //   widget.questionnaire,
+    // );
     super.didChangeDependencies();
   }
 
@@ -73,11 +73,21 @@ class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer> {
           checkRequiredItems = true;
         });
 
-        //Validar
+        //Add the markAsRequired here instead of in building time.
+        if (controller.indexedItems.isNotEmpty) {
+          for (var entry in controller.indexedItems.entries) {
+            if (entry.value.markedRequired) {
+              entry.value.focusNode.requestFocus();
+              break;
+            }
+          }
+        }
 
         return questionnaireResponse;
       },
     );
+    widget.getRendererControllerInstance(
+        QuestionnaireRendererController(controller));
     questionnaireResponse = FhirRendererQuestionnaireResponseUtils
         .generateInitialQuestionnaireResponse(
       widget.questionnaire,

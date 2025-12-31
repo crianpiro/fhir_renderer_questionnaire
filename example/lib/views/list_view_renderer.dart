@@ -4,16 +4,29 @@ import 'package:flutter/material.dart';
 
 class ListViewRenderer extends StatelessWidget {
   final Questionnaire questionnaire;
-  const ListViewRenderer({super.key, required this.questionnaire});
+  ListViewRenderer({super.key, required this.questionnaire});
+
+  QuestionnaireRendererController? controller;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("QuestionnaireListViewRenderer")),
+      appBar: AppBar(
+        title: Text("QuestionnaireListViewRenderer"),
+        actions: [
+          IconButton(
+            onPressed: () {
+              var a = controller?.getGeneratedQuestionnaireResponse();
+            },
+            icon: Icon(Icons.check),
+          ),
+        ],
+      ),
       body: QuestionnaireListViewRenderer(
         questionnaire: questionnaire,
         getRendererControllerInstance:
-            (QuestionnaireRendererController controller) {},
+            (QuestionnaireRendererController controller) =>
+                this.controller = controller,
       ),
     );
   }

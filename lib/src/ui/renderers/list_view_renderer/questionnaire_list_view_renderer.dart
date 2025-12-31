@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../fhir_renderer_questionnaire.dart';
 import '../../../core/data/questionnaire_renderer_data.dart';
 import '../../layout/base_questionnaire_renderer.dart';
 import 'questionnaire_list_view.dart';
@@ -40,9 +39,7 @@ class _QuestionnaireListViewRendererState extends BaseQuestionnaireState {
       internalController: controller,
       onResponseChanged: onResponseChanged,
       child: Builder(
-        builder: (innerContext) {
-          widget.getRendererControllerInstance(
-              QuestionnaireRendererController(controller));
+        builder: (context) {
           return const QuestionnaireListView();
         },
       ),

@@ -178,7 +178,7 @@ class FhirRendererQuestionnaireResponseUtils {
               .toList() ??
           [];
     } else {
-      answers = responseItem.answer ?? [];
+      answers = responseItem.answer?.toList() ?? [];
       answers.add(responseAnswer);
     }
 

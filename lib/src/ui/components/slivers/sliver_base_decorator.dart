@@ -8,6 +8,7 @@ class SliverBaseDecorator extends BaseDecorator {
     required super.roundBottomBorder,
     super.child,
     super.children,
+    super.useNotImplementedStyle,
     super.key,
   });
 
@@ -15,7 +16,9 @@ class SliverBaseDecorator extends BaseDecorator {
   Widget build(BuildContext context) {
     return DecoratedSliver(
       decoration: BoxDecoration(
-        color: Colors.blueGrey[50],
+        color: useNotImplementedStyle
+            ? Theme.of(context).colorScheme.errorContainer
+            : Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.vertical(
           bottom: Radius.circular(roundBottomBorder ? 7 : 0),
         ),
@@ -27,8 +30,13 @@ class SliverBaseDecorator extends BaseDecorator {
             SliverToBoxAdapter(
               child: Text(
                 title ?? "",
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: useNotImplementedStyle
+                    ? TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.onErrorContainer)
+                    : const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
             if (child != null) child!,

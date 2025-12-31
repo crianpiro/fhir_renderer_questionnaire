@@ -16,20 +16,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        colorScheme: ColorScheme(
-          brightness: Brightness.light,
-          primary: Colors.blue,
-          onPrimary: Colors.lightBlue,
-          secondary: Colors.lightBlue,
-          onSecondary: Colors.lightBlueAccent,
-          error: Colors.red,
-          onError: Colors.redAccent,
-          surface: Colors.white,
-          onSurface: Colors.black,
-        ),
         appBarTheme: AppBarTheme(
-          backgroundColor: Colors.blue,
-          foregroundColor: Colors.white,
+          backgroundColor: Color.fromRGBO(234, 221, 255, 1),
+          foregroundColor: Color.fromRGBO(103, 80, 164, 1),
         ),
       ),
       title: 'FHIR Renderer - Questionnaire',
@@ -57,9 +46,7 @@ class HomePage extends StatelessWidget {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder:
-                          (context) => ListViewRenderer(
-                            questionnaire: mockAnamneseQuestionnaire,
-                          ),
+                          (context) => ListViewRenderer(questionnaire: example),
                     ),
                   );
                 },
@@ -70,9 +57,7 @@ class HomePage extends StatelessWidget {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder:
-                          (context) => PageViewRenderer(
-                            questionnaire: mockAnamneseQuestionnaire,
-                          ),
+                          (context) => PageViewRenderer(questionnaire: example),
                     ),
                   );
                 },
@@ -83,9 +68,8 @@ class HomePage extends StatelessWidget {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder:
-                          (context) => SliversViewRenderer(
-                            questionnaire: mockAnamneseQuestionnaire,
-                          ),
+                          (context) =>
+                              SliversViewRenderer(questionnaire: example),
                     ),
                   );
                 },

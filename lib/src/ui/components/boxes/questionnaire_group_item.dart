@@ -40,27 +40,29 @@ class QuestionnaireGroupItem extends QuestionnaireBaseItem {
       }
       return enabled;
     }).toList();
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+      padding: const EdgeInsets.only(bottom: 10.0),
+      decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(7)),
+          border: Border.all(
+              color: Theme.of(context).colorScheme.primaryContainer, width: 1)),
       child: Column(
         children: [
           Container(
             height: 50,
             alignment: Alignment.centerLeft,
             decoration: BoxDecoration(
-              color: Colors.blueGrey[100],
-              borderRadius: BorderRadius.vertical(top: Radius.circular(7)),
+              color: Theme.of(context).colorScheme.primaryContainer,
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(5)),
             ),
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             child: Text(
               questionnaireItem.text?.valueString ??
                   questionnaireItem.code?.firstOrNull?.code?.valueString ??
                   "",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(context).textTheme.titleLarge,
             ),
           ),
           if (items != null)

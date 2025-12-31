@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class BaseDecorator extends StatelessWidget {
   final bool roundBottomBorder;
+  final bool useNotImplementedStyle;
   final String? title;
   final Widget? child;
   final List<Widget>? children;
@@ -9,6 +10,7 @@ class BaseDecorator extends StatelessWidget {
     required this.title,
     required this.roundBottomBorder,
     this.child,
+    this.useNotImplementedStyle = false,
     this.children,
     super.key,
   });
@@ -19,7 +21,9 @@ class BaseDecorator extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       alignment: Alignment.centerLeft,
       decoration: BoxDecoration(
-        color: Colors.blueGrey[50],
+        color: useNotImplementedStyle
+            ? Theme.of(context).colorScheme.errorContainer
+            : Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.vertical(
           bottom: Radius.circular(roundBottomBorder ? 7 : 0),
         ),

@@ -1,7 +1,7 @@
 import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/base_decorator.dart';
 import 'package:flutter/material.dart';
 
-import '../../../core/data/field_behavioral_data.dart';
 import '../../../core/data/questionnaire_renderer_data.dart';
 import '../../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
 import '../questionnaire_base_item.dart';
@@ -163,6 +163,7 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
       case QuestionnaireItemType.decimal:
       case QuestionnaireItemType.integer:
       case QuestionnaireItemType.string:
+      case QuestionnaireItemType.url:
         if (QuestionnaireRendererData.of(context).fieldItemBuilder != null) {
           return QuestionnaireRendererData.of(context).fieldItemBuilder!(
             index,
@@ -195,38 +196,11 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
           isLastItem: isLastItem,
         );
       default:
-        return Text("Unimplemented: ${questionnaireItem.type}");
+        return BaseDecorator(
+            title: "Unimplemented type: ${questionnaireItem.type}",
+            useNotImplementedStyle: true,
+            roundBottomBorder: false);
     }
-  }
-
-  FocusNode assignFocusNode(BuildContext context) {
-    FocusNode itemFocus;
-    String localId = questionnaireItem.linkId.valueString!;
-    if (!QuestionnaireRendererData.of(context)
-        .internalController
-        .indexedItems
-        .containsKey(localId)) {
-      itemFocus = FocusNode();
-      final currentIndex = QuestionnaireRendererData.of(context)
-          .internalController
-          .indexedItems
-          .length;
-      QuestionnaireRendererData.of(context)
-          .internalController
-          .indexedItems[localId] = FieldBehavioralData(
-        index: currentIndex,
-        enabled: true,
-        markedRequired: false,
-        focusNode: itemFocus,
-      );
-    } else {
-      itemFocus = QuestionnaireRendererData.of(context)
-          .internalController
-          .indexedItems[localId]!
-          .focusNode;
-    }
-
-    return itemFocus;
   }
 
   @override
@@ -238,14 +212,15 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
     );
     return Focus(
       focusNode: assignFocusNode(context),
+      canRequestFocus: true,
+      onFocusChange: (value) {
+        if (value) {
+          Scrollable.ensureVisible(context);
+        }
+      },
       child: Container(
         decoration: BoxDecoration(
-          border: (isRequired &&
-                  QuestionnaireRendererData.of(
-                    context,
-                  ).checkRequiredItems &&
-                  (responseItem?.answer == null ||
-                      (responseItem?.answer?.isEmpty ?? false)))
+          border: markAsRequired(context, responseItem, isRequired)
               ? Border.all(color: Colors.red)
               : null,
         ),

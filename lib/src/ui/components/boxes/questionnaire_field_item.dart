@@ -34,9 +34,11 @@ class QuestionnaireFieldItem extends QuestionnaireBaseItem {
         QuestionnaireRendererData.of(context).questionnaireResponse,
         questionnaireItem.linkId.valueString,
       );
+      //TODO: Add initial depending of the value type
       localController = TextEditingController(
-        text:
-            currentResponseItem?.answer?.firstOrNull?.valueString?.valueString,
+        text: currentResponseItem
+                ?.answer?.firstOrNull?.valueString?.valueString ??
+            questionnaireItem.initial?.firstOrNull?.valueX.primitiveValue,
       );
       QuestionnaireRendererData.of(context)
               .internalController

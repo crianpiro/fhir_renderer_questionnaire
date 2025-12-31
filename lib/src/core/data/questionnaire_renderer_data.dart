@@ -69,6 +69,7 @@ class QuestionnaireRendererData extends InheritedWidget {
   @override
   bool updateShouldNotify(QuestionnaireRendererData oldWidget) =>
       questionnaire != oldWidget.questionnaire ||
+      questionnaireResponse != oldWidget.questionnaireResponse ||
       checkRequiredItems != oldWidget.checkRequiredItems ||
       choiceItemBuilder != oldWidget.choiceItemBuilder ||
       fieldItemBuilder != oldWidget.fieldItemBuilder ||

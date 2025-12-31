@@ -7,6 +7,7 @@ class QuestionnaireRendererController {
 
   QuestionnaireRendererController(this._internalController);
 
-  QuestionnaireResponse get getGeneratedQuestionnaireResponse =>
-      _internalController.generateQuestionnaireResponse.call();
+  QuestionnaireResponse getGeneratedQuestionnaireResponse() {
+    return _internalController.generateQuestionnaireResponse.call();
+  }
 }
