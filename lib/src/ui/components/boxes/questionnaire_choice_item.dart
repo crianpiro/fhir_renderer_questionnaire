@@ -1,3 +1,4 @@
+import 'package:fhir_r4/fhir_r4.dart';
 import 'package:flutter/material.dart';
 
 import '../../layout/inherited_questionnaire_renderer.dart';
@@ -29,8 +30,22 @@ class QuestionnaireChoiceItem extends QuestionnaireBaseItem {
               questionnaireItem.linkId.valueString,
             );
 
-            String? selectedValue = selectedResponseItem
-                ?.answer?.firstOrNull?.valueCoding?.code?.valueString;
+            String? selectedValue;
+            if (selectedResponseItem != null) {
+              selectedValue = selectedResponseItem
+                  .answer?.firstOrNull?.valueCoding?.code?.valueString;
+            } else if (questionnaireItem.initial != null &&
+                questionnaireItem.initial!.isNotEmpty &&
+                questionnaireItem.initial!.first.valueX is Coding &&
+                (questionnaireItem.initial!.first.valueX as Coding)
+                        .code
+                        ?.valueString !=
+                    null) {
+              selectedValue =
+                  (questionnaireItem.initial!.first.valueX as Coding)
+                      .code
+                      ?.valueString;
+            }
 
             return RadioListTile(
               value: selectedValue,

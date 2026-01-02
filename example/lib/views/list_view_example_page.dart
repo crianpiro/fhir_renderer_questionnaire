@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +29,7 @@ class ListViewExamplePage extends StatelessWidget {
                       ?.getGeneratedQuestionnaireResponse();
 
               //Do something with the generated response
+              log(generatedQuestionnaireResponse?.toString() ?? "No response");
             },
             icon: Icon(Icons.check),
           ),

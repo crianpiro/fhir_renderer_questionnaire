@@ -37,9 +37,20 @@ class QuestionnaireDateTimeItem extends QuestionnaireBaseItem {
             null) {
           displayText = DateFormat.yMd()
               .add_jm()
+              .format(questionnaireResponseItem!
+                  .answer!.first.valueDateTime!.valueDateTime!)
+              .toString();
+        } else if (questionnaireItem.initial != null &&
+            questionnaireItem.initial!.isNotEmpty &&
+            questionnaireItem.initial!.first.valueX is FhirDateTime &&
+            (questionnaireItem.initial!.first.valueX as FhirDateTime)
+                    .valueDateTime !=
+                null) {
+          displayText = DateFormat.yMd()
+              .add_jm()
               .format(
-                questionnaireResponseItem!
-                    .answer!.first.valueDateTime!.valueDateTime!,
+                (questionnaireItem.initial!.first.valueX as FhirDateTime)
+                    .valueDateTime!,
               )
               .toString();
         } else {
@@ -56,6 +67,18 @@ class QuestionnaireDateTimeItem extends QuestionnaireBaseItem {
                     .answer!.first.valueDate!.valueDateTime!,
               )
               .toString();
+        } else if (questionnaireItem.initial != null &&
+            questionnaireItem.initial!.isNotEmpty &&
+            questionnaireItem.initial!.first.valueX is FhirDate &&
+            (questionnaireItem.initial!.first.valueX as FhirDate)
+                    .valueDateTime !=
+                null) {
+          displayText = DateFormat.yMd()
+              .format(
+                (questionnaireItem.initial!.first.valueX as FhirDate)
+                    .valueDateTime!,
+              )
+              .toString();
         } else {
           displayText = "Select date";
         }
@@ -65,6 +88,13 @@ class QuestionnaireDateTimeItem extends QuestionnaireBaseItem {
             null) {
           displayText = questionnaireResponseItem!
               .answer!.firstOrNull!.valueTime!.valueString!;
+        } else if (questionnaireItem.initial != null &&
+            questionnaireItem.initial!.isNotEmpty &&
+            questionnaireItem.initial!.first.valueX is FhirTime &&
+            (questionnaireItem.initial!.first.valueX as FhirTime).valueString !=
+                null) {
+          displayText = (questionnaireItem.initial!.first.valueX as FhirTime)
+              .valueString!;
         } else {
           displayText = "Select time";
         }

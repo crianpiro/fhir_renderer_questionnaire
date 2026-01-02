@@ -1,3 +1,4 @@
+import 'package:fhir_r4/fhir_r4.dart';
 import 'package:flutter/material.dart';
 
 import '../../layout/inherited_questionnaire_renderer.dart';
@@ -31,13 +32,22 @@ class QuestionnaireOpenChoiceItem extends QuestionnaireBaseItem {
               questionnaireItem.linkId.valueString,
             );
 
+            bool isSelected = selectedResponseItem?.answer?.any(
+                  (answer) =>
+                      answer.valueCoding?.code?.valueString ==
+                      answerOption.valueCoding?.code?.valueString,
+                ) ??
+                questionnaireItem.initial != null &&
+                    questionnaireItem.initial!.any(
+                      (initial) =>
+                          initial.valueX is Coding &&
+                          (initial.valueX as Coding).code?.valueString ==
+                              answerOption.valueCoding?.code?.valueString,
+                    );
+            false;
+
             return CheckboxListTile(
-              value: selectedResponseItem?.answer?.any(
-                    (answer) =>
-                        answer.valueCoding?.code?.valueString ==
-                        answerOption.valueCoding?.code?.valueString,
-                  ) ??
-                  false,
+              value: isSelected,
               onChanged: (v) => questionnaireRendererData.onResponseChanged(
                 FhirRendererQuestionnaireResponseUtils
                     .setMultipleAnswerOptionsInQuestionnaireResponse(

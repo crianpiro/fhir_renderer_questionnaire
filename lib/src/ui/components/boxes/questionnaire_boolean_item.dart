@@ -32,8 +32,13 @@ class QuestionnaireBooleanItem extends QuestionnaireBaseItem {
       questionnaireItem.linkId.valueString,
     );
 
-    bool? selectedValue =
-        selectedResponseItem?.answer?.firstOrNull?.valueBoolean?.valueBoolean;
+    bool? selectedValue = selectedResponseItem
+                ?.answer?.firstOrNull?.valueBoolean?.valueBoolean ??
+            questionnaireItem.initial != null &&
+                questionnaireItem.initial!.isNotEmpty &&
+                questionnaireItem.initial!.first.valueX is FhirBoolean
+        ? (questionnaireItem.initial!.first.valueX as FhirBoolean).valueBoolean
+        : null;
 
     return BaseDecorator(
       title: questionnaireItem.text?.valueString,

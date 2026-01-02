@@ -1,7 +1,6 @@
 # FHIR Renderer Questionnaire
 
-![Static Badge](https://img.shields.io/badge/License-BSD_3_Clause-green) 
-<!-- ![Pub Version](https://img.shields.io/pub/v/fhir_renderer_questionnaire?color=blue) ![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/crianpiro/fhir_renderer_questionnaire?label=bug) -->
+![Static Badge](https://img.shields.io/badge/License-BSD_3_Clause-green) ![Pub Version](https://img.shields.io/pub/v/fhir_renderer_questionnaire?color=blue) ![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/crianpiro/fhir_renderer_questionnaire?label=bug)
 
 A Flutter package for FHIR® Questionnaires. HL7®, and FHIR® are the registered trademarks of Health Level Seven International and their use of these trademarks does not constitute an endorsement by HL7.
 
@@ -16,7 +15,8 @@ This package was inspired by [fhir_questionnaire](https://pub.dev/packages/fhir_
 - **⚙️ Behavior Handling:** Manages conditional logic (`enableWhen` and `required`) out of the box.
 
 ## 🔆 Widgets
-✳️  In order to provide full customization, not only for the `QuestionnaireItems` but also the `Questionnaire` itself, there are **three widgets for rendering** a questionnaire: `QuestionnaireListViewRenderer`, `QuestionnairePageViewRenderer` and `QuestionnaireSliversViewRenderer`. 
+✳️  In order to provide full customization, not only for the `QuestionnaireItems` but also the `Questionnaire` itself, there are **three widgets for rendering** a questionnaire: `QuestionnaireListViewRenderer`, `QuestionnairePageViewRenderer` and `QuestionnaireSliversViewRenderer`.
+
 ✳️ The three `Renderer` widgets use by default the theme of your application.
 
 
@@ -183,9 +183,6 @@ class ListViewExamplePage extends StatelessWidget {
 
 <div align="center" style="align-items:center;">
 
-Default UI:
-<img src="example/assets/default_choice_builder_example.gif" width="300"/>
-
 Using choiceItemBuilder:
 <img src="example/assets/choice_builder_example.gif" width="300"/>
 </div>
@@ -197,7 +194,9 @@ Currently, **fhir_renderer_questionnaire** only supports the following **Questio
 ## 🔆 📣 🔜 Roadmap 
 
 🔳 Support for Questionnaire Item type `attachment`.
+
 🔳 Support for Questionnaire Item type `reference`.
+
 🔳 Support for localization extensions.
 
 :heavy_exclamation_mark: The roadmap above was created out of specific needs, if you have any ideas of good features to implement or important things to support please create a issue with your idea.

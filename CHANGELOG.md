@@ -9,6 +9,12 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## 0.0.2
+
+### Added
+
+* Support for initial values for types: `date`, `dateTime`, `time`, `decimal`, `integer`, `string`, `text`, `url` and `quantity`.
+
 ## 0.0.1
 
 * Renderers `QuestionnaireListViewRenderer`, `QuestionnairePageViewRenderer` and `QuestionnaireSliversViewRenderer` implemented.
