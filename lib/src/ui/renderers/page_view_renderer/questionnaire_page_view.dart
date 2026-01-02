@@ -3,21 +3,21 @@ import 'package:flutter/material.dart';
 
 import 'package:fhir_r4/fhir_r4.dart';
 
-import '../../../core/data/questionnaire_renderer_data.dart';
+import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../../core/utils/fhir_renderer_questionnaire_utils.dart';
 import '../../components/boxes/questionnaire_item_wrapper.dart';
 
-class QuestionnairePageView extends StatelessWidget {
+final class QuestionnairePageView extends StatelessWidget {
   const QuestionnairePageView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    List<QuestionnaireItem>? items = QuestionnaireRendererData.of(context)
+    List<QuestionnaireItem>? items = InheritedQuestionnaireRenderer.of(context)
         .questionnaire
         .item
         ?.where(
           (i) => FhirRendererQuestionnaireUtils.isQuestionnaireItemEnabled(
-            QuestionnaireRendererData.of(context).questionnaireResponse,
+            InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
             i,
           ),
         )
@@ -26,7 +26,8 @@ class QuestionnairePageView extends StatelessWidget {
     if (items != null) {
       return SafeArea(
         child: PageView.builder(
-          controller: QuestionnaireRendererData.of(context).pageViewController,
+          controller:
+              InheritedQuestionnaireRenderer.of(context).pageViewController,
           itemCount: items.length,
           itemBuilder: (context, index) {
             return SingleChildScrollView(

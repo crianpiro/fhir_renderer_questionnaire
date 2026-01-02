@@ -1,7 +1,7 @@
 import 'package:fhir_r4/fhir_r4.dart';
 import 'package:flutter/material.dart';
 
-import '../../../core/data/questionnaire_renderer_data.dart';
+import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
 import 'base_decorator.dart';
 import '../questionnaire_base_item.dart';
@@ -17,18 +17,18 @@ class QuestionnaireBooleanItem extends QuestionnaireBaseItem {
   void onOptionChanged(BuildContext context, bool value) {
     final resp = FhirRendererQuestionnaireResponseUtils
         .setResponseAnswerInQuestionnaireResponse(
-      QuestionnaireRendererData.of(context).questionnaireResponse,
+      InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
       questionnaireItem,
       QuestionnaireResponseAnswer(valueX: FhirBoolean("$value")),
     );
 
-    QuestionnaireRendererData.of(context).onResponseChanged(resp);
+    InheritedQuestionnaireRenderer.of(context).onResponseChanged(resp);
   }
 
   @override
   Widget build(BuildContext context) {
     final selectedResponseItem = findQuestionnaireResponseItem(
-      QuestionnaireRendererData.of(context).questionnaireResponse,
+      InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
       questionnaireItem.linkId.valueString,
     );
 

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../data/field_behavioral_data.dart';
 
-class InternalQuestionnaireController {
+final class InternalQuestionnaireController {
   final QuestionnaireResponse Function() generateQuestionnaireResponse;
 
   final PageController? pageViewController;

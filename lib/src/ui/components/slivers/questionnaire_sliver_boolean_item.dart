@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/data/questionnaire_renderer_data.dart';
+import '../../layout/inherited_questionnaire_renderer.dart';
 import '../boxes/questionnaire_boolean_item.dart';
 import 'sliver_base_decorator.dart';
 
-class QuestionnaireSliverBooleanItem extends QuestionnaireBooleanItem {
+final class QuestionnaireSliverBooleanItem extends QuestionnaireBooleanItem {
   const QuestionnaireSliverBooleanItem({
     super.key,
     required super.questionnaireItem,
@@ -15,7 +15,7 @@ class QuestionnaireSliverBooleanItem extends QuestionnaireBooleanItem {
   @override
   Widget build(BuildContext context) {
     final selectedResponseItem = findQuestionnaireResponseItem(
-      QuestionnaireRendererData.of(context).questionnaireResponse,
+      InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
       questionnaireItem.linkId.valueString,
     );
 

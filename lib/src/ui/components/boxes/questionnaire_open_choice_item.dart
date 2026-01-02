@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/data/questionnaire_renderer_data.dart';
+import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
 import 'base_decorator.dart';
 import '../questionnaire_base_item.dart';
@@ -15,8 +15,8 @@ class QuestionnaireOpenChoiceItem extends QuestionnaireBaseItem {
 
   @override
   Widget build(BuildContext context) {
-    final QuestionnaireRendererData questionnaireRendererData =
-        QuestionnaireRendererData.of(context);
+    final InheritedQuestionnaireRenderer questionnaireRendererData =
+        InheritedQuestionnaireRenderer.of(context);
     return BaseDecorator(
       roundBottomBorder: isLastItem,
       title: questionnaireItem.text?.valueString,
@@ -27,7 +27,7 @@ class QuestionnaireOpenChoiceItem extends QuestionnaireBaseItem {
                     "--";
 
             final selectedResponseItem = findQuestionnaireResponseItem(
-              QuestionnaireRendererData.of(context).questionnaireResponse,
+              InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
               questionnaireItem.linkId.valueString,
             );
 

@@ -200,4 +200,4 @@ Currently, **fhir_renderer_questionnaire** only supports the following **Questio
 🔳 Support for Questionnaire Item type `reference`.
 🔳 Support for localization extensions.
 
-💡 The roadmap above was created out of specific needs, if you have any ideas of good features to implement or important things to support please create a issue with your idea.
+:heavy_exclamation_mark: The roadmap above was created out of specific needs, if you have any ideas of good features to implement or important things to support please create a issue with your idea.

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/data/questionnaire_renderer_data.dart';
+import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
 import '../boxes/questionnaire_date_time_item.dart';
 import 'sliver_base_decorator.dart';
 
-class QuestionnaireSliverDateTimeItem extends QuestionnaireDateTimeItem {
+final class QuestionnaireSliverDateTimeItem extends QuestionnaireDateTimeItem {
   const QuestionnaireSliverDateTimeItem({
     super.key,
     required super.questionnaireItem,
@@ -16,7 +16,7 @@ class QuestionnaireSliverDateTimeItem extends QuestionnaireDateTimeItem {
   @override
   Widget build(BuildContext context) {
     final currentResponseItem = findQuestionnaireResponseItem(
-      QuestionnaireRendererData.of(context).questionnaireResponse,
+      InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
       questionnaireItem.linkId.valueString,
     );
 
@@ -39,10 +39,11 @@ class QuestionnaireSliverDateTimeItem extends QuestionnaireDateTimeItem {
             );
 
             if (context.mounted && selectedValue != null) {
-              QuestionnaireRendererData.of(context).onResponseChanged(
+              InheritedQuestionnaireRenderer.of(context).onResponseChanged(
                 FhirRendererQuestionnaireResponseUtils
                     .setResponseAnswerInQuestionnaireResponse(
-                  QuestionnaireRendererData.of(context).questionnaireResponse,
+                  InheritedQuestionnaireRenderer.of(context)
+                      .questionnaireResponse,
                   questionnaireItem,
                   selectedValue,
                 ),

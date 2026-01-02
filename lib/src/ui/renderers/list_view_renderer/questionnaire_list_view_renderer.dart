@@ -1,10 +1,33 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/data/questionnaire_renderer_data.dart';
+import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../layout/base_questionnaire_renderer.dart';
 import 'questionnaire_list_view.dart';
 
-class QuestionnaireListViewRenderer extends BaseQuestionnaireRenderer {
+/// A questionnaire renderer widget that displays questionnaire items in a scrollable list view.
+///
+/// This widget extends [BaseQuestionnaireRenderer] to provide a list-based layout for
+/// rendering FHIR questionnaires. Items are displayed vertically in a scrollable list,
+/// making it suitable for questionnaires with multiple items.
+///
+/// The widget is final and cannot be extended.
+final class QuestionnaireListViewRenderer extends BaseQuestionnaireRenderer {
+  /// Creates a questionnaire list view renderer.
+  ///
+  /// All parameters are required as specified by [BaseQuestionnaireRenderer].
+  ///
+  /// Parameters:
+  ///   * [getRendererControllerInstance] - Callback to get the renderer controller
+  ///   * [questionnaire] - The FHIR questionnaire definition to render
+  ///   * [questionnaireResponse] - Optional initial questionnaire response
+  ///   * [choiceItemBuilder] - Optional custom builder for choice items
+  ///   * [openChoiceItemBuilder] - Optional custom builder for open choice items
+  ///   * [fieldItemBuilder] - Optional custom builder for field items
+  ///   * [dateTimeItemBuilder] - Optional custom builder for date/time items
+  ///   * [groupItemBuilder] - Optional custom builder for group items
+  ///   * [boolItemBuilder] - Optional custom builder for boolean items
+  ///   * [displayItemBuilder] - Optional custom builder for display items
+  ///   * [key] - Optional widget key
   const QuestionnaireListViewRenderer({
     required super.getRendererControllerInstance,
     required super.questionnaire,
@@ -19,14 +42,36 @@ class QuestionnaireListViewRenderer extends BaseQuestionnaireRenderer {
     super.key,
   });
 
+  /// Creates the mutable state for this widget.
+  ///
+  /// Returns a [_QuestionnaireListViewRendererState] that manages the state and
+  /// rendering of the list view questionnaire.
+  ///
+  /// Returns:
+  ///   A [BaseQuestionnaireState] instance for managing widget state.
   @override
   BaseQuestionnaireState createState() => _QuestionnaireListViewRendererState();
 }
 
-class _QuestionnaireListViewRendererState extends BaseQuestionnaireState {
+/// The state class for [QuestionnaireListViewRenderer].
+///
+/// Manages the widget state and builds the UI by wrapping the questionnaire in
+/// an [InheritedQuestionnaireRenderer] and displaying it in a list view.
+final class _QuestionnaireListViewRendererState extends BaseQuestionnaireState {
+  /// Builds the widget tree for the list view questionnaire renderer.
+  ///
+  /// Creates an [InheritedQuestionnaireRenderer] widget to provide questionnaire
+  /// context to descendant widgets, then displays the questionnaire in a
+  /// [QuestionnaireListView].
+  ///
+  /// Parameters:
+  ///   * [context] - The build context
+  ///
+  /// Returns:
+  ///   A [Widget] representing the list view questionnaire UI.
   @override
   Widget build(BuildContext context) {
-    return QuestionnaireRendererData(
+    return InheritedQuestionnaireRenderer(
       questionnaireResponse: questionnaireResponse,
       questionnaire: widget.questionnaire,
       checkRequiredItems: checkRequiredItems,

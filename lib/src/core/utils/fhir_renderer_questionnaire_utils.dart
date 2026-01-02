@@ -2,7 +2,25 @@ import 'package:fhir_r4/fhir_r4.dart';
 import 'fhir_renderer_questionnaire_response_utils.dart';
 import 'package:intl/intl.dart';
 
-class FhirRendererQuestionnaireUtils {
+/// Utility class for evaluating and processing FHIR Questionnaire conditions.
+///
+/// This class provides static methods to:
+/// * Evaluate enable/disable conditions for questionnaire items
+/// * Compare questionnaire responses against conditional logic
+/// * Extract and convert numeric values from various FHIR answer types
+final class FhirRendererQuestionnaireUtils {
+  /// Determines if a questionnaire item is enabled based on enable/disable conditions.
+  ///
+  /// Evaluates the `enableWhen` conditions of a questionnaire item against the current
+  /// questionnaire response. Supports both 'all' (AND logic) and 'any' (OR logic) behaviors.
+  ///
+  /// Parameters:
+  ///   * [questionnaireResponse] - The current questionnaire response to evaluate against
+  ///   * [questionnaireItem] - The questionnaire item with potential enable conditions
+  ///
+  /// Returns:
+  ///   `true` if the item has no enable conditions or if the conditions are satisfied,
+  ///   `false` otherwise.
   static bool isQuestionnaireItemEnabled(
     QuestionnaireResponse questionnaireResponse,
     QuestionnaireItem questionnaireItem,
@@ -47,6 +65,18 @@ class FhirRendererQuestionnaireUtils {
     return true;
   }
 
+  /// Compares a questionnaire response answer against an enable/disable condition.
+  ///
+  /// Evaluates the relationship between an answer and a condition using the specified
+  /// operator (equals, not equals, greater than, less than, exists, etc.).
+  /// Supports both numeric and non-numeric comparisons.
+  ///
+  /// Parameters:
+  ///   * [questionnaireResponseAnswer] - The answer to evaluate
+  ///   * [questionnaireEnableWhen] - The condition to check against
+  ///
+  /// Returns:
+  ///   `true` if the answer satisfies the condition, `false` otherwise.
   static bool _compareAnswerAndCondition(
     QuestionnaireResponseAnswer questionnaireResponseAnswer,
     QuestionnaireEnableWhen questionnaireEnableWhen,
@@ -104,6 +134,18 @@ class FhirRendererQuestionnaireUtils {
     }
   }
 
+  /// Extracts a numeric value from a questionnaire enable/disable condition answer.
+  ///
+  /// Converts various FHIR answer types (Date, DateTime, Time, Decimal, Integer, Quantity, String)
+  /// to numeric values for comparison. Unsupported types return null.
+  ///
+  /// Parameters:
+  ///   * [questResponseAnswer] - The enable/disable condition answer to extract from
+  ///
+  /// Returns:
+  ///   A numeric value as a `double` if conversion is possible, `null` otherwise.
+  ///   Dates/DateTimes are converted to milliseconds since epoch.
+  ///   Times are parsed and converted to milliseconds since epoch.
   static double? _getNumericValueFromQuestionnaireAnswerEnableWhen(
     AnswerXQuestionnaireEnableWhen? questResponseAnswer,
   ) {
@@ -165,6 +207,18 @@ class FhirRendererQuestionnaireUtils {
     return null;
   }
 
+  /// Extracts a numeric value from a questionnaire response answer.
+  ///
+  /// Converts various FHIR answer types (Date, DateTime, Time, Decimal, Integer, Quantity, String)
+  /// to numeric values for comparison. Unsupported types return null.
+  ///
+  /// Parameters:
+  ///   * [questResponseAnswer] - The response answer to extract from
+  ///
+  /// Returns:
+  ///   A numeric value as a `double` if conversion is possible, `null` otherwise.
+  ///   Dates/DateTimes are converted to milliseconds since epoch.
+  ///   Times are parsed and converted to milliseconds since epoch.
   static double? _getNumericValueFromResponseAnswer(
     ValueXQuestionnaireResponseAnswer? questResponseAnswer,
   ) {

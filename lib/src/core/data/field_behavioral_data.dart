@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-class FieldBehavioralData {
+final class FieldBehavioralData {
   final int index;
   final bool enabled;
   final bool markedRequired;

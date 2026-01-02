@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/data/questionnaire_renderer_data.dart';
+import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
 import '../boxes/questionnaire_choice_item.dart';
 import 'sliver_base_decorator.dart';
 
-class QuestionnaireSliverChoiceItem extends QuestionnaireChoiceItem {
+final class QuestionnaireSliverChoiceItem extends QuestionnaireChoiceItem {
   const QuestionnaireSliverChoiceItem({
     required super.questionnaireItem,
     required super.index,
@@ -25,7 +25,7 @@ class QuestionnaireSliverChoiceItem extends QuestionnaireChoiceItem {
                     "--";
 
             final selectedResponseItem = findQuestionnaireResponseItem(
-              QuestionnaireRendererData.of(context).questionnaireResponse,
+              InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
               questionnaireItem.linkId.valueString,
             );
 
@@ -36,12 +36,12 @@ class QuestionnaireSliverChoiceItem extends QuestionnaireChoiceItem {
               child: RadioListTile(
                 value: selectedValue,
                 groupValue: answerOption.valueCoding?.code?.valueString,
-                onChanged: (v) => QuestionnaireRendererData.of(
+                onChanged: (v) => InheritedQuestionnaireRenderer.of(
                   context,
                 ).onResponseChanged(
                   FhirRendererQuestionnaireResponseUtils
                       .setAnswerOptionInQuestionnaireResponse(
-                    QuestionnaireRendererData.of(
+                    InheritedQuestionnaireRenderer.of(
                       context,
                     ).questionnaireResponse,
                     questionnaireItem,

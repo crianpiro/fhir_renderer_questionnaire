@@ -3,8 +3,8 @@ import 'package:fhir_renderer_questionnaire/src/core/controllers/internal_questi
 import 'package:fhir_renderer_questionnaire/src/core/definitions/type_definitions.dart';
 import 'package:flutter/material.dart';
 
-class QuestionnaireRendererData extends InheritedWidget {
-  const QuestionnaireRendererData({
+final class InheritedQuestionnaireRenderer extends InheritedWidget {
+  const InheritedQuestionnaireRenderer({
     super.key,
     required this.questionnaireResponse,
     required this.checkRequiredItems,
@@ -55,19 +55,19 @@ class QuestionnaireRendererData extends InheritedWidget {
     return questionnaireResponse;
   }
 
-  static QuestionnaireRendererData? maybeOf(BuildContext context) {
+  static InheritedQuestionnaireRenderer? maybeOf(BuildContext context) {
     return context
-        .dependOnInheritedWidgetOfExactType<QuestionnaireRendererData>();
+        .dependOnInheritedWidgetOfExactType<InheritedQuestionnaireRenderer>();
   }
 
-  static QuestionnaireRendererData of(BuildContext context) {
-    final QuestionnaireRendererData? result = maybeOf(context);
+  static InheritedQuestionnaireRenderer of(BuildContext context) {
+    final InheritedQuestionnaireRenderer? result = maybeOf(context);
     assert(result != null, 'No QuestionnaireRendererData found in context');
     return result!;
   }
 
   @override
-  bool updateShouldNotify(QuestionnaireRendererData oldWidget) =>
+  bool updateShouldNotify(InheritedQuestionnaireRenderer oldWidget) =>
       questionnaire != oldWidget.questionnaire ||
       questionnaireResponse != oldWidget.questionnaireResponse ||
       checkRequiredItems != oldWidget.checkRequiredItems ||

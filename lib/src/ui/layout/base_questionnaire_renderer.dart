@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../../fhir_renderer_questionnaire.dart';
 import '../../core/controllers/internal_questionnaire_controller.dart';
-import '../../core/data/questionnaire_renderer_data.dart';
+import 'inherited_questionnaire_renderer.dart';
 import '../../core/definitions/type_definitions.dart';
 import '../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
 
@@ -45,7 +45,7 @@ class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer> {
   bool checkRequiredItems = false;
 
   QuestionnaireResponse? generateQuestionnaireResponse() {
-    return QuestionnaireRendererData.of(context).questionnaireResponse;
+    return InheritedQuestionnaireRenderer.of(context).questionnaireResponse;
   }
 
   void onResponseChanged(QuestionnaireResponse updatedQuestionnaireResponse) {

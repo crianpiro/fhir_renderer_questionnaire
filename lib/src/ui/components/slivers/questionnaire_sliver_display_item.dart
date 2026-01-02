@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../boxes/questionnaire_display_item.dart';
 import 'sliver_base_decorator.dart';
 
-class QuestionnaireSliverDisplayItem extends QuestionnaireDisplayItem {
+final class QuestionnaireSliverDisplayItem extends QuestionnaireDisplayItem {
   const QuestionnaireSliverDisplayItem({
     super.key,
     required super.questionnaireItem,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/data/questionnaire_renderer_data.dart';
+import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
 import 'base_decorator.dart';
 import '../questionnaire_base_item.dart';
@@ -25,7 +25,7 @@ class QuestionnaireChoiceItem extends QuestionnaireBaseItem {
                     "--";
 
             final selectedResponseItem = findQuestionnaireResponseItem(
-              QuestionnaireRendererData.of(context).questionnaireResponse,
+              InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
               questionnaireItem.linkId.valueString,
             );
 
@@ -35,12 +35,12 @@ class QuestionnaireChoiceItem extends QuestionnaireBaseItem {
             return RadioListTile(
               value: selectedValue,
               groupValue: answerOption.valueCoding?.code?.valueString,
-              onChanged: (v) => QuestionnaireRendererData.of(
+              onChanged: (v) => InheritedQuestionnaireRenderer.of(
                 context,
               ).onResponseChanged(
                 FhirRendererQuestionnaireResponseUtils
                     .setAnswerOptionInQuestionnaireResponse(
-                  QuestionnaireRendererData.of(
+                  InheritedQuestionnaireRenderer.of(
                     context,
                   ).questionnaireResponse,
                   questionnaireItem,

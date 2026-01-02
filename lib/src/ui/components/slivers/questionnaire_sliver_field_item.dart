@@ -3,12 +3,12 @@ import 'dart:math';
 import 'package:fhir_r4/fhir_r4.dart';
 import 'package:flutter/material.dart';
 
-import '../../../core/data/questionnaire_renderer_data.dart';
+import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
 import '../boxes/questionnaire_field_item.dart';
 import 'sliver_base_decorator.dart';
 
-class QuestionnaireSliverFieldItem extends QuestionnaireFieldItem {
+final class QuestionnaireSliverFieldItem extends QuestionnaireFieldItem {
   const QuestionnaireSliverFieldItem({
     required super.questionnaireItem,
     required super.index,
@@ -19,34 +19,34 @@ class QuestionnaireSliverFieldItem extends QuestionnaireFieldItem {
   @override
   Widget build(BuildContext context) {
     TextEditingController localController;
-    if (QuestionnaireRendererData.of(context)
+    if (InheritedQuestionnaireRenderer.of(context)
             .internalController
             .indexedItems
             .containsKey(
               questionnaireItem.linkId.valueString,
             ) &&
-        QuestionnaireRendererData.of(context)
+        InheritedQuestionnaireRenderer.of(context)
                 .internalController
                 .indexedItems[questionnaireItem.linkId.valueString]!
                 .textController ==
             null) {
       final currentResponseItem = findQuestionnaireResponseItem(
-        QuestionnaireRendererData.of(context).questionnaireResponse,
+        InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
         questionnaireItem.linkId.valueString,
       );
       localController = TextEditingController(
         text:
             currentResponseItem?.answer?.firstOrNull?.valueString?.valueString,
       );
-      QuestionnaireRendererData.of(context)
+      InheritedQuestionnaireRenderer.of(context)
               .internalController
               .indexedItems[questionnaireItem.linkId.valueString!] =
-          QuestionnaireRendererData.of(context)
+          InheritedQuestionnaireRenderer.of(context)
               .internalController
               .indexedItems[questionnaireItem.linkId.valueString]!
               .copyWith(textController: localController);
     } else {
-      localController = QuestionnaireRendererData.of(context)
+      localController = InheritedQuestionnaireRenderer.of(context)
           .internalController
           .indexedItems[questionnaireItem.linkId.valueString!]!
           .textController!;
@@ -61,13 +61,13 @@ class QuestionnaireSliverFieldItem extends QuestionnaireFieldItem {
           onChanged: (value) {
             final resp = FhirRendererQuestionnaireResponseUtils
                 .setResponseAnswerInQuestionnaireResponse(
-              QuestionnaireRendererData.of(context).questionnaireResponse,
+              InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
               questionnaireItem,
               value.trim().isEmpty
                   ? null
                   : QuestionnaireResponseAnswer(valueX: FhirString(value)),
             );
-            QuestionnaireRendererData.of(context).onResponseChanged(resp);
+            InheritedQuestionnaireRenderer.of(context).onResponseChanged(resp);
           },
           maxLines: questionnaireItem.type == QuestionnaireItemType.text
               ? 5

@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-class ReadOnlyWrapper extends StatelessWidget {
+final class ReadOnlyWrapper extends StatelessWidget {
   final Widget child;
   final bool ignoring;
   const ReadOnlyWrapper({

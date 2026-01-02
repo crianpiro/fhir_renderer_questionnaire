@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../boxes/base_decorator.dart';
 
-class SliverBaseDecorator extends BaseDecorator {
+final class SliverBaseDecorator extends BaseDecorator {
   const SliverBaseDecorator({
     required super.title,
     required super.roundBottomBorder,

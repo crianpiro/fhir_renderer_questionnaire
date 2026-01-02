@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/data/questionnaire_renderer_data.dart';
+import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
 import '../boxes/questionnaire_open_choice_item.dart';
 import 'sliver_base_decorator.dart';
 
-class QuestionnaireSliverOpenChoiceItem extends QuestionnaireOpenChoiceItem {
+final class QuestionnaireSliverOpenChoiceItem
+    extends QuestionnaireOpenChoiceItem {
   const QuestionnaireSliverOpenChoiceItem({
     required super.questionnaireItem,
     required super.index,
@@ -15,8 +16,8 @@ class QuestionnaireSliverOpenChoiceItem extends QuestionnaireOpenChoiceItem {
 
   @override
   Widget build(BuildContext context) {
-    final QuestionnaireRendererData questionnaireRendererData =
-        QuestionnaireRendererData.of(context);
+    final InheritedQuestionnaireRenderer questionnaireRendererData =
+        InheritedQuestionnaireRenderer.of(context);
     return SliverBaseDecorator(
       roundBottomBorder: isLastItem,
       title: questionnaireItem.text?.valueString,
@@ -27,7 +28,7 @@ class QuestionnaireSliverOpenChoiceItem extends QuestionnaireOpenChoiceItem {
                     "--";
 
             final selectedResponseItem = findQuestionnaireResponseItem(
-              QuestionnaireRendererData.of(context).questionnaireResponse,
+              InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
               questionnaireItem.linkId.valueString,
             );
 

@@ -1,7 +1,7 @@
 import 'package:fhir_r4/fhir_r4.dart';
 import 'package:flutter/material.dart';
 
-import '../../../core/data/questionnaire_renderer_data.dart';
+import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../../core/extensions/mapping_extension.dart';
 import '../../../core/utils/fhir_renderer_questionnaire_utils.dart';
 import '../questionnaire_base_item.dart';
@@ -18,22 +18,22 @@ class QuestionnaireGroupItem extends QuestionnaireBaseItem {
   @override
   Widget build(BuildContext context) {
     List<QuestionnaireItem>? items = questionnaireItem.item?.where((item) {
-      QuestionnaireRendererData questionnaireRendererData =
-          QuestionnaireRendererData.of(context);
+      InheritedQuestionnaireRenderer questionnaireRendererData =
+          InheritedQuestionnaireRenderer.of(context);
       final enabled = FhirRendererQuestionnaireUtils.isQuestionnaireItemEnabled(
         questionnaireRendererData.questionnaireResponse,
         item,
       );
-      if (QuestionnaireRendererData.of(context)
+      if (InheritedQuestionnaireRenderer.of(context)
           .internalController
           .indexedItems
           .containsKey(
             item.linkId.valueString!,
           )) {
-        final itemData = QuestionnaireRendererData.of(context)
+        final itemData = InheritedQuestionnaireRenderer.of(context)
             .internalController
             .indexedItems[item.linkId.valueString!]!;
-        QuestionnaireRendererData.of(context)
+        InheritedQuestionnaireRenderer.of(context)
                 .internalController
                 .indexedItems[item.linkId.valueString!] =
             itemData.copyWith(enabled: enabled);
