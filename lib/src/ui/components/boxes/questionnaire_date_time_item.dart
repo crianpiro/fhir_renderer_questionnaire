@@ -18,10 +18,10 @@ class QuestionnaireDateTimeItem extends QuestionnaireBaseItem {
   Widget getItemIcon() {
     switch (questionnaireItem.type) {
       case QuestionnaireItemType.time:
-        return Icon(Icons.av_timer);
+        return const Icon(Icons.av_timer);
       case QuestionnaireItemType.dateTime:
       default:
-        return Icon(Icons.calendar_month);
+        return const Icon(Icons.calendar_month);
     }
   }
 
@@ -91,7 +91,7 @@ class QuestionnaireDateTimeItem extends QuestionnaireBaseItem {
         initialDate:
             currentResponseItem?.answer?.firstOrNull?.valueDate?.valueDateTime,
         firstDate: DateTime.now(),
-        lastDate: DateTime.now().add(Duration(days: 365)),
+        lastDate: DateTime.now().add(const Duration(days: 365)),
       );
 
       if (selectedDate != null) {
