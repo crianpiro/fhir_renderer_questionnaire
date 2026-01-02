@@ -183,7 +183,7 @@ class ListViewExamplePage extends StatelessWidget {
 
 <div align="center" style="align-items:center;">
 
-Using choiceItemBuilder:
+<h4>Using choiceItemBuilder:</h4>
 
 <img src="https://raw.githubusercontent.com/crianpiro/fhir_renderer_questionnaire/main/example/assets/choice_builder_example.gif" width="300"/>
 </div>
