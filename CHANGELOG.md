@@ -13,7 +13,7 @@ Types of changes
 
 ### Added
 
-* Support for initial values for types: `date`, `dateTime`, `time`, `decimal`, `integer`, `string`, `text`, `url` and `quantity`.
+* Support for initial values for types: `choice`, `open-choice`, `date`, `dateTime`, `time`, `decimal`, `integer`, `string`, `text`, `url` and `quantity`.
 
 ## 0.0.1
 
