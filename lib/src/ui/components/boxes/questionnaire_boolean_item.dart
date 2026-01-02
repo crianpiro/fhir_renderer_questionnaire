@@ -46,13 +46,13 @@ class QuestionnaireBooleanItem extends QuestionnaireBaseItem {
       children: [
         RadioListTile(
           value: true,
-          title: const Text("Ja"),
+          title: const Text("Yes"),
           groupValue: selectedValue,
           onChanged: (v) => onOptionChanged(context, v ?? false),
         ),
         RadioListTile(
           value: false,
-          title: const Text("Nein"),
+          title: const Text("No"),
           groupValue: selectedValue,
           onChanged: (v) => onOptionChanged(context, v ?? false),
         ),

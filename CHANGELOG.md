@@ -9,6 +9,11 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## 0.0.3
+
+### Changed
+* Default text for boolean changed to its English version.
+
 ## 0.0.2
 
 ### Added

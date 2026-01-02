@@ -23,7 +23,7 @@ This package was inspired by [fhir_questionnaire](https://pub.dev/packages/fhir_
 ### 💫 QuestionnaireListViewRenderer
 
 <div align="center">
-<img src="example/assets/list_view_renderer_example.gif" width="220"/>
+<img src="https://raw.githubusercontent.com/crianpiro/fhir_renderer_questionnaire/main/example/assets/list_view_renderer_example.gif" width="220"/>
 </a>
 </div>
 
@@ -42,7 +42,7 @@ QuestionnaireListViewRenderer(
 ### 💫 QuestionnairePageViewRenderer
 
 <div align="center">
-<img src="example/assets/page_view_renderer_example.gif" width="220"/>
+<img src="https://raw.githubusercontent.com/crianpiro/fhir_renderer_questionnaire/main/example/assets/page_view_renderer_example.gif" width="220"/>
 </a>
 </div>
 
@@ -60,7 +60,7 @@ QuestionnairePageViewRenderer(
 ### 💫 QuestionnaireSliversViewRenderer
 
 <div align="center">
-<img src="example/assets/slivers_view_renderer_example.gif" width="220"/>
+<img src="https://raw.githubusercontent.com/crianpiro/fhir_renderer_questionnaire/main/example/assets/slivers_view_renderer_example.gif" width="220"/>
 </a>
 </div>
 
@@ -184,7 +184,8 @@ class ListViewExamplePage extends StatelessWidget {
 <div align="center" style="align-items:center;">
 
 Using choiceItemBuilder:
-<img src="example/assets/choice_builder_example.gif" width="300"/>
+
+<img src="https://raw.githubusercontent.com/crianpiro/fhir_renderer_questionnaire/main/example/assets/choice_builder_example.gif" width="300"/>
 </div>
 
 ## 🔆 Supported Questionnaire Items
@@ -192,6 +193,8 @@ Using choiceItemBuilder:
 Currently, **fhir_renderer_questionnaire** only supports the following **Questionnaire Item types from FHIR R4**: `group`, `display`, `boolean`, `decimal`, `integer`, `date`, `dateTime`, `time`, `string`, `text`, `url`, `choice`, `open-choice` and `quantity`.
 
 ## 🔆 📣 🔜 Roadmap 
+
+🔳 Support validation with regular expressions for the types that use a text field.
 
 🔳 Support for Questionnaire Item type `attachment`.
 
