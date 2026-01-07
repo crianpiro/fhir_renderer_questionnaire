@@ -75,6 +75,8 @@ QuestionnaireSliversViewRenderer(
 )
 ```
 
+❗ The builders of the `QuestionnaireSliversViewRenderer` expect you to return a `Widget` of type `Sliver`.
+
 ## 🔆 Usage
 
 ✳️ The instance of the `QuestionnaireRendererController` allows you to access the `ScrollController` of the list view, the `PageController` of the page view and the generated questionnaire response.
@@ -202,4 +204,4 @@ Currently, **fhir_renderer_questionnaire** only supports the following **Questio
 
 🔳 Support for localization extensions.
 
-:heavy_exclamation_mark: The roadmap above was created out of specific needs, if you have any ideas of good features to implement or important things to support please create a issue with your idea.
+❗❗ The roadmap above was created out of specific needs, if you have any ideas of good features to implement or important things to support please create a issue with your idea.

@@ -40,6 +40,61 @@ class SliversViewExamplePage extends StatelessWidget {
         getRendererControllerInstance:
             (QuestionnaireRendererController controller) =>
                 this.controller.rendererController = controller,
+        groupItemBuilder: (
+          index,
+          isLastItem,
+          questionnaireItem,
+          childrenAssigner,
+        ) {
+          return SliverMainAxisGroup(
+            slivers: [
+              SliverAppBar(
+                key: Key("${questionnaireItem.linkId.valueString}"),
+                pinned: true,
+                toolbarHeight: 50,
+                automaticallyImplyLeading: false,
+                title: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      child: Icon(Icons.title),
+                    ),
+                    Text("${questionnaireItem.text?.valueString}"),
+                  ],
+                ),
+              ),
+              if (questionnaireItem.item != null)
+                DecoratedSliver(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  sliver: SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    sliver: SliverMainAxisGroup(
+                      slivers:
+                          questionnaireItem.item!.map((question) {
+                            return DecoratedSliver(
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  top:
+                                      question.item !=
+                                              questionnaireItem.item!.first.item
+                                          ? const BorderSide(
+                                            color: Colors.black,
+                                            width: 0.5,
+                                          )
+                                          : BorderSide.none,
+                                ),
+                              ),
+                              sliver: childrenAssigner(question),
+                            );
+                          }).toList(),
+                    ),
+                  ),
+                ),
+            ],
+          );
+        },
       ),
     );
   }

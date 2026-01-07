@@ -9,7 +9,12 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
-## 0.0.4
+## 0.0.5
+
+### Fixed
+* Support for `Slivers` in the `groupItemBuilder` for the `QuestionnaireSliversViewRenderer`.
+
+## 0.0.4 (retracted version)
 
 ### Fixed
 * `childrenAssigner`changed to be optional.

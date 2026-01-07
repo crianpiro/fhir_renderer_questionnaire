@@ -49,8 +49,10 @@ typedef QuestionnaireBooleanWidgetBuilder = Widget Function(
 /// [questionnaireItem]: The questionnaire group item to be displayed.
 /// [childrenAssigner]: A function to assign deafult widget to the group item children.
 typedef QuestionnaireGroupWidgetBuilder = Widget Function(
-    int index, bool isLastItem, QuestionnaireItem questionnaireItem,
-    {Widget Function(QuestionnaireItem questionnaireItem)? childrenAssigner});
+    int index,
+    bool isLastItem,
+    QuestionnaireItem questionnaireItem,
+    Widget Function(QuestionnaireItem questionnaireItem) childrenAssigner);
 
 /// A typedef for building a choice widget for a questionnaire.
 ///

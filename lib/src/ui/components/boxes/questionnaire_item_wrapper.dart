@@ -104,7 +104,7 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
             index,
             isLastItem,
             questionnaireItem,
-            childrenAssigner: (questionnaireItem) {
+            (questionnaireItem) {
               return QuestionnaireItemWrapper(
                 index: index,
                 questionnaireItem: questionnaireItem,
