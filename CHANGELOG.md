@@ -13,6 +13,8 @@ Types of changes
 
 ### Changed
 * Default text for boolean changed to its English version.
+### Added
+* `childrenAssigner`in `QuestionnaireGroupWidgetBuilder` to support default widgets for group items children.
 
 ## 0.0.2
 

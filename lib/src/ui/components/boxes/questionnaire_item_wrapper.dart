@@ -104,6 +104,13 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
             index,
             isLastItem,
             questionnaireItem,
+            (questionnaireItem) {
+              return QuestionnaireItemWrapper(
+                index: index,
+                questionnaireItem: questionnaireItem,
+                isLastItem: isLastItem,
+              );
+            },
           );
         }
         return QuestionnaireGroupItem(
