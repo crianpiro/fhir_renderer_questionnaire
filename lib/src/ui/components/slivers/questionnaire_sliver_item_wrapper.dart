@@ -105,7 +105,7 @@ final class QuestionnaireSliverItemWrapper extends QuestionnaireItemWrapper {
             index,
             isLastItem,
             questionnaireItem,
-            (questionnaireItem) {
+            childrenAssigner: (questionnaireItem) {
               return QuestionnaireItemWrapper(
                 index: index,
                 questionnaireItem: questionnaireItem,
