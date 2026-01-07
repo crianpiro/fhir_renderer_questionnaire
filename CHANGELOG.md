@@ -9,17 +9,23 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
-## 0.0.3
+## 0.0.4
+
+### Fixed
+* `childrenAssigner`changed to be optional.
+* Intl version changed back to `^0.20.2`.
+
+## 0.0.3 (retracted version)
 
 ### Changed
 * Default text for boolean changed to its English version.
+
 ### Added
 * `childrenAssigner`in `QuestionnaireGroupWidgetBuilder` to support default widgets for group items children.
 
 ## 0.0.2
 
 ### Added
-
 * Support for initial values for types: `choice`, `open-choice`, `date`, `dateTime`, `time`, `decimal`, `integer`, `string`, `text`, `url` and `quantity`.
 
 ## 0.0.1
