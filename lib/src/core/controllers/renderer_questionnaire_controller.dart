@@ -17,6 +17,10 @@ class RendererQuestionnaireController {
   /// This is typically set by the `BaseQuestionnaireRenderer` when the renderer is initialized.
   QuestionnaireResponse Function()? onGenerateQuestionnaireResponse;
 
+  void Function()? onReadOnlyModeChanged;
+
+  bool forceReadOnlyView;
+
   /// The FHIR Questionnaire to be rendered.
   final Questionnaire questionnaire;
 
@@ -62,11 +66,17 @@ class RendererQuestionnaireController {
     this.pageViewController,
     this.initialQuestionnaireResponse,
     this.onGenerateQuestionnaireResponse,
+    this.forceReadOnlyView = false,
   }) {
     initialQuestionnaireResponse ??= FhirRendererQuestionnaireResponseUtils
         .generateInitialQuestionnaireResponse(
       questionnaire,
     );
+  }
+
+  void updateReadOnlyMode(bool enableReadOnly) {
+    forceReadOnlyView = enableReadOnly;
+    onReadOnlyModeChanged?.call();
   }
 
   /// Generates the current [QuestionnaireResponse] from the renderer's state.

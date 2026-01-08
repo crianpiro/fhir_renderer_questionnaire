@@ -11,6 +11,7 @@ class CubitOrBlocOrController {
       RendererQuestionnaireController(
         sliversInitialIndex: 3,
         questionnaire: example,
+        forceReadOnlyView: true,
       );
 }
 

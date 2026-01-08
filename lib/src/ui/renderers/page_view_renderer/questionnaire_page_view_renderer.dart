@@ -81,6 +81,7 @@ final class _QuestionnairePageViewRendererState extends BaseQuestionnaireState {
       displayItemBuilder: widget.displayItemBuilder,
       rendererController: widget.rendererController,
       onResponseChanged: onResponseChanged,
+      readOnly: readOnly,
       child: Builder(
         builder: (innerContext) {
           return const QuestionnairePageView();

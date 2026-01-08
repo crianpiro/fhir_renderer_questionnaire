@@ -250,7 +250,9 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
               : null,
         ),
         child: IgnorePointer(
-          ignoring: questionnaireItem.readOnly?.valueBoolean ?? false,
+          ignoring: InheritedQuestionnaireRenderer.of(context).readOnly
+              ? InheritedQuestionnaireRenderer.of(context).readOnly
+              : questionnaireItem.readOnly?.valueBoolean ?? false,
           child: assignQuestionnaireWidget(context),
         ),
       ),

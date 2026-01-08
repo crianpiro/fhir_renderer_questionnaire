@@ -85,6 +85,7 @@ final class _QuestionnaireSliversViewRendererState
       displayItemBuilder: widget.displayItemBuilder,
       rendererController: widget.rendererController,
       onResponseChanged: onResponseChanged,
+      readOnly: readOnly,
       child: Builder(
         builder: (innerContext) {
           return const QuestionnaireSliversView();

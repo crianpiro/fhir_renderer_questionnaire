@@ -59,6 +59,7 @@ abstract class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer>
     with WidgetsBindingObserver {
   /// The current response state of the questionnaire.
   late QuestionnaireResponse questionnaireResponse;
+  late bool readOnly;
 
   /// Whether to validate and check required items.
   bool checkRequiredItems = false;
@@ -96,6 +97,12 @@ abstract class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer>
     return questionnaireResponse;
   }
 
+  void onReadOnlyModeChanged() {
+    setState(() {
+      readOnly = widget.rendererController.forceReadOnlyView;
+    });
+  }
+
   /// Callback executed after the widget is created.
   ///
   /// Used to scroll to the initial index if specified in the controller.
@@ -123,8 +130,10 @@ abstract class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer>
   void initState() {
     questionnaireResponse =
         widget.rendererController.initialQuestionnaireResponse!;
+    readOnly = widget.rendererController.forceReadOnlyView;
     widget.rendererController.onGenerateQuestionnaireResponse =
         onGenerateQuestionnaireResponse;
+    widget.rendererController.onReadOnlyModeChanged = onReadOnlyModeChanged;
     WidgetsBinding.instance.addPostFrameCallback(onCreated);
     super.initState();
   }

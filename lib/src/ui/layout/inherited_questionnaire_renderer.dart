@@ -21,9 +21,12 @@ final class InheritedQuestionnaireRenderer extends InheritedWidget {
     this.displayItemBuilder,
     this.pageViewController,
     this.listViewScrollController,
+    this.readOnly = false,
   });
 
   final bool checkRequiredItems;
+
+  final bool readOnly;
 
   final Questionnaire questionnaire;
 
@@ -69,6 +72,7 @@ final class InheritedQuestionnaireRenderer extends InheritedWidget {
   @override
   bool updateShouldNotify(InheritedQuestionnaireRenderer oldWidget) =>
       questionnaire != oldWidget.questionnaire ||
+      readOnly != oldWidget.readOnly ||
       rendererController != oldWidget.rendererController ||
       questionnaireResponse != oldWidget.questionnaireResponse ||
       checkRequiredItems != oldWidget.checkRequiredItems ||

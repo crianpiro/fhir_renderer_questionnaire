@@ -259,7 +259,10 @@ final class QuestionnaireSliverItemWrapper extends QuestionnaireItemWrapper {
               : null,
         ),
         sliver: SliverIgnorePointer(
-          ignoring: questionnaireItem.readOnly?.valueBoolean ?? false,
+          // ignoring: questionnaireItem.readOnly?.valueBoolean ?? false,
+          ignoring: InheritedQuestionnaireRenderer.of(context).readOnly
+              ? InheritedQuestionnaireRenderer.of(context).readOnly
+              : questionnaireItem.readOnly?.valueBoolean ?? false,
           sliver: assignQuestionnaireWidget(context),
         ),
       )

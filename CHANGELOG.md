@@ -9,6 +9,11 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+### 1.0.0
+
+### Added
+* `forceReadOnlyView` in the `RendererQuestionnaireController` to force the renderer to be in read-only mode for the entire view.
+
 ### 0.0.7
 
 ### Breaking changes

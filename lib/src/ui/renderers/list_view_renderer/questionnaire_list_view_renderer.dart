@@ -79,6 +79,7 @@ final class _QuestionnaireListViewRendererState extends BaseQuestionnaireState {
       boolItemBuilder: widget.boolItemBuilder,
       displayItemBuilder: widget.displayItemBuilder,
       rendererController: widget.rendererController,
+      readOnly: readOnly,
       onResponseChanged: onResponseChanged,
       child: Builder(
         builder: (context) {
