@@ -97,7 +97,8 @@ abstract class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer>
     }
 
     return questionnaireResponse.copyWith(
-        questionnaire: FhirCanonical(customQuestionnaireId));
+        questionnaire: FhirCanonical(
+            "${R4ResourceType.Questionnaire.name}/$customQuestionnaireId"));
   }
 
   void onReadOnlyModeChanged() {
