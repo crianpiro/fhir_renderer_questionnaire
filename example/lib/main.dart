@@ -1,4 +1,3 @@
-import 'package:example/data/mocks.dart';
 import 'package:example/views/list_view_example_page.dart';
 import 'package:example/views/page_view_renderer_page.dart';
 import 'package:example/views/slivers_view_example_page.dart';
@@ -44,9 +43,7 @@ class HomePage extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder:
-                          (context) =>
-                              ListViewExamplePage(questionnaire: example),
+                      builder: (context) => ListViewExamplePage(),
                     ),
                   );
                 },
@@ -56,9 +53,7 @@ class HomePage extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder:
-                          (context) =>
-                              PageViewExamplePage(questionnaire: example),
+                      builder: (context) => PageViewExamplePage(),
                     ),
                   );
                 },
@@ -68,9 +63,7 @@ class HomePage extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder:
-                          (context) =>
-                              SliversViewExamplePage(questionnaire: example),
+                      builder: (context) => SliversViewExamplePage(),
                     ),
                   );
                 },

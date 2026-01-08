@@ -19,8 +19,6 @@ final class QuestionnaireSliversViewRenderer extends BaseQuestionnaireRenderer {
   ///
   /// Parameters:
   ///   * [rendererController] - The renderer controller instance
-  ///   * [questionnaire] - The FHIR questionnaire definition to render
-  ///   * [questionnaireResponse] - Optional initial questionnaire response
   ///   * [choiceItemBuilder] - Optional custom builder for choice items
   ///   * [openChoiceItemBuilder] - Optional custom builder for open choice items
   ///   * [fieldItemBuilder] - Optional custom builder for field items
@@ -30,9 +28,7 @@ final class QuestionnaireSliversViewRenderer extends BaseQuestionnaireRenderer {
   ///   * [displayItemBuilder] - Optional custom builder for display items
   ///   * [key] - Optional widget key
   const QuestionnaireSliversViewRenderer({
-    required super.questionnaire,
     required super.rendererController,
-    super.questionnaireResponse,
     super.choiceItemBuilder,
     super.openChoiceItemBuilder,
     super.fieldItemBuilder,
@@ -78,7 +74,7 @@ final class _QuestionnaireSliversViewRendererState
   Widget build(BuildContext context) {
     return InheritedQuestionnaireRenderer(
       questionnaireResponse: questionnaireResponse,
-      questionnaire: widget.questionnaire,
+      questionnaire: widget.rendererController.questionnaire,
       checkRequiredItems: checkRequiredItems,
       choiceItemBuilder: widget.choiceItemBuilder,
       openChoiceItemBuilder: widget.openChoiceItemBuilder,

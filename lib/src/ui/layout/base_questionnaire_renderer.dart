@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 import '../../../fhir_renderer_questionnaire.dart';
 import 'inherited_questionnaire_renderer.dart';
 import '../../core/definitions/type_definitions.dart';
-import '../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
 
 /// A base abstract class for FHIR Questionnaire renderers.
 ///
@@ -17,9 +16,7 @@ abstract class BaseQuestionnaireRenderer extends StatefulWidget {
   /// [questionnaire] and [rendererController] are required.
   const BaseQuestionnaireRenderer({
     super.key,
-    required this.questionnaire,
     required this.rendererController,
-    this.questionnaireResponse,
     this.choiceItemBuilder,
     this.openChoiceItemBuilder,
     this.fieldItemBuilder,
@@ -28,13 +25,6 @@ abstract class BaseQuestionnaireRenderer extends StatefulWidget {
     this.boolItemBuilder,
     this.displayItemBuilder,
   });
-
-  /// The FHIR Questionnaire to be rendered.
-  final Questionnaire questionnaire;
-
-  /// The initial or current response to the questionnaire.
-  /// If null, a new response will be generated.
-  final QuestionnaireResponse? questionnaireResponse;
 
   /// Controller to manage the state and actions of the questionnaire renderer.
   final RendererQuestionnaireController rendererController;
@@ -103,7 +93,6 @@ abstract class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer>
         }
       }
     }
-
     return questionnaireResponse;
   }
 
@@ -132,11 +121,8 @@ abstract class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer>
 
   @override
   void initState() {
-    questionnaireResponse = widget.questionnaireResponse ??
-        FhirRendererQuestionnaireResponseUtils
-            .generateInitialQuestionnaireResponse(
-          widget.questionnaire,
-        );
+    questionnaireResponse =
+        widget.rendererController.initialQuestionnaireResponse!;
     widget.rendererController.onGenerateQuestionnaireResponse =
         onGenerateQuestionnaireResponse;
     WidgetsBinding.instance.addPostFrameCallback(onCreated);

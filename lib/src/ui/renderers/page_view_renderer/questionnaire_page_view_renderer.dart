@@ -18,8 +18,6 @@ final class QuestionnairePageViewRenderer extends BaseQuestionnaireRenderer {
   ///
   /// Parameters:
   ///   * [rendererController] - The renderer controller instance
-  ///   * [questionnaire] - The FHIR questionnaire definition to render
-  ///   * [questionnaireResponse] - Optional initial questionnaire response
   ///   * [choiceItemBuilder] - Optional custom builder for choice items
   ///   * [openChoiceItemBuilder] - Optional custom builder for open choice items
   ///   * [fieldItemBuilder] - Optional custom builder for field items
@@ -30,8 +28,6 @@ final class QuestionnairePageViewRenderer extends BaseQuestionnaireRenderer {
   ///   * [key] - Optional widget key
   const QuestionnairePageViewRenderer({
     required super.rendererController,
-    required super.questionnaire,
-    super.questionnaireResponse,
     super.choiceItemBuilder,
     super.openChoiceItemBuilder,
     super.fieldItemBuilder,
@@ -74,7 +70,7 @@ final class _QuestionnairePageViewRendererState extends BaseQuestionnaireState {
   Widget build(BuildContext context) {
     return InheritedQuestionnaireRenderer(
       questionnaireResponse: questionnaireResponse,
-      questionnaire: widget.questionnaire,
+      questionnaire: widget.rendererController.questionnaire,
       checkRequiredItems: checkRequiredItems,
       choiceItemBuilder: widget.choiceItemBuilder,
       openChoiceItemBuilder: widget.openChoiceItemBuilder,

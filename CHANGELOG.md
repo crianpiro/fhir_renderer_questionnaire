@@ -9,6 +9,12 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+### 0.0.7
+
+### Breaking changes
+* `questionnaire` is now part of the `QuestionnaireRendererController` as a required parameter.
+* `initialQuestionnaireResponse` is now part of the `QuestionnaireRendererController` as an optional parameter.
+
 ## 0.0.6
 
 ### Breaking changes

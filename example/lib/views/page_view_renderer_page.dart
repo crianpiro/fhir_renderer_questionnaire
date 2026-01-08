@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:example/data/mocks.dart';
 import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 import 'package:flutter/material.dart';
 
@@ -8,14 +8,11 @@ import 'package:flutter/material.dart';
 //the QuestionnaireRendererController instance.
 class CubitOrBlocOrController {
   RendererQuestionnaireController rendererController =
-      RendererQuestionnaireController();
+      RendererQuestionnaireController(questionnaire: example);
 }
 
-class CustomQuestionnaireControlller extends RendererQuestionnaireController {}
-
 class PageViewExamplePage extends StatelessWidget {
-  final Questionnaire questionnaire;
-  PageViewExamplePage({super.key, required this.questionnaire});
+  PageViewExamplePage({super.key});
 
   final CubitOrBlocOrController controller = CubitOrBlocOrController();
 
@@ -38,7 +35,6 @@ class PageViewExamplePage extends StatelessWidget {
         ],
       ),
       body: QuestionnairePageViewRenderer(
-        questionnaire: questionnaire,
         rendererController: controller.rendererController,
       ),
     );
