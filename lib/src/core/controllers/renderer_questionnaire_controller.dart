@@ -86,8 +86,16 @@ class RendererQuestionnaireController {
   /// the data from the widget tree and triggers validation of required fields.
   QuestionnaireResponse generateQuestionnaireResponse(
       {String? customQuestionnaireId}) {
-    return onGenerateQuestionnaireResponse?.call(
-            customQuestionnaireId: customQuestionnaireId) ??
-        initialQuestionnaireResponse!;
+    if (customQuestionnaireId != null) {
+      return onGenerateQuestionnaireResponse?.call(
+              customQuestionnaireId: customQuestionnaireId) ??
+          initialQuestionnaireResponse!.copyWith(
+              questionnaire: FhirCanonical(
+                  "${R4ResourceType.Questionnaire.name}/$customQuestionnaireId"));
+    } else {
+      return onGenerateQuestionnaireResponse?.call(
+              customQuestionnaireId: customQuestionnaireId) ??
+          initialQuestionnaireResponse!;
+    }
   }
 }
