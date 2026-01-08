@@ -80,7 +80,8 @@ abstract class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer>
   ///
   /// This sets [checkRequiredItems] to true, forcing validation UI updates,
   /// and focuses the first missing required field if any.
-  QuestionnaireResponse onGenerateQuestionnaireResponse() {
+  QuestionnaireResponse onGenerateQuestionnaireResponse(
+      {String? customQuestionnaireId}) {
     setState(() {
       checkRequiredItems = true;
     });
@@ -94,7 +95,9 @@ abstract class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer>
         }
       }
     }
-    return questionnaireResponse;
+
+    return questionnaireResponse.copyWith(
+        questionnaire: FhirCanonical(customQuestionnaireId));
   }
 
   void onReadOnlyModeChanged() {

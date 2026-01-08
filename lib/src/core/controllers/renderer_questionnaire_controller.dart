@@ -15,7 +15,8 @@ class RendererQuestionnaireController {
   /// Callback function to generate the current questionnaire response.
   ///
   /// This is typically set by the `BaseQuestionnaireRenderer` when the renderer is initialized.
-  QuestionnaireResponse Function()? onGenerateQuestionnaireResponse;
+  QuestionnaireResponse Function({String? customQuestionnaireId})?
+      onGenerateQuestionnaireResponse;
 
   void Function()? onReadOnlyModeChanged;
 
@@ -83,8 +84,10 @@ class RendererQuestionnaireController {
   ///
   /// This method calls the [onGenerateQuestionnaireResponse] callback which collects
   /// the data from the widget tree and triggers validation of required fields.
-  QuestionnaireResponse generateQuestionnaireResponse() {
-    return onGenerateQuestionnaireResponse?.call() ??
+  QuestionnaireResponse generateQuestionnaireResponse(
+      {String? customQuestionnaireId}) {
+    return onGenerateQuestionnaireResponse?.call(
+            customQuestionnaireId: customQuestionnaireId) ??
         initialQuestionnaireResponse!;
   }
 }

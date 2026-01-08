@@ -13,6 +13,7 @@ Types of changes
 
 ### Added
 * `forceReadOnlyView` in the `RendererQuestionnaireController` to force the renderer to be in read-only mode for the entire view.
+* Support for `customQuestionnaireId` to generate the questionnaire response in the `generateQuestionnaireResponse` method.
 
 ### 0.0.7
 
