@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../fhir_renderer_questionnaire.dart';
 import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../layout/base_questionnaire_renderer.dart';
 import 'questionnaire_page_view.dart';
@@ -18,7 +17,7 @@ final class QuestionnairePageViewRenderer extends BaseQuestionnaireRenderer {
   /// All parameters are required as specified by [BaseQuestionnaireRenderer].
   ///
   /// Parameters:
-  ///   * [getRendererControllerInstance] - Callback to get the renderer controller
+  ///   * [rendererController] - The renderer controller instance
   ///   * [questionnaire] - The FHIR questionnaire definition to render
   ///   * [questionnaireResponse] - Optional initial questionnaire response
   ///   * [choiceItemBuilder] - Optional custom builder for choice items
@@ -30,7 +29,7 @@ final class QuestionnairePageViewRenderer extends BaseQuestionnaireRenderer {
   ///   * [displayItemBuilder] - Optional custom builder for display items
   ///   * [key] - Optional widget key
   const QuestionnairePageViewRenderer({
-    required super.getRendererControllerInstance,
+    required super.rendererController,
     required super.questionnaire,
     super.questionnaireResponse,
     super.choiceItemBuilder,
@@ -84,12 +83,10 @@ final class _QuestionnairePageViewRendererState extends BaseQuestionnaireState {
       dateTimeItemBuilder: widget.dateTimeItemBuilder,
       boolItemBuilder: widget.boolItemBuilder,
       displayItemBuilder: widget.displayItemBuilder,
+      rendererController: widget.rendererController,
       onResponseChanged: onResponseChanged,
-      internalController: controller,
       child: Builder(
         builder: (innerContext) {
-          widget.getRendererControllerInstance(
-              QuestionnaireRendererController(controller));
           return const QuestionnairePageView();
         },
       ),

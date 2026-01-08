@@ -23,7 +23,7 @@ class BaseDecorator extends StatelessWidget {
       decoration: BoxDecoration(
         color: useNotImplementedStyle
             ? Theme.of(context).colorScheme.errorContainer
-            : Theme.of(context).colorScheme.surface,
+            : null,
         borderRadius: BorderRadius.vertical(
           bottom: Radius.circular(roundBottomBorder ? 7 : 0),
         ),

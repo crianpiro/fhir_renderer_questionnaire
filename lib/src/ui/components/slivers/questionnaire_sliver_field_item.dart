@@ -20,13 +20,13 @@ final class QuestionnaireSliverFieldItem extends QuestionnaireFieldItem {
   Widget build(BuildContext context) {
     TextEditingController localController;
     if (InheritedQuestionnaireRenderer.of(context)
-            .internalController
+            .rendererController
             .indexedItems
             .containsKey(
               questionnaireItem.linkId.valueString,
             ) &&
         InheritedQuestionnaireRenderer.of(context)
-                .internalController
+                .rendererController
                 .indexedItems[questionnaireItem.linkId.valueString]!
                 .textController ==
             null) {
@@ -39,15 +39,15 @@ final class QuestionnaireSliverFieldItem extends QuestionnaireFieldItem {
             currentResponseItem?.answer?.firstOrNull?.valueString?.valueString,
       );
       InheritedQuestionnaireRenderer.of(context)
-              .internalController
+              .rendererController
               .indexedItems[questionnaireItem.linkId.valueString!] =
           InheritedQuestionnaireRenderer.of(context)
-              .internalController
+              .rendererController
               .indexedItems[questionnaireItem.linkId.valueString]!
               .copyWith(textController: localController);
     } else {
       localController = InheritedQuestionnaireRenderer.of(context)
-          .internalController
+          .rendererController
           .indexedItems[questionnaireItem.linkId.valueString!]!
           .textController!;
     }

@@ -9,18 +9,31 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## 0.0.6
+
+### Breaking changes
+* `rendererController` is now required in all renderers.
+* `RenderereQuestionnaireController` was changed to allow you to extend it. 
+* `QuestionnaireRendererController` removed. 
+
+### Added
+* Support for `sliversInitialIndex` in the `rendererController` for the `QuestionnaireSliversViewRenderer`.
+
+### Changed
+* `BaseDecorator` and `SliverBaseDecorator` don't use background color, to allow the user to define it from outside.
+
 ## 0.0.5
 
 ### Fixed
 * Support for `Slivers` in the `groupItemBuilder` for the `QuestionnaireSliversViewRenderer`.
 
-## 0.0.4 (retracted version)
+## 0.0.4 (retracted)
 
 ### Fixed
 * `childrenAssigner`changed to be optional.
 * Intl version changed back to `^0.20.2`.
 
-## 0.0.3 (retracted version)
+## 0.0.3 (retracted)
 
 ### Changed
 * Default text for boolean changed to its English version.

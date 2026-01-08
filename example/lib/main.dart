@@ -2,7 +2,6 @@ import 'package:example/data/mocks.dart';
 import 'package:example/views/list_view_example_page.dart';
 import 'package:example/views/page_view_renderer_page.dart';
 import 'package:example/views/slivers_view_example_page.dart';
-import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -83,8 +82,4 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-}
-
-class CubitA {
-  static QuestionnaireRendererController? handler;
 }

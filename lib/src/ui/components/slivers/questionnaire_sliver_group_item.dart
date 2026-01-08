@@ -25,16 +25,16 @@ final class QuestionnaireSliverGroupItem extends QuestionnaireBaseItem {
         item,
       );
       if (InheritedQuestionnaireRenderer.of(context)
-          .internalController
+          .rendererController
           .indexedItems
           .containsKey(
             item.linkId.valueString!,
           )) {
         final itemData = InheritedQuestionnaireRenderer.of(context)
-            .internalController
+            .rendererController
             .indexedItems[item.linkId.valueString!]!;
         InheritedQuestionnaireRenderer.of(context)
-                .internalController
+                .rendererController
                 .indexedItems[item.linkId.valueString!] =
             itemData.copyWith(enabled: enabled);
       }

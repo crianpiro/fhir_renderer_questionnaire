@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../fhir_renderer_questionnaire.dart';
 import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../layout/base_questionnaire_renderer.dart';
 import 'questionnaire_slivers_view.dart';
@@ -19,7 +18,7 @@ final class QuestionnaireSliversViewRenderer extends BaseQuestionnaireRenderer {
   /// All parameters are required as specified by [BaseQuestionnaireRenderer].
   ///
   /// Parameters:
-  ///   * [getRendererControllerInstance] - Callback to get the renderer controller
+  ///   * [rendererController] - The renderer controller instance
   ///   * [questionnaire] - The FHIR questionnaire definition to render
   ///   * [questionnaireResponse] - Optional initial questionnaire response
   ///   * [choiceItemBuilder] - Optional custom builder for choice items
@@ -31,8 +30,8 @@ final class QuestionnaireSliversViewRenderer extends BaseQuestionnaireRenderer {
   ///   * [displayItemBuilder] - Optional custom builder for display items
   ///   * [key] - Optional widget key
   const QuestionnaireSliversViewRenderer({
-    required super.getRendererControllerInstance,
     required super.questionnaire,
+    required super.rendererController,
     super.questionnaireResponse,
     super.choiceItemBuilder,
     super.openChoiceItemBuilder,
@@ -88,12 +87,10 @@ final class _QuestionnaireSliversViewRendererState
       dateTimeItemBuilder: widget.dateTimeItemBuilder,
       boolItemBuilder: widget.boolItemBuilder,
       displayItemBuilder: widget.displayItemBuilder,
-      internalController: controller,
+      rendererController: widget.rendererController,
       onResponseChanged: onResponseChanged,
       child: Builder(
         builder: (innerContext) {
-          widget.getRendererControllerInstance(
-              QuestionnaireRendererController(controller));
           return const QuestionnaireSliversView();
         },
       ),

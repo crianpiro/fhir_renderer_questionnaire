@@ -1,5 +1,5 @@
 import 'package:fhir_r4/fhir_r4.dart';
-import 'package:fhir_renderer_questionnaire/src/core/controllers/internal_questionnaire_controller.dart';
+import 'package:fhir_renderer_questionnaire/src/core/controllers/renderer_questionnaire_controller.dart';
 import 'package:fhir_renderer_questionnaire/src/core/definitions/type_definitions.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +8,7 @@ final class InheritedQuestionnaireRenderer extends InheritedWidget {
     super.key,
     required this.questionnaireResponse,
     required this.checkRequiredItems,
-    required this.internalController,
+    required this.rendererController,
     required this.onResponseChanged,
     required this.questionnaire,
     required super.child,
@@ -27,7 +27,7 @@ final class InheritedQuestionnaireRenderer extends InheritedWidget {
 
   final Questionnaire questionnaire;
 
-  final InternalQuestionnaireController internalController;
+  final RendererQuestionnaireController rendererController;
 
   final QuestionnaireResponse questionnaireResponse;
 
@@ -69,6 +69,7 @@ final class InheritedQuestionnaireRenderer extends InheritedWidget {
   @override
   bool updateShouldNotify(InheritedQuestionnaireRenderer oldWidget) =>
       questionnaire != oldWidget.questionnaire ||
+      rendererController != oldWidget.rendererController ||
       questionnaireResponse != oldWidget.questionnaireResponse ||
       checkRequiredItems != oldWidget.checkRequiredItems ||
       choiceItemBuilder != oldWidget.choiceItemBuilder ||

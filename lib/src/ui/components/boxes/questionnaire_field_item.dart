@@ -20,13 +20,13 @@ class QuestionnaireFieldItem extends QuestionnaireBaseItem {
   Widget build(BuildContext context) {
     TextEditingController localController;
     if (InheritedQuestionnaireRenderer.of(context)
-            .internalController
+            .rendererController
             .indexedItems
             .containsKey(
               questionnaireItem.linkId.valueString,
             ) &&
         InheritedQuestionnaireRenderer.of(context)
-                .internalController
+                .rendererController
                 .indexedItems[questionnaireItem.linkId.valueString]!
                 .textController ==
             null) {
@@ -58,15 +58,15 @@ class QuestionnaireFieldItem extends QuestionnaireBaseItem {
             initialValue,
       );
       InheritedQuestionnaireRenderer.of(context)
-              .internalController
+              .rendererController
               .indexedItems[questionnaireItem.linkId.valueString!] =
           InheritedQuestionnaireRenderer.of(context)
-              .internalController
+              .rendererController
               .indexedItems[questionnaireItem.linkId.valueString]!
               .copyWith(textController: localController);
     } else {
       localController = InheritedQuestionnaireRenderer.of(context)
-          .internalController
+          .rendererController
           .indexedItems[questionnaireItem.linkId.valueString!]!
           .textController!;
     }

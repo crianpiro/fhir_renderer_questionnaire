@@ -30,16 +30,16 @@ abstract class QuestionnaireBaseItem extends StatelessWidget {
     FocusNode itemFocus;
     String localId = questionnaireItem.linkId.valueString!;
     if (!InheritedQuestionnaireRenderer.of(context)
-        .internalController
+        .rendererController
         .indexedItems
         .containsKey(localId)) {
       itemFocus = FocusNode();
       final currentIndex = InheritedQuestionnaireRenderer.of(context)
-          .internalController
+          .rendererController
           .indexedItems
           .length;
       InheritedQuestionnaireRenderer.of(context)
-          .internalController
+          .rendererController
           .indexedItems[localId] = FieldBehavioralData(
         index: currentIndex,
         enabled: true,
@@ -48,7 +48,7 @@ abstract class QuestionnaireBaseItem extends StatelessWidget {
       );
     } else {
       itemFocus = InheritedQuestionnaireRenderer.of(context)
-          .internalController
+          .rendererController
           .indexedItems[localId]!
           .focusNode;
     }
@@ -66,14 +66,14 @@ abstract class QuestionnaireBaseItem extends StatelessWidget {
           (responseItem?.answer == null ||
               (responseItem?.answer?.isEmpty ?? false))) {
         if (InheritedQuestionnaireRenderer.of(context)
-            .internalController
+            .rendererController
             .indexedItems
             .containsKey(localId)) {
           InheritedQuestionnaireRenderer.of(context)
-                  .internalController
+                  .rendererController
                   .indexedItems[localId] =
               InheritedQuestionnaireRenderer.of(context)
-                  .internalController
+                  .rendererController
                   .indexedItems[localId]!
                   .copyWith(markedRequired: true);
         }

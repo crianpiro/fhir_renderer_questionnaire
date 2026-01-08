@@ -24,7 +24,7 @@
 /// * [QuestionnaireListViewRenderer] - List-based questionnaire renderer
 /// * [QuestionnairePageViewRenderer] - Page-based questionnaire renderer
 /// * [QuestionnaireSliversViewRenderer] - Sliver-based questionnaire renderer
-/// * [QuestionnaireRendererController] - Controller for accessing questionnaire state
+/// * [RendererQuestionnaireController] - Controller for accessing questionnaire state
 ///
 /// For more information, see the individual widget documentation.
 library fhir_renderer_questionnaire;
@@ -34,5 +34,5 @@ export 'src/ui/renderers/renderers.dart'
         QuestionnaireListViewRenderer,
         QuestionnairePageViewRenderer,
         QuestionnaireSliversViewRenderer;
-export 'src/core/controllers/questionnaire_renderer_controller.dart'
-    show QuestionnaireRendererController;
+export 'src/core/controllers/renderer_questionnaire_controller.dart'
+    show RendererQuestionnaireController;

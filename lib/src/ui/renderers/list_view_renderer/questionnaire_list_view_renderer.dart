@@ -17,7 +17,7 @@ final class QuestionnaireListViewRenderer extends BaseQuestionnaireRenderer {
   /// All parameters are required as specified by [BaseQuestionnaireRenderer].
   ///
   /// Parameters:
-  ///   * [getRendererControllerInstance] - Callback to get the renderer controller
+  ///   * [rendererController] - The renderer controller instance
   ///   * [questionnaire] - The FHIR questionnaire definition to render
   ///   * [questionnaireResponse] - Optional initial questionnaire response
   ///   * [choiceItemBuilder] - Optional custom builder for choice items
@@ -29,7 +29,7 @@ final class QuestionnaireListViewRenderer extends BaseQuestionnaireRenderer {
   ///   * [displayItemBuilder] - Optional custom builder for display items
   ///   * [key] - Optional widget key
   const QuestionnaireListViewRenderer({
-    required super.getRendererControllerInstance,
+    required super.rendererController,
     required super.questionnaire,
     super.questionnaireResponse,
     super.choiceItemBuilder,
@@ -82,7 +82,7 @@ final class _QuestionnaireListViewRendererState extends BaseQuestionnaireState {
       dateTimeItemBuilder: widget.dateTimeItemBuilder,
       boolItemBuilder: widget.boolItemBuilder,
       displayItemBuilder: widget.displayItemBuilder,
-      internalController: controller,
+      rendererController: widget.rendererController,
       onResponseChanged: onResponseChanged,
       child: Builder(
         builder: (context) {

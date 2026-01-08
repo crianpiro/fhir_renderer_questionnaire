@@ -24,9 +24,17 @@ final class QuestionnaireSliversView extends StatelessWidget {
 
     if (items != null) {
       return CustomScrollView(
+        controller:
+            InheritedQuestionnaireRenderer.of(context).listViewScrollController,
         slivers: items.map((item) {
           final index = items.indexOf(item);
+          GlobalKey globalKey = GlobalKey();
+          InheritedQuestionnaireRenderer.of(context)
+              .rendererController
+              .groupBundleKeys
+              .add(globalKey);
           return QuestionnaireSliverItemWrapper(
+            key: globalKey,
             questionnaireItem: item,
             index: index,
             isLastItem: index == items.length - 1,
