@@ -19,8 +19,6 @@ final class InheritedQuestionnaireRenderer extends InheritedWidget {
     this.dateTimeItemBuilder,
     this.boolItemBuilder,
     this.displayItemBuilder,
-    this.pageViewController,
-    this.listViewScrollController,
     this.readOnly = false,
   });
 
@@ -33,10 +31,6 @@ final class InheritedQuestionnaireRenderer extends InheritedWidget {
   final RendererQuestionnaireController rendererController;
 
   final QuestionnaireResponse questionnaireResponse;
-
-  final PageController? pageViewController;
-
-  final ScrollController? listViewScrollController;
 
   final QuestionnaireBooleanWidgetBuilder? boolItemBuilder;
 
