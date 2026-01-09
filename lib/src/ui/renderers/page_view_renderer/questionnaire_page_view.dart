@@ -6,8 +6,7 @@ import 'package:fhir_renderer_questionnaire/src/ui/layout/inherited_questionnair
 import 'package:flutter/material.dart';
 
 class QuestionnairePageView extends StatelessWidget {
-  final void Function(int)? onPageChanged;
-  const QuestionnairePageView({super.key, this.onPageChanged});
+  const QuestionnairePageView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +28,8 @@ class QuestionnairePageView extends StatelessWidget {
               .rendererController
               .pageViewController,
           itemCount: items.length,
-          onPageChanged: onPageChanged,
+          onPageChanged:
+              InheritedQuestionnaireRenderer.of(context).onPageChanged,
           itemBuilder: (context, index) {
             return SingleChildScrollView(
               child: QuestionnaireItemWrapper(

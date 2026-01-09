@@ -13,6 +13,7 @@ final class InheritedQuestionnaireRenderer extends InheritedWidget {
     required this.questionnaire,
     required super.child,
     this.choiceItemBuilder,
+    this.onPageChanged,
     this.openChoiceItemBuilder,
     this.groupItemBuilder,
     this.fieldItemBuilder,
@@ -31,6 +32,8 @@ final class InheritedQuestionnaireRenderer extends InheritedWidget {
   final RendererQuestionnaireController rendererController;
 
   final QuestionnaireResponse questionnaireResponse;
+
+  final void Function(int)? onPageChanged;
 
   final QuestionnaireBooleanWidgetBuilder? boolItemBuilder;
 
