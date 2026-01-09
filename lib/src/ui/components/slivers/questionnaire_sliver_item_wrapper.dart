@@ -1,4 +1,5 @@
 import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/utils/fhir_renderer_questionnaire_utils.dart';
 import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/questionnaire_item_wrapper.dart';
 import 'package:fhir_renderer_questionnaire/src/ui/components/slivers/sliver_base_decorator.dart';
 import 'package:flutter/material.dart';
@@ -101,10 +102,35 @@ final class QuestionnaireSliverItemWrapper extends QuestionnaireItemWrapper {
       case QuestionnaireItemType.group:
         if (InheritedQuestionnaireRenderer.of(context).groupItemBuilder !=
             null) {
+          List<QuestionnaireItem>? items =
+              questionnaireItem.item?.where((item) {
+            InheritedQuestionnaireRenderer questionnaireRendererData =
+                InheritedQuestionnaireRenderer.of(context);
+            final enabled =
+                FhirRendererQuestionnaireUtils.isQuestionnaireItemEnabled(
+              questionnaireRendererData.questionnaireResponse,
+              item,
+            );
+            if (InheritedQuestionnaireRenderer.of(context)
+                .rendererController
+                .indexedItems
+                .containsKey(
+                  item.linkId.valueString!,
+                )) {
+              final itemData = InheritedQuestionnaireRenderer.of(context)
+                  .rendererController
+                  .indexedItems[item.linkId.valueString!]!;
+              InheritedQuestionnaireRenderer.of(context)
+                      .rendererController
+                      .indexedItems[item.linkId.valueString!] =
+                  itemData.copyWith(enabled: enabled);
+            }
+            return enabled;
+          }).toList();
           return InheritedQuestionnaireRenderer.of(context).groupItemBuilder!(
             index,
             isLastItem,
-            questionnaireItem,
+            questionnaireItem.copyWith(item: items),
             (questionnaireItem) {
               return QuestionnaireSliverItemWrapper(
                 index: index,
