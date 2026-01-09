@@ -15,8 +15,7 @@ class RendererQuestionnaireController {
   /// Callback function to generate the current questionnaire response.
   ///
   /// This is typically set by the `BaseQuestionnaireRenderer` when the renderer is initialized.
-  QuestionnaireResponse Function({String? customQuestionnaireId})?
-      onGenerateQuestionnaireResponse;
+  QuestionnaireResponse Function()? onGenerateQuestionnaireResponse;
 
   void Function()? onReadOnlyModeChanged;
 
@@ -84,18 +83,8 @@ class RendererQuestionnaireController {
   ///
   /// This method calls the [onGenerateQuestionnaireResponse] callback which collects
   /// the data from the widget tree and triggers validation of required fields.
-  QuestionnaireResponse generateQuestionnaireResponse(
-      {String? customQuestionnaireId}) {
-    if (customQuestionnaireId != null) {
-      return onGenerateQuestionnaireResponse?.call(
-              customQuestionnaireId: customQuestionnaireId) ??
-          initialQuestionnaireResponse!.copyWith(
-              questionnaire: FhirCanonical(
-                  "${R4ResourceType.Questionnaire.name}/$customQuestionnaireId"));
-    } else {
-      return onGenerateQuestionnaireResponse?.call(
-              customQuestionnaireId: customQuestionnaireId) ??
-          initialQuestionnaireResponse!;
-    }
+  QuestionnaireResponse generateQuestionnaireResponse() {
+    return onGenerateQuestionnaireResponse?.call() ??
+        initialQuestionnaireResponse!;
   }
 }

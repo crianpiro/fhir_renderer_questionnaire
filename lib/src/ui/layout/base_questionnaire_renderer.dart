@@ -71,20 +71,23 @@ abstract class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer>
 
   /// Updates the local state when the questionnaire response changes.
   void onResponseChanged(QuestionnaireResponse updatedQuestionnaireResponse) {
-    setState(() {
-      questionnaireResponse = updatedQuestionnaireResponse;
-    });
+    if (context.mounted) {
+      setState(() {
+        questionnaireResponse = updatedQuestionnaireResponse;
+      });
+    }
   }
 
   /// Triggered when the controller requests to generate/validate the response.
   ///
   /// This sets [checkRequiredItems] to true, forcing validation UI updates,
   /// and focuses the first missing required field if any.
-  QuestionnaireResponse onGenerateQuestionnaireResponse(
-      {String? customQuestionnaireId}) {
-    setState(() {
-      checkRequiredItems = true;
-    });
+  QuestionnaireResponse onGenerateQuestionnaireResponse() {
+    if (context.mounted) {
+      setState(() {
+        checkRequiredItems = true;
+      });
+    }
 
     //Add the markAsRequired here instead of in building time.
     if (widget.rendererController.indexedItems.isNotEmpty) {
@@ -96,19 +99,15 @@ abstract class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer>
       }
     }
 
-    if (customQuestionnaireId != null) {
-      return questionnaireResponse.copyWith(
-          questionnaire: FhirCanonical(
-              "${R4ResourceType.Questionnaire.name}/$customQuestionnaireId"));
-    }
-
     return questionnaireResponse;
   }
 
   void onReadOnlyModeChanged() {
-    setState(() {
-      readOnly = widget.rendererController.forceReadOnlyView;
-    });
+    if (context.mounted) {
+      setState(() {
+        readOnly = widget.rendererController.forceReadOnlyView;
+      });
+    }
   }
 
   /// Callback executed after the widget is created.
