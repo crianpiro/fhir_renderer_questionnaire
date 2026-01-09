@@ -1,7 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
-import 'package:fhir_renderer_questionnaire/src/core/utils/fhir_renderer_questionnaire_utils.dart';
-import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/base_decorator.dart';
-import 'package:fhir_renderer_questionnaire/src/ui/components/slivers/questionnaire_sliver_item_wrapper.dart';
+import 'package:fhir_renderer_questionnaire/src/ui/renderers/slivers_view_renderer/questionnaire_slivers_view.dart';
 import 'package:flutter/material.dart';
 
 import '../../layout/inherited_questionnaire_renderer.dart';
@@ -89,48 +86,7 @@ final class _QuestionnaireSliversViewRendererState
       rendererController: widget.rendererController,
       onResponseChanged: onResponseChanged,
       readOnly: readOnly,
-      child: Builder(
-        builder: (context) {
-          List<QuestionnaireItem>? items = InheritedQuestionnaireRenderer.of(
-                  context)
-              .questionnaire
-              .item
-              ?.where(
-                (i) =>
-                    FhirRendererQuestionnaireUtils.isQuestionnaireItemEnabled(
-                  InheritedQuestionnaireRenderer.of(context)
-                      .questionnaireResponse,
-                  i,
-                ),
-              )
-              .toList();
-
-          if (items != null) {
-            return CustomScrollView(
-              controller: InheritedQuestionnaireRenderer.of(context)
-                  .rendererController
-                  .listViewScrollController,
-              slivers: items.map((item) {
-                final index = items.indexOf(item);
-                GlobalKey globalKey = GlobalKey();
-                InheritedQuestionnaireRenderer.of(context)
-                    .rendererController
-                    .groupBundleKeys
-                    .add(globalKey);
-                return QuestionnaireSliverItemWrapper(
-                  key: globalKey,
-                  questionnaireItem: item,
-                  index: index,
-                  isLastItem: index == items.length - 1,
-                );
-              }).toList(),
-            );
-          }
-
-          return const BaseDecorator(
-              title: "No items to list", roundBottomBorder: false);
-        },
-      ),
+      child: const QuestionnaireSliversView(),
     );
   }
 }
