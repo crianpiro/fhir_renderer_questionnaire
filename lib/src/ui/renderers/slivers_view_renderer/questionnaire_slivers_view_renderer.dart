@@ -92,13 +92,13 @@ final class _QuestionnaireSliversViewRendererState
       child: Builder(
         builder: (innerContext) {
           List<QuestionnaireItem>? items = InheritedQuestionnaireRenderer.of(
-                  context)
+                  innerContext)
               .questionnaire
               .item
               ?.where(
                 (i) =>
                     FhirRendererQuestionnaireUtils.isQuestionnaireItemEnabled(
-                  InheritedQuestionnaireRenderer.of(context)
+                  InheritedQuestionnaireRenderer.of(innerContext)
                       .questionnaireResponse,
                   i,
                 ),
@@ -107,13 +107,13 @@ final class _QuestionnaireSliversViewRendererState
 
           if (items != null) {
             return CustomScrollView(
-              controller: InheritedQuestionnaireRenderer.of(context)
+              controller: InheritedQuestionnaireRenderer.of(innerContext)
                   .rendererController
                   .listViewScrollController,
               slivers: items.map((item) {
                 final index = items.indexOf(item);
                 GlobalKey globalKey = GlobalKey();
-                InheritedQuestionnaireRenderer.of(context)
+                InheritedQuestionnaireRenderer.of(innerContext)
                     .rendererController
                     .groupBundleKeys
                     .add(globalKey);

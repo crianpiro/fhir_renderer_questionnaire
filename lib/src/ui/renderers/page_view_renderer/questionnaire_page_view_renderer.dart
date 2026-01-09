@@ -89,15 +89,15 @@ final class _QuestionnairePageViewRendererState extends BaseQuestionnaireState {
       onResponseChanged: onResponseChanged,
       readOnly: readOnly,
       child: Builder(
-        builder: (context) {
+        builder: (innerContext) {
           List<QuestionnaireItem>? items = InheritedQuestionnaireRenderer.of(
-                  context)
+                  innerContext)
               .questionnaire
               .item
               ?.where(
                 (i) =>
                     FhirRendererQuestionnaireUtils.isQuestionnaireItemEnabled(
-                  InheritedQuestionnaireRenderer.of(context)
+                  InheritedQuestionnaireRenderer.of(innerContext)
                       .questionnaireResponse,
                   i,
                 ),
@@ -107,7 +107,7 @@ final class _QuestionnairePageViewRendererState extends BaseQuestionnaireState {
           if (items != null) {
             return SafeArea(
               child: PageView.builder(
-                controller: InheritedQuestionnaireRenderer.of(context)
+                controller: InheritedQuestionnaireRenderer.of(innerContext)
                     .rendererController
                     .pageViewController,
                 itemCount: items.length,

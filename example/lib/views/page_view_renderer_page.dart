@@ -8,7 +8,10 @@ import 'package:flutter/material.dart';
 //the QuestionnaireRendererController instance.
 class CubitOrBlocOrController {
   RendererQuestionnaireController rendererController =
-      RendererQuestionnaireController(questionnaire: example);
+      RendererQuestionnaireController(
+        questionnaire: exampleAnamnese,
+        pageViewController: PageController(initialPage: 2),
+      );
 }
 
 class PageViewExamplePage extends StatelessWidget {
@@ -20,7 +23,7 @@ class PageViewExamplePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("QuestionnaireListViewRenderer"),
+        title: Text("QuestionnairePageViewRenderer"),
         actions: [
           IconButton(
             onPressed: () {
