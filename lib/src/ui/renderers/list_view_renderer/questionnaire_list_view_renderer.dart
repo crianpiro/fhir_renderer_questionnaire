@@ -85,15 +85,15 @@ final class _QuestionnaireListViewRendererState extends BaseQuestionnaireState {
       readOnly: readOnly,
       onResponseChanged: onResponseChanged,
       child: Builder(
-        builder: (innerContext) {
+        builder: (context) {
           List<QuestionnaireItem>? items = InheritedQuestionnaireRenderer.of(
-                  innerContext)
+                  context)
               .questionnaire
               .item
               ?.where(
                 (i) =>
                     FhirRendererQuestionnaireUtils.isQuestionnaireItemEnabled(
-                  InheritedQuestionnaireRenderer.of(innerContext)
+                  InheritedQuestionnaireRenderer.of(context)
                       .questionnaireResponse,
                   i,
                 ),
@@ -103,7 +103,7 @@ final class _QuestionnaireListViewRendererState extends BaseQuestionnaireState {
           if (items != null) {
             return ListView.builder(
               itemCount: items.length,
-              controller: InheritedQuestionnaireRenderer.of(innerContext)
+              controller: InheritedQuestionnaireRenderer.of(context)
                   .rendererController
                   .listViewScrollController,
               itemBuilder: (context, index) {
