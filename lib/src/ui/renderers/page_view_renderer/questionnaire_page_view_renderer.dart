@@ -15,6 +15,8 @@ import '../../layout/base_questionnaire_renderer.dart';
 ///
 /// The widget is final and cannot be extended.
 final class QuestionnairePageViewRenderer extends BaseQuestionnaireRenderer {
+  final void Function(int)? onPageChanged;
+
   /// Creates a questionnaire page view renderer.
   ///
   /// All parameters are required as specified by [BaseQuestionnaireRenderer].
@@ -38,6 +40,7 @@ final class QuestionnairePageViewRenderer extends BaseQuestionnaireRenderer {
     super.groupItemBuilder,
     super.boolItemBuilder,
     super.displayItemBuilder,
+    this.onPageChanged,
     super.key,
   });
 
@@ -108,6 +111,8 @@ final class _QuestionnairePageViewRendererState extends BaseQuestionnaireState {
                     .rendererController
                     .pageViewController,
                 itemCount: items.length,
+                onPageChanged:
+                    (widget as QuestionnairePageViewRenderer).onPageChanged,
                 itemBuilder: (context, index) {
                   return SingleChildScrollView(
                     child: QuestionnaireItemWrapper(
