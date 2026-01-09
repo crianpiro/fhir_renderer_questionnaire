@@ -144,4 +144,12 @@ abstract class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer>
     WidgetsBinding.instance.addPostFrameCallback(onCreated);
     super.initState();
   }
+
+  @override
+  void dispose() {
+    widget.rendererController.onGenerateQuestionnaireResponse = null;
+    widget.rendererController.initialQuestionnaireResponse =
+        questionnaireResponse;
+    super.dispose();
+  }
 }
