@@ -1,7 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
-import 'package:fhir_renderer_questionnaire/src/core/utils/fhir_renderer_questionnaire_utils.dart';
-import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/base_decorator.dart';
-import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/questionnaire_item_wrapper.dart';
+import 'package:fhir_renderer_questionnaire/src/ui/renderers/page_view_renderer/questionnaire_page_view.dart';
 import 'package:flutter/material.dart';
 
 import '../../layout/inherited_questionnaire_renderer.dart';
@@ -88,48 +85,7 @@ final class _QuestionnairePageViewRendererState extends BaseQuestionnaireState {
       rendererController: widget.rendererController,
       onResponseChanged: onResponseChanged,
       readOnly: readOnly,
-      child: Builder(
-        builder: (context) {
-          List<QuestionnaireItem>? items = InheritedQuestionnaireRenderer.of(
-                  context)
-              .questionnaire
-              .item
-              ?.where(
-                (i) =>
-                    FhirRendererQuestionnaireUtils.isQuestionnaireItemEnabled(
-                  InheritedQuestionnaireRenderer.of(context)
-                      .questionnaireResponse,
-                  i,
-                ),
-              )
-              .toList();
-
-          if (items != null) {
-            return SafeArea(
-              child: PageView.builder(
-                controller: InheritedQuestionnaireRenderer.of(context)
-                    .rendererController
-                    .pageViewController,
-                itemCount: items.length,
-                onPageChanged:
-                    (widget as QuestionnairePageViewRenderer).onPageChanged,
-                itemBuilder: (context, index) {
-                  return SingleChildScrollView(
-                    child: QuestionnaireItemWrapper(
-                      questionnaireItem: items[index],
-                      index: index,
-                      isLastItem: items.length - 1 == index,
-                    ),
-                  );
-                },
-              ),
-            );
-          }
-
-          return const BaseDecorator(
-              title: "No items to list", roundBottomBorder: false);
-        },
-      ),
+      child: const QuestionnairePageView(),
     );
   }
 }
