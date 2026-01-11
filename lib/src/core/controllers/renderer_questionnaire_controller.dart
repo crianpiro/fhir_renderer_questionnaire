@@ -2,7 +2,7 @@ import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_renderer_questionnaire/src/core/utils/fhir_renderer_questionnaire_response_utils.dart';
 import 'package:flutter/material.dart';
 
-import '../data/field_behavioral_data.dart';
+import '../data/item_behavioral_data.dart';
 
 /// A controller for managing the state and behavior of a FHIR Questionnaire renderer.
 ///
@@ -44,7 +44,7 @@ class RendererQuestionnaireController {
   ///
   /// This includes focus nodes and required status, allowing the controller to
   /// manage focus and validation.
-  final Map<String, FieldBehavioralData> indexedItems = {};
+  final Map<String, ItemBehavioralData> indexedItems = {};
 
   /// Creates a [RendererQuestionnaireController].
   ///

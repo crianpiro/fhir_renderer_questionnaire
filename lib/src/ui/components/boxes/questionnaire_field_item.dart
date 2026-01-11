@@ -73,7 +73,7 @@ class QuestionnaireFieldItem extends QuestionnaireBaseItem {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildQuestionnaireItem(BuildContext context) {
     TextEditingController localController =
         getAssignedTextController(InheritedQuestionnaireRenderer.of(context));
 

@@ -23,12 +23,12 @@ final class QuestionnaireSliverItemWrapper extends QuestionnaireItemWrapper {
   });
 
   @override
-  Widget assignQuestionnaireWidget(BuildContext context) {
+  Widget assignQuestionnaireWidget(
+      InheritedQuestionnaireRenderer inheritedQuestionnaireRenderer) {
     switch (questionnaireItem.type) {
       case QuestionnaireItemType.display_:
-        if (InheritedQuestionnaireRenderer.of(context).displayItemBuilder !=
-            null) {
-          return InheritedQuestionnaireRenderer.of(context).displayItemBuilder!(
+        if (inheritedQuestionnaireRenderer.displayItemBuilder != null) {
+          return inheritedQuestionnaireRenderer.displayItemBuilder!(
               index, isLastItem, questionnaireItem);
         }
         return QuestionnaireSliverDisplayItem(
@@ -37,27 +37,24 @@ final class QuestionnaireSliverItemWrapper extends QuestionnaireItemWrapper {
           isLastItem: isLastItem,
         );
       case QuestionnaireItemType.boolean:
-        if (InheritedQuestionnaireRenderer.of(context).boolItemBuilder !=
-            null) {
-          return InheritedQuestionnaireRenderer.of(context).boolItemBuilder!(
+        if (inheritedQuestionnaireRenderer.boolItemBuilder != null) {
+          return inheritedQuestionnaireRenderer.boolItemBuilder!(
             index,
             isLastItem,
             findQuestionnaireResponseItem(
-              InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
+              inheritedQuestionnaireRenderer.questionnaireResponse,
               questionnaireItem.linkId.valueString,
             ),
             questionnaireItem,
             (answer) {
               final resp = FhirRendererQuestionnaireResponseUtils
                   .setResponseAnswerInQuestionnaireResponse(
-                InheritedQuestionnaireRenderer.of(context)
-                    .questionnaireResponse,
+                inheritedQuestionnaireRenderer.questionnaireResponse,
                 questionnaireItem,
                 QuestionnaireResponseAnswer(valueX: FhirBoolean("$answer")),
               );
 
-              InheritedQuestionnaireRenderer.of(context)
-                  .onResponseChanged(resp);
+              inheritedQuestionnaireRenderer.onResponseChanged(resp);
             },
           );
         }
@@ -69,14 +66,12 @@ final class QuestionnaireSliverItemWrapper extends QuestionnaireItemWrapper {
       case QuestionnaireItemType.time:
       case QuestionnaireItemType.date:
       case QuestionnaireItemType.dateTime:
-        if (InheritedQuestionnaireRenderer.of(context).dateTimeItemBuilder !=
-            null) {
-          return InheritedQuestionnaireRenderer.of(context)
-              .dateTimeItemBuilder!(
+        if (inheritedQuestionnaireRenderer.dateTimeItemBuilder != null) {
+          return inheritedQuestionnaireRenderer.dateTimeItemBuilder!(
             index,
             isLastItem,
             findQuestionnaireResponseItem(
-              InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
+              inheritedQuestionnaireRenderer.questionnaireResponse,
               questionnaireItem.linkId.valueString,
             ),
             questionnaireItem,
@@ -84,13 +79,11 @@ final class QuestionnaireSliverItemWrapper extends QuestionnaireItemWrapper {
               QuestionnaireResponse response =
                   FhirRendererQuestionnaireResponseUtils
                       .setResponseAnswerInQuestionnaireResponse(
-                InheritedQuestionnaireRenderer.of(context)
-                    .questionnaireResponse,
+                inheritedQuestionnaireRenderer.questionnaireResponse,
                 questionnaireItem,
                 answerOption,
               );
-              InheritedQuestionnaireRenderer.of(context)
-                  .onResponseChanged(response);
+              inheritedQuestionnaireRenderer.onResponseChanged(response);
             },
           );
         }
@@ -100,34 +93,29 @@ final class QuestionnaireSliverItemWrapper extends QuestionnaireItemWrapper {
           isLastItem: isLastItem,
         );
       case QuestionnaireItemType.group:
-        if (InheritedQuestionnaireRenderer.of(context).groupItemBuilder !=
-            null) {
+        if (inheritedQuestionnaireRenderer.groupItemBuilder != null) {
           List<QuestionnaireItem>? items =
               questionnaireItem.item?.where((item) {
             InheritedQuestionnaireRenderer questionnaireRendererData =
-                InheritedQuestionnaireRenderer.of(context);
+                inheritedQuestionnaireRenderer;
             final enabled =
                 FhirRendererQuestionnaireUtils.isQuestionnaireItemEnabled(
               questionnaireRendererData.questionnaireResponse,
               item,
             );
-            if (InheritedQuestionnaireRenderer.of(context)
-                .rendererController
-                .indexedItems
+            if (inheritedQuestionnaireRenderer.rendererController.indexedItems
                 .containsKey(
-                  item.linkId.valueString!,
-                )) {
-              final itemData = InheritedQuestionnaireRenderer.of(context)
-                  .rendererController
-                  .indexedItems[item.linkId.valueString!]!;
-              InheritedQuestionnaireRenderer.of(context)
-                      .rendererController
+              item.linkId.valueString!,
+            )) {
+              final itemData = inheritedQuestionnaireRenderer
+                  .rendererController.indexedItems[item.linkId.valueString!]!;
+              inheritedQuestionnaireRenderer.rendererController
                       .indexedItems[item.linkId.valueString!] =
                   itemData.copyWith(enabled: enabled);
             }
             return enabled;
           }).toList();
-          return InheritedQuestionnaireRenderer.of(context).groupItemBuilder!(
+          return inheritedQuestionnaireRenderer.groupItemBuilder!(
             index,
             isLastItem,
             questionnaireItem.copyWith(item: items),
@@ -146,13 +134,12 @@ final class QuestionnaireSliverItemWrapper extends QuestionnaireItemWrapper {
           isLastItem: isLastItem,
         );
       case QuestionnaireItemType.choice:
-        if (InheritedQuestionnaireRenderer.of(context).choiceItemBuilder !=
-            null) {
-          return InheritedQuestionnaireRenderer.of(context).choiceItemBuilder!(
+        if (inheritedQuestionnaireRenderer.choiceItemBuilder != null) {
+          return inheritedQuestionnaireRenderer.choiceItemBuilder!(
             index,
             isLastItem,
             findQuestionnaireResponseItem(
-              InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
+              inheritedQuestionnaireRenderer.questionnaireResponse,
               questionnaireItem.linkId.valueString,
             ),
             questionnaireItem,
@@ -160,13 +147,11 @@ final class QuestionnaireSliverItemWrapper extends QuestionnaireItemWrapper {
               QuestionnaireResponse response =
                   FhirRendererQuestionnaireResponseUtils
                       .setAnswerOptionInQuestionnaireResponse(
-                InheritedQuestionnaireRenderer.of(context)
-                    .questionnaireResponse,
+                inheritedQuestionnaireRenderer.questionnaireResponse,
                 questionnaireItem,
                 answerOption,
               );
-              InheritedQuestionnaireRenderer.of(context)
-                  .onResponseChanged(response);
+              inheritedQuestionnaireRenderer.onResponseChanged(response);
             },
           );
         }
@@ -176,14 +161,12 @@ final class QuestionnaireSliverItemWrapper extends QuestionnaireItemWrapper {
           isLastItem: isLastItem,
         );
       case QuestionnaireItemType.openChoice:
-        if (InheritedQuestionnaireRenderer.of(context).openChoiceItemBuilder !=
-            null) {
-          return InheritedQuestionnaireRenderer.of(context)
-              .openChoiceItemBuilder!(
+        if (inheritedQuestionnaireRenderer.openChoiceItemBuilder != null) {
+          return inheritedQuestionnaireRenderer.openChoiceItemBuilder!(
             index,
             isLastItem,
             findQuestionnaireResponseItem(
-              InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
+              inheritedQuestionnaireRenderer.questionnaireResponse,
               questionnaireItem.linkId.valueString,
             ),
             questionnaireItem,
@@ -191,13 +174,11 @@ final class QuestionnaireSliverItemWrapper extends QuestionnaireItemWrapper {
               QuestionnaireResponse response =
                   FhirRendererQuestionnaireResponseUtils
                       .setMultipleAnswerOptionsInQuestionnaireResponse(
-                InheritedQuestionnaireRenderer.of(context)
-                    .questionnaireResponse,
+                inheritedQuestionnaireRenderer.questionnaireResponse,
                 questionnaireItem,
                 answerOption,
               );
-              InheritedQuestionnaireRenderer.of(context)
-                  .onResponseChanged(response);
+              inheritedQuestionnaireRenderer.onResponseChanged(response);
             },
           );
         }
@@ -212,13 +193,14 @@ final class QuestionnaireSliverItemWrapper extends QuestionnaireItemWrapper {
       case QuestionnaireItemType.integer:
       case QuestionnaireItemType.url:
       case QuestionnaireItemType.string:
-        if (InheritedQuestionnaireRenderer.of(context).fieldItemBuilder !=
-            null) {
-          return InheritedQuestionnaireRenderer.of(context).fieldItemBuilder!(
+        if (inheritedQuestionnaireRenderer.fieldItemBuilder != null) {
+          return inheritedQuestionnaireRenderer.fieldItemBuilder!(
             index,
             isLastItem,
+            //TODO
+            TextEditingController(),
             findQuestionnaireResponseItem(
-              InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
+              inheritedQuestionnaireRenderer.questionnaireResponse,
               questionnaireItem.linkId.valueString,
             ),
             questionnaireItem,
@@ -226,8 +208,7 @@ final class QuestionnaireSliverItemWrapper extends QuestionnaireItemWrapper {
               QuestionnaireResponse response =
                   FhirRendererQuestionnaireResponseUtils
                       .setResponseAnswerInQuestionnaireResponse(
-                InheritedQuestionnaireRenderer.of(context)
-                    .questionnaireResponse,
+                inheritedQuestionnaireRenderer.questionnaireResponse,
                 questionnaireItem,
                 answer.trim().isEmpty
                     ? null
@@ -236,8 +217,7 @@ final class QuestionnaireSliverItemWrapper extends QuestionnaireItemWrapper {
                       ),
               );
 
-              InheritedQuestionnaireRenderer.of(context)
-                  .onResponseChanged(response);
+              inheritedQuestionnaireRenderer.onResponseChanged(response);
             },
           );
         }
@@ -266,7 +246,8 @@ final class QuestionnaireSliverItemWrapper extends QuestionnaireItemWrapper {
     return SliverMainAxisGroup(slivers: [
       SliverToBoxAdapter(
         child: Focus(
-          focusNode: assignFocusNode(context),
+          focusNode:
+              assignFocusNode(InheritedQuestionnaireRenderer.of(context)),
           child: SizedBox(
             height: 0,
             width: MediaQuery.of(context).size.width,
@@ -289,7 +270,8 @@ final class QuestionnaireSliverItemWrapper extends QuestionnaireItemWrapper {
           ignoring: InheritedQuestionnaireRenderer.of(context).readOnly
               ? InheritedQuestionnaireRenderer.of(context).readOnly
               : questionnaireItem.readOnly?.valueBoolean ?? false,
-          sliver: assignQuestionnaireWidget(context),
+          sliver: assignQuestionnaireWidget(
+              InheritedQuestionnaireRenderer.of(context)),
         ),
       )
     ]);

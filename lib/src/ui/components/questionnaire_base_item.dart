@@ -1,7 +1,8 @@
 import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/utils/fhir_renderer_questionnaire_utils.dart';
 import 'package:flutter/material.dart';
 
-import '../../core/data/field_behavioral_data.dart';
+import '../../core/data/item_behavioral_data.dart';
 import '../layout/inherited_questionnaire_renderer.dart';
 import '../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
 
@@ -23,64 +24,70 @@ abstract class QuestionnaireBaseItem extends StatelessWidget {
   ) =>
       FhirRendererQuestionnaireResponseUtils.findIsolatedItem(
         questionnaireResponse,
-        questionnaireItem.linkId.valueString,
+        itemLinkId,
       );
 
-  FocusNode assignFocusNode(BuildContext context) {
-    FocusNode itemFocus;
-    String localId = questionnaireItem.linkId.valueString!;
-    if (!InheritedQuestionnaireRenderer.of(context)
-        .rendererController
-        .indexedItems
-        .containsKey(localId)) {
-      itemFocus = FocusNode();
-      final currentIndex = InheritedQuestionnaireRenderer.of(context)
-          .rendererController
-          .indexedItems
-          .length;
-      InheritedQuestionnaireRenderer.of(context)
-          .rendererController
-          .indexedItems[localId] = FieldBehavioralData(
-        index: currentIndex,
-        enabled: true,
-        markedRequired: false,
-        focusNode: itemFocus,
-      );
-    } else {
-      itemFocus = InheritedQuestionnaireRenderer.of(context)
-          .rendererController
-          .indexedItems[localId]!
-          .focusNode;
-    }
+  String? get itemLinkId => questionnaireItem.linkId.valueString;
 
-    return itemFocus;
+  FocusNode assignFocusNode(
+      InheritedQuestionnaireRenderer inheritedQuestionnaireRenderer) {
+    return inheritedQuestionnaireRenderer
+        .rendererController.indexedItems[itemLinkId]!.focusNode;
   }
 
-  bool markAsRequired(BuildContext context,
-      QuestionnaireResponseItem? responseItem, bool isRequired) {
-    String localId = questionnaireItem.linkId.valueString!;
+  bool isItemEnabled(
+      QuestionnaireResponse questionnaireResponse, QuestionnaireItem item) {
+    return FhirRendererQuestionnaireUtils.isQuestionnaireItemEnabled(
+      questionnaireResponse,
+      item,
+    );
+  }
+
+  void assignDependents(
+      InheritedQuestionnaireRenderer inheritedQuestionnaireRenderer) {
+    final dependents = questionnaireItem.enableWhen
+        ?.map((condition) => "${condition.question.valueString}")
+        .toList();
+
+    final currentIndex =
+        inheritedQuestionnaireRenderer.rendererController.indexedItems.length;
+    inheritedQuestionnaireRenderer
+            .rendererController.indexedItems[itemLinkId!] =
+        ItemBehavioralData(
+            index: currentIndex,
+            markAsRequired: false,
+            focusNode: FocusNode(),
+            dependentOn: dependents);
+  }
+
+  bool markAsRequired(
+      InheritedQuestionnaireRenderer inheritedQuestionnaireRenderer,
+      QuestionnaireResponseItem? responseItem,
+      bool isRequired) {
     if (isRequired) {
-      if (InheritedQuestionnaireRenderer.of(
-            context,
-          ).checkRequiredItems &&
+      if (inheritedQuestionnaireRenderer.checkRequiredItems &&
           (responseItem?.answer == null ||
               (responseItem?.answer?.isEmpty ?? false))) {
-        if (InheritedQuestionnaireRenderer.of(context)
-            .rendererController
-            .indexedItems
-            .containsKey(localId)) {
-          InheritedQuestionnaireRenderer.of(context)
-                  .rendererController
-                  .indexedItems[localId] =
-              InheritedQuestionnaireRenderer.of(context)
-                  .rendererController
-                  .indexedItems[localId]!
-                  .copyWith(markedRequired: true);
+        if (inheritedQuestionnaireRenderer.rendererController.indexedItems
+            .containsKey(itemLinkId)) {
+          inheritedQuestionnaireRenderer
+                  .rendererController.indexedItems[itemLinkId!] =
+              inheritedQuestionnaireRenderer
+                  .rendererController.indexedItems[itemLinkId]!
+                  .copyWith(markAsRequired: true);
         }
 
         return true;
       }
     }
     return false;
+  }
+
+  Widget buildQuestionnaireItem(BuildContext context);
+
+  @override
+  Widget build(BuildContext context) {
+    assignDependents(InheritedQuestionnaireRenderer.of(context));
+    return buildQuestionnaireItem(context);
   }
 }

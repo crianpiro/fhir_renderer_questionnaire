@@ -32,7 +32,7 @@ class QuestionnaireChoiceItem extends QuestionnaireBaseItem {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildQuestionnaireItem(BuildContext context) {
     return BaseDecorator(
       roundBottomBorder: isLastItem,
       title: questionnaireItem.text?.valueString,

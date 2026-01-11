@@ -37,7 +37,7 @@ class QuestionnaireBooleanItem extends QuestionnaireBaseItem {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildQuestionnaireItem(BuildContext context) {
     final selectedResponseItem = findQuestionnaireResponseItem(
       InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
       questionnaireItem.linkId.valueString,

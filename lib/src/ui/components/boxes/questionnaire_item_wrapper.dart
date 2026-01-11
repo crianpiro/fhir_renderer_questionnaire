@@ -22,12 +22,12 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
     required super.isLastItem,
   });
 
-  Widget assignQuestionnaireWidget(BuildContext context) {
+  Widget assignQuestionnaireWidget(
+      InheritedQuestionnaireRenderer inheritedQuestionnaireRenderer) {
     switch (questionnaireItem.type) {
       case QuestionnaireItemType.display_:
-        if (InheritedQuestionnaireRenderer.of(context).displayItemBuilder !=
-            null) {
-          return InheritedQuestionnaireRenderer.of(context).displayItemBuilder!(
+        if (inheritedQuestionnaireRenderer.displayItemBuilder != null) {
+          return inheritedQuestionnaireRenderer.displayItemBuilder!(
               index, isLastItem, questionnaireItem);
         }
         return QuestionnaireDisplayItem(
@@ -36,27 +36,24 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
           isLastItem: isLastItem,
         );
       case QuestionnaireItemType.boolean:
-        if (InheritedQuestionnaireRenderer.of(context).boolItemBuilder !=
-            null) {
-          return InheritedQuestionnaireRenderer.of(context).boolItemBuilder!(
+        if (inheritedQuestionnaireRenderer.boolItemBuilder != null) {
+          return inheritedQuestionnaireRenderer.boolItemBuilder!(
             index,
             isLastItem,
             findQuestionnaireResponseItem(
-              InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
+              inheritedQuestionnaireRenderer.questionnaireResponse,
               questionnaireItem.linkId.valueString,
             ),
             questionnaireItem,
             (answer) {
               final resp = FhirRendererQuestionnaireResponseUtils
                   .setResponseAnswerInQuestionnaireResponse(
-                InheritedQuestionnaireRenderer.of(context)
-                    .questionnaireResponse,
+                inheritedQuestionnaireRenderer.questionnaireResponse,
                 questionnaireItem,
                 QuestionnaireResponseAnswer(valueX: FhirBoolean("$answer")),
               );
 
-              InheritedQuestionnaireRenderer.of(context)
-                  .onResponseChanged(resp);
+              inheritedQuestionnaireRenderer.onResponseChanged(resp);
             },
           );
         }
@@ -68,14 +65,12 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
       case QuestionnaireItemType.time:
       case QuestionnaireItemType.date:
       case QuestionnaireItemType.dateTime:
-        if (InheritedQuestionnaireRenderer.of(context).dateTimeItemBuilder !=
-            null) {
-          return InheritedQuestionnaireRenderer.of(context)
-              .dateTimeItemBuilder!(
+        if (inheritedQuestionnaireRenderer.dateTimeItemBuilder != null) {
+          return inheritedQuestionnaireRenderer.dateTimeItemBuilder!(
             index,
             isLastItem,
             findQuestionnaireResponseItem(
-              InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
+              inheritedQuestionnaireRenderer.questionnaireResponse,
               questionnaireItem.linkId.valueString,
             ),
             questionnaireItem,
@@ -83,13 +78,11 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
               QuestionnaireResponse response =
                   FhirRendererQuestionnaireResponseUtils
                       .setResponseAnswerInQuestionnaireResponse(
-                InheritedQuestionnaireRenderer.of(context)
-                    .questionnaireResponse,
+                inheritedQuestionnaireRenderer.questionnaireResponse,
                 questionnaireItem,
                 answerOption,
               );
-              InheritedQuestionnaireRenderer.of(context)
-                  .onResponseChanged(response);
+              inheritedQuestionnaireRenderer.onResponseChanged(response);
             },
           );
         }
@@ -99,35 +92,30 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
           isLastItem: isLastItem,
         );
       case QuestionnaireItemType.group:
-        if (InheritedQuestionnaireRenderer.of(context).groupItemBuilder !=
-            null) {
+        if (inheritedQuestionnaireRenderer.groupItemBuilder != null) {
           List<QuestionnaireItem>? items =
               questionnaireItem.item?.where((item) {
             InheritedQuestionnaireRenderer questionnaireRendererData =
-                InheritedQuestionnaireRenderer.of(context);
+                inheritedQuestionnaireRenderer;
             final enabled =
                 FhirRendererQuestionnaireUtils.isQuestionnaireItemEnabled(
               questionnaireRendererData.questionnaireResponse,
               item,
             );
-            if (InheritedQuestionnaireRenderer.of(context)
-                .rendererController
-                .indexedItems
+            if (inheritedQuestionnaireRenderer.rendererController.indexedItems
                 .containsKey(
-                  item.linkId.valueString!,
-                )) {
-              final itemData = InheritedQuestionnaireRenderer.of(context)
-                  .rendererController
-                  .indexedItems[item.linkId.valueString!]!;
-              InheritedQuestionnaireRenderer.of(context)
-                      .rendererController
+              item.linkId.valueString!,
+            )) {
+              final itemData = inheritedQuestionnaireRenderer
+                  .rendererController.indexedItems[item.linkId.valueString!]!;
+              inheritedQuestionnaireRenderer.rendererController
                       .indexedItems[item.linkId.valueString!] =
                   itemData.copyWith(enabled: enabled);
             }
             return enabled;
           }).toList();
 
-          return InheritedQuestionnaireRenderer.of(context).groupItemBuilder!(
+          return inheritedQuestionnaireRenderer.groupItemBuilder!(
             index,
             isLastItem,
             questionnaireItem.copyWith(item: items),
@@ -146,13 +134,12 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
           isLastItem: isLastItem,
         );
       case QuestionnaireItemType.choice:
-        if (InheritedQuestionnaireRenderer.of(context).choiceItemBuilder !=
-            null) {
-          return InheritedQuestionnaireRenderer.of(context).choiceItemBuilder!(
+        if (inheritedQuestionnaireRenderer.choiceItemBuilder != null) {
+          return inheritedQuestionnaireRenderer.choiceItemBuilder!(
             index,
             isLastItem,
             findQuestionnaireResponseItem(
-              InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
+              inheritedQuestionnaireRenderer.questionnaireResponse,
               questionnaireItem.linkId.valueString,
             ),
             questionnaireItem,
@@ -160,13 +147,11 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
               QuestionnaireResponse response =
                   FhirRendererQuestionnaireResponseUtils
                       .setAnswerOptionInQuestionnaireResponse(
-                InheritedQuestionnaireRenderer.of(context)
-                    .questionnaireResponse,
+                inheritedQuestionnaireRenderer.questionnaireResponse,
                 questionnaireItem,
                 answerOption,
               );
-              InheritedQuestionnaireRenderer.of(context)
-                  .onResponseChanged(response);
+              inheritedQuestionnaireRenderer.onResponseChanged(response);
             },
           );
         }
@@ -176,14 +161,12 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
           isLastItem: isLastItem,
         );
       case QuestionnaireItemType.openChoice:
-        if (InheritedQuestionnaireRenderer.of(context).openChoiceItemBuilder !=
-            null) {
-          return InheritedQuestionnaireRenderer.of(context)
-              .openChoiceItemBuilder!(
+        if (inheritedQuestionnaireRenderer.openChoiceItemBuilder != null) {
+          return inheritedQuestionnaireRenderer.openChoiceItemBuilder!(
             index,
             isLastItem,
             findQuestionnaireResponseItem(
-              InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
+              inheritedQuestionnaireRenderer.questionnaireResponse,
               questionnaireItem.linkId.valueString,
             ),
             questionnaireItem,
@@ -191,13 +174,11 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
               QuestionnaireResponse response =
                   FhirRendererQuestionnaireResponseUtils
                       .setMultipleAnswerOptionsInQuestionnaireResponse(
-                InheritedQuestionnaireRenderer.of(context)
-                    .questionnaireResponse,
+                inheritedQuestionnaireRenderer.questionnaireResponse,
                 questionnaireItem,
                 answerOption,
               );
-              InheritedQuestionnaireRenderer.of(context)
-                  .onResponseChanged(response);
+              inheritedQuestionnaireRenderer.onResponseChanged(response);
             },
           );
         }
@@ -213,13 +194,14 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
       case QuestionnaireItemType.integer:
       case QuestionnaireItemType.string:
       case QuestionnaireItemType.url:
-        if (InheritedQuestionnaireRenderer.of(context).fieldItemBuilder !=
-            null) {
-          return InheritedQuestionnaireRenderer.of(context).fieldItemBuilder!(
+        if (inheritedQuestionnaireRenderer.fieldItemBuilder != null) {
+          return inheritedQuestionnaireRenderer.fieldItemBuilder!(
             index,
             isLastItem,
+            //TODO
+            TextEditingController(),
             findQuestionnaireResponseItem(
-              InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
+              inheritedQuestionnaireRenderer.questionnaireResponse,
               questionnaireItem.linkId.valueString,
             ),
             questionnaireItem,
@@ -227,8 +209,7 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
               QuestionnaireResponse response =
                   FhirRendererQuestionnaireResponseUtils
                       .setResponseAnswerInQuestionnaireResponse(
-                InheritedQuestionnaireRenderer.of(context)
-                    .questionnaireResponse,
+                inheritedQuestionnaireRenderer.questionnaireResponse,
                 questionnaireItem,
                 answer.trim().isEmpty
                     ? null
@@ -237,8 +218,7 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
                       ),
               );
 
-              InheritedQuestionnaireRenderer.of(context)
-                  .onResponseChanged(response);
+              inheritedQuestionnaireRenderer.onResponseChanged(response);
             },
           );
         }
@@ -256,14 +236,14 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildQuestionnaireItem(BuildContext context) {
     final isRequired = questionnaireItem.required_?.valueBoolean ?? false;
     final responseItem = findQuestionnaireResponseItem(
       InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
-      questionnaireItem.linkId.valueString,
+      itemLinkId,
     );
     return Focus(
-      focusNode: assignFocusNode(context),
+      focusNode: assignFocusNode(InheritedQuestionnaireRenderer.of(context)),
       canRequestFocus: true,
       onFocusChange: (value) {
         if (value) {
@@ -272,7 +252,8 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
       },
       child: Container(
         decoration: BoxDecoration(
-          border: markAsRequired(context, responseItem, isRequired)
+          border: markAsRequired(InheritedQuestionnaireRenderer.of(context),
+                  responseItem, isRequired)
               ? Border.all(color: Colors.red)
               : null,
         ),
@@ -280,7 +261,8 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
           ignoring: InheritedQuestionnaireRenderer.of(context).readOnly
               ? InheritedQuestionnaireRenderer.of(context).readOnly
               : questionnaireItem.readOnly?.valueBoolean ?? false,
-          child: assignQuestionnaireWidget(context),
+          child: assignQuestionnaireWidget(
+              InheritedQuestionnaireRenderer.of(context)),
         ),
       ),
     );

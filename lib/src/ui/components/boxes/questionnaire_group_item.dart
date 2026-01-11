@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../../core/extensions/mapping_extension.dart';
-import '../../../core/utils/fhir_renderer_questionnaire_utils.dart';
 import '../questionnaire_base_item.dart';
 import 'questionnaire_item_wrapper.dart';
 
@@ -18,10 +17,9 @@ class QuestionnaireGroupItem extends QuestionnaireBaseItem {
   List<QuestionnaireItem>? getGroupItems(
       InheritedQuestionnaireRenderer questionnaireRendererData) {
     return questionnaireItem.item?.where((item) {
-      final enabled = FhirRendererQuestionnaireUtils.isQuestionnaireItemEnabled(
-        questionnaireRendererData.questionnaireResponse,
-        item,
-      );
+      final enabled =
+          isItemEnabled(questionnaireRendererData.questionnaireResponse, item);
+
       if (questionnaireRendererData.rendererController.indexedItems.containsKey(
         item.linkId.valueString!,
       )) {
@@ -36,7 +34,7 @@ class QuestionnaireGroupItem extends QuestionnaireBaseItem {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildQuestionnaireItem(BuildContext context) {
     List<QuestionnaireItem>? items =
         getGroupItems(InheritedQuestionnaireRenderer.of(context));
     return Container(
@@ -49,7 +47,6 @@ class QuestionnaireGroupItem extends QuestionnaireBaseItem {
       child: Column(
         children: [
           Container(
-            height: 50,
             alignment: Alignment.centerLeft,
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.primaryContainer,

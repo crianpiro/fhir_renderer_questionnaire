@@ -59,7 +59,13 @@ class SliversViewExamplePage extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 5),
                       child: Icon(Icons.title),
                     ),
-                    Text("${questionnaireItem.text?.valueString}"),
+                    Flexible(
+                      child: Text(
+                        "${questionnaireItem.text?.valueString}",
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                   ],
                 ),
               ),

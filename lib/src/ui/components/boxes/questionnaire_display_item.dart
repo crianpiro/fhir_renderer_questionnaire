@@ -11,7 +11,7 @@ class QuestionnaireDisplayItem extends QuestionnaireBaseItem {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildQuestionnaireItem(BuildContext context) {
     return BaseDecorator(
       title: questionnaireItem.text?.valueString,
       roundBottomBorder: isLastItem,

@@ -92,7 +92,7 @@ abstract class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer>
     //Add the markAsRequired here instead of in building time.
     if (widget.rendererController.indexedItems.isNotEmpty) {
       for (var entry in widget.rendererController.indexedItems.entries) {
-        if (entry.value.markedRequired) {
+        if (entry.value.markAsRequired) {
           entry.value.focusNode.requestFocus();
           break;
         }
