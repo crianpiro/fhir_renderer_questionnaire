@@ -15,31 +15,30 @@ class QuestionnaireGroupItem extends QuestionnaireBaseItem {
     required super.isLastItem,
   });
 
-  @override
-  Widget build(BuildContext context) {
-    List<QuestionnaireItem>? items = questionnaireItem.item?.where((item) {
-      InheritedQuestionnaireRenderer questionnaireRendererData =
-          InheritedQuestionnaireRenderer.of(context);
+  List<QuestionnaireItem>? getGroupItems(
+      InheritedQuestionnaireRenderer questionnaireRendererData) {
+    return questionnaireItem.item?.where((item) {
       final enabled = FhirRendererQuestionnaireUtils.isQuestionnaireItemEnabled(
         questionnaireRendererData.questionnaireResponse,
         item,
       );
-      if (InheritedQuestionnaireRenderer.of(context)
-          .rendererController
-          .indexedItems
-          .containsKey(
-            item.linkId.valueString!,
-          )) {
-        final itemData = InheritedQuestionnaireRenderer.of(context)
-            .rendererController
-            .indexedItems[item.linkId.valueString!]!;
-        InheritedQuestionnaireRenderer.of(context)
-                .rendererController
-                .indexedItems[item.linkId.valueString!] =
+      if (questionnaireRendererData.rendererController.indexedItems.containsKey(
+        item.linkId.valueString!,
+      )) {
+        final itemData = questionnaireRendererData
+            .rendererController.indexedItems[item.linkId.valueString!]!;
+        questionnaireRendererData
+                .rendererController.indexedItems[item.linkId.valueString!] =
             itemData.copyWith(enabled: enabled);
       }
       return enabled;
     }).toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    List<QuestionnaireItem>? items =
+        getGroupItems(InheritedQuestionnaireRenderer.of(context));
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
       padding: const EdgeInsets.only(bottom: 10.0),

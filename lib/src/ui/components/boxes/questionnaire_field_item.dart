@@ -16,60 +16,66 @@ class QuestionnaireFieldItem extends QuestionnaireBaseItem {
     super.key,
   });
 
-  @override
-  Widget build(BuildContext context) {
-    TextEditingController localController;
-    if (InheritedQuestionnaireRenderer.of(context)
-            .rendererController
-            .indexedItems
-            .containsKey(
-              questionnaireItem.linkId.valueString,
-            ) &&
-        InheritedQuestionnaireRenderer.of(context)
+  String getInitialValue() {
+    if (questionnaireItem.initial != null &&
+        questionnaireItem.initial!.isNotEmpty) {
+      final initial = questionnaireItem.initial!.first;
+      if (initial.valueX is FhirString) {
+        return (initial.valueX as FhirString).valueString ?? "";
+      } else if (initial.valueX is FhirDecimal) {
+        return (initial.valueX as FhirDecimal).valueDouble.toString();
+      } else if (initial.valueX is FhirInteger) {
+        return (initial.valueX as FhirInteger).valueInt.toString();
+      } else if (initial.valueX is Quantity) {
+        return (initial.valueX as Quantity).value?.valueDouble?.toString() ??
+            "";
+      } else if (initial.valueX is FhirUri) {
+        return (initial.valueX as FhirUri).valueUri?.toString() ?? "";
+      }
+    }
+    return "";
+  }
+
+  TextEditingController getAssignedTextController(
+      InheritedQuestionnaireRenderer questionnaireRendererData) {
+    TextEditingController controller;
+    if (questionnaireRendererData.rendererController.indexedItems.containsKey(
+          questionnaireItem.linkId.valueString,
+        ) &&
+        questionnaireRendererData
                 .rendererController
                 .indexedItems[questionnaireItem.linkId.valueString]!
                 .textController ==
             null) {
       final currentResponseItem = findQuestionnaireResponseItem(
-        InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
+        questionnaireRendererData.questionnaireResponse,
         questionnaireItem.linkId.valueString,
       );
-      String initialValue = "";
-      if (questionnaireItem.initial != null &&
-          questionnaireItem.initial!.isNotEmpty) {
-        final initial = questionnaireItem.initial!.first;
-        if (initial.valueX is FhirString) {
-          initialValue = (initial.valueX as FhirString).valueString ?? "";
-        } else if (initial.valueX is FhirDecimal) {
-          initialValue = (initial.valueX as FhirDecimal).valueDouble.toString();
-        } else if (initial.valueX is FhirInteger) {
-          initialValue = (initial.valueX as FhirInteger).valueInt.toString();
-        } else if (initial.valueX is Quantity) {
-          initialValue =
-              (initial.valueX as Quantity).value?.valueDouble?.toString() ?? "";
-        } else if (initial.valueX is FhirUri) {
-          initialValue = (initial.valueX as FhirUri).valueUri?.toString() ?? "";
-        }
-      }
+      String initialValue = getInitialValue();
 
-      localController = TextEditingController(
+      controller = TextEditingController(
         text: currentResponseItem
                 ?.answer?.firstOrNull?.valueString?.valueString ??
             initialValue,
       );
-      InheritedQuestionnaireRenderer.of(context)
-              .rendererController
+
+      questionnaireRendererData.rendererController
               .indexedItems[questionnaireItem.linkId.valueString!] =
-          InheritedQuestionnaireRenderer.of(context)
-              .rendererController
-              .indexedItems[questionnaireItem.linkId.valueString]!
-              .copyWith(textController: localController);
+          questionnaireRendererData.rendererController
+              .indexedItems[questionnaireItem.linkId.valueString!]!
+              .copyWith(textController: controller);
     } else {
-      localController = InheritedQuestionnaireRenderer.of(context)
-          .rendererController
-          .indexedItems[questionnaireItem.linkId.valueString!]!
-          .textController!;
+      controller = questionnaireRendererData.rendererController
+          .indexedItems[questionnaireItem.linkId.valueString!]!.textController!;
     }
+
+    return controller;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    TextEditingController localController =
+        getAssignedTextController(InheritedQuestionnaireRenderer.of(context));
 
     return BaseDecorator(
       title: questionnaireItem.text?.valueString,

@@ -32,14 +32,12 @@ final class QuestionnaireSliverOpenChoiceItem
               questionnaireItem.linkId.valueString,
             );
 
+            bool isSelected =
+                getInitialOrSelectedValue(selectedResponseItem, answerOption);
+
             return SliverToBoxAdapter(
               child: CheckboxListTile(
-                value: selectedResponseItem?.answer?.any(
-                      (answer) =>
-                          answer.valueCoding?.code?.valueString ==
-                          answerOption.valueCoding?.code?.valueString,
-                    ) ??
-                    false,
+                value: isSelected,
                 onChanged: (v) => questionnaireRendererData.onResponseChanged(
                   FhirRendererQuestionnaireResponseUtils
                       .setMultipleAnswerOptionsInQuestionnaireResponse(

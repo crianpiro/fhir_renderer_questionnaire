@@ -79,6 +79,7 @@ typedef QuestionnaireChoiceWidgetBuilder = Widget Function(
 typedef QuestionnaireFieldWidgetBuilder = Widget Function(
   int index,
   bool isLastItem,
+  TextEditingController fieldController,
   QuestionnaireResponseItem? selectedResponse,
   QuestionnaireItem questionnaireItem,
   Function(String answer) onAnswerChanged,

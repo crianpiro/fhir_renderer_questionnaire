@@ -19,8 +19,7 @@ final class QuestionnaireSliverBooleanItem extends QuestionnaireBooleanItem {
       questionnaireItem.linkId.valueString,
     );
 
-    bool? selectedValue =
-        selectedResponseItem?.answer?.firstOrNull?.valueBoolean?.valueBoolean;
+    bool? selectedValue = getInitialOrSelectedValue(selectedResponseItem);
 
     return SliverBaseDecorator(
       title: questionnaireItem.text?.valueString,

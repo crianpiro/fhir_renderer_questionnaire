@@ -14,6 +14,23 @@ class QuestionnaireChoiceItem extends QuestionnaireBaseItem {
     super.key,
   });
 
+  String? getInitialOrSelectedValue(
+      QuestionnaireResponseItem? selectedResponseItem) {
+    if (selectedResponseItem != null) {
+      return selectedResponseItem
+          .answer?.firstOrNull?.valueCoding?.code?.valueString;
+    } else if (questionnaireItem.initial != null &&
+        questionnaireItem.initial!.isNotEmpty &&
+        questionnaireItem.initial!.first.valueX is Coding &&
+        (questionnaireItem.initial!.first.valueX as Coding).code?.valueString !=
+            null) {
+      return (questionnaireItem.initial!.first.valueX as Coding)
+          .code
+          ?.valueString;
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return BaseDecorator(
@@ -30,22 +47,8 @@ class QuestionnaireChoiceItem extends QuestionnaireBaseItem {
               questionnaireItem.linkId.valueString,
             );
 
-            String? selectedValue;
-            if (selectedResponseItem != null) {
-              selectedValue = selectedResponseItem
-                  .answer?.firstOrNull?.valueCoding?.code?.valueString;
-            } else if (questionnaireItem.initial != null &&
-                questionnaireItem.initial!.isNotEmpty &&
-                questionnaireItem.initial!.first.valueX is Coding &&
-                (questionnaireItem.initial!.first.valueX as Coding)
-                        .code
-                        ?.valueString !=
-                    null) {
-              selectedValue =
-                  (questionnaireItem.initial!.first.valueX as Coding)
-                      .code
-                      ?.valueString;
-            }
+            String? selectedValue =
+                getInitialOrSelectedValue(selectedResponseItem);
 
             return RadioListTile(
               value: selectedValue,

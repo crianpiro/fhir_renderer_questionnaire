@@ -14,6 +14,23 @@ class QuestionnaireOpenChoiceItem extends QuestionnaireBaseItem {
     super.key,
   });
 
+  bool getInitialOrSelectedValue(
+      QuestionnaireResponseItem? selectedResponseItem,
+      QuestionnaireAnswerOption answerOption) {
+    return selectedResponseItem?.answer?.any(
+          (answer) =>
+              answer.valueCoding?.code?.valueString ==
+              answerOption.valueCoding?.code?.valueString,
+        ) ??
+        questionnaireItem.initial != null &&
+            questionnaireItem.initial!.any(
+              (initial) =>
+                  initial.valueX is Coding &&
+                  (initial.valueX as Coding).code?.valueString ==
+                      answerOption.valueCoding?.code?.valueString,
+            );
+  }
+
   @override
   Widget build(BuildContext context) {
     final InheritedQuestionnaireRenderer questionnaireRendererData =
@@ -32,19 +49,8 @@ class QuestionnaireOpenChoiceItem extends QuestionnaireBaseItem {
               questionnaireItem.linkId.valueString,
             );
 
-            bool isSelected = selectedResponseItem?.answer?.any(
-                  (answer) =>
-                      answer.valueCoding?.code?.valueString ==
-                      answerOption.valueCoding?.code?.valueString,
-                ) ??
-                questionnaireItem.initial != null &&
-                    questionnaireItem.initial!.any(
-                      (initial) =>
-                          initial.valueX is Coding &&
-                          (initial.valueX as Coding).code?.valueString ==
-                              answerOption.valueCoding?.code?.valueString,
-                    );
-            false;
+            bool isSelected =
+                getInitialOrSelectedValue(selectedResponseItem, answerOption);
 
             return CheckboxListTile(
               value: isSelected,

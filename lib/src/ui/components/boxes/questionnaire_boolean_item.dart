@@ -25,6 +25,17 @@ class QuestionnaireBooleanItem extends QuestionnaireBaseItem {
     InheritedQuestionnaireRenderer.of(context).onResponseChanged(resp);
   }
 
+  bool? getInitialOrSelectedValue(
+      QuestionnaireResponseItem? selectedResponseItem) {
+    return selectedResponseItem
+                ?.answer?.firstOrNull?.valueBoolean?.valueBoolean ??
+            questionnaireItem.initial != null &&
+                questionnaireItem.initial!.isNotEmpty &&
+                questionnaireItem.initial!.first.valueX is FhirBoolean
+        ? (questionnaireItem.initial!.first.valueX as FhirBoolean).valueBoolean
+        : null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final selectedResponseItem = findQuestionnaireResponseItem(
@@ -32,13 +43,7 @@ class QuestionnaireBooleanItem extends QuestionnaireBaseItem {
       questionnaireItem.linkId.valueString,
     );
 
-    bool? selectedValue = selectedResponseItem
-                ?.answer?.firstOrNull?.valueBoolean?.valueBoolean ??
-            questionnaireItem.initial != null &&
-                questionnaireItem.initial!.isNotEmpty &&
-                questionnaireItem.initial!.first.valueX is FhirBoolean
-        ? (questionnaireItem.initial!.first.valueX as FhirBoolean).valueBoolean
-        : null;
+    bool? selectedValue = getInitialOrSelectedValue(selectedResponseItem);
 
     return BaseDecorator(
       title: questionnaireItem.text?.valueString,

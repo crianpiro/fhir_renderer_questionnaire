@@ -18,39 +18,8 @@ final class QuestionnaireSliverFieldItem extends QuestionnaireFieldItem {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController localController;
-    if (InheritedQuestionnaireRenderer.of(context)
-            .rendererController
-            .indexedItems
-            .containsKey(
-              questionnaireItem.linkId.valueString,
-            ) &&
-        InheritedQuestionnaireRenderer.of(context)
-                .rendererController
-                .indexedItems[questionnaireItem.linkId.valueString]!
-                .textController ==
-            null) {
-      final currentResponseItem = findQuestionnaireResponseItem(
-        InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
-        questionnaireItem.linkId.valueString,
-      );
-      localController = TextEditingController(
-        text:
-            currentResponseItem?.answer?.firstOrNull?.valueString?.valueString,
-      );
-      InheritedQuestionnaireRenderer.of(context)
-              .rendererController
-              .indexedItems[questionnaireItem.linkId.valueString!] =
-          InheritedQuestionnaireRenderer.of(context)
-              .rendererController
-              .indexedItems[questionnaireItem.linkId.valueString]!
-              .copyWith(textController: localController);
-    } else {
-      localController = InheritedQuestionnaireRenderer.of(context)
-          .rendererController
-          .indexedItems[questionnaireItem.linkId.valueString!]!
-          .textController!;
-    }
+    TextEditingController localController =
+        getAssignedTextController(InheritedQuestionnaireRenderer.of(context));
 
     return SliverBaseDecorator(
       title: questionnaireItem.text?.valueString,
