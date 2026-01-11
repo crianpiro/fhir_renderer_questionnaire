@@ -55,7 +55,7 @@ class QuestionnaireGroupItem extends QuestionnaireBaseItem {
             ),
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             child: Text(
-              questionnaireItem.text?.valueString ??
+              itemTextTitle ??
                   questionnaireItem.code?.firstOrNull?.code?.valueString ??
                   "",
               style: Theme.of(context).textTheme.titleLarge,

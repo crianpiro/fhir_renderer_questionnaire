@@ -169,13 +169,13 @@ class QuestionnaireDateTimeItem extends QuestionnaireBaseItem {
   Widget buildQuestionnaireItem(BuildContext context) {
     final currentResponseItem = findQuestionnaireResponseItem(
       InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
-      questionnaireItem.linkId.valueString,
+      itemLinkId,
     );
 
     String? displayText = extractDisplayText(currentResponseItem);
 
     return BaseDecorator(
-      title: questionnaireItem.text?.valueString,
+      title: itemTextTitle,
       roundBottomBorder: isLastItem,
       child: ElevatedButton(
         style: ButtonStyle(

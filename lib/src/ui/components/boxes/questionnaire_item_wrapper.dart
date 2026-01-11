@@ -42,7 +42,7 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
             isLastItem,
             findQuestionnaireResponseItem(
               inheritedQuestionnaireRenderer.questionnaireResponse,
-              questionnaireItem.linkId.valueString,
+              itemLinkId,
             ),
             questionnaireItem,
             (answer) {
@@ -71,7 +71,7 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
             isLastItem,
             findQuestionnaireResponseItem(
               inheritedQuestionnaireRenderer.questionnaireResponse,
-              questionnaireItem.linkId.valueString,
+              itemLinkId,
             ),
             questionnaireItem,
             (answerOption) {
@@ -140,7 +140,7 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
             isLastItem,
             findQuestionnaireResponseItem(
               inheritedQuestionnaireRenderer.questionnaireResponse,
-              questionnaireItem.linkId.valueString,
+              itemLinkId,
             ),
             questionnaireItem,
             (answerOption) {
@@ -167,7 +167,7 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
             isLastItem,
             findQuestionnaireResponseItem(
               inheritedQuestionnaireRenderer.questionnaireResponse,
-              questionnaireItem.linkId.valueString,
+              itemLinkId,
             ),
             questionnaireItem,
             (answerOption) {
@@ -202,7 +202,7 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
             TextEditingController(),
             findQuestionnaireResponseItem(
               inheritedQuestionnaireRenderer.questionnaireResponse,
-              questionnaireItem.linkId.valueString,
+              itemLinkId,
             ),
             questionnaireItem,
             (answer) {

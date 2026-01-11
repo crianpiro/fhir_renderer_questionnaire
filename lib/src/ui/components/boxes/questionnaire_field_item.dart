@@ -40,16 +40,14 @@ class QuestionnaireFieldItem extends QuestionnaireBaseItem {
       InheritedQuestionnaireRenderer questionnaireRendererData) {
     TextEditingController controller;
     if (questionnaireRendererData.rendererController.indexedItems.containsKey(
-          questionnaireItem.linkId.valueString,
+          itemLinkId,
         ) &&
         questionnaireRendererData
-                .rendererController
-                .indexedItems[questionnaireItem.linkId.valueString]!
-                .textController ==
+                .rendererController.indexedItems[itemLinkId]!.textController ==
             null) {
       final currentResponseItem = findQuestionnaireResponseItem(
         questionnaireRendererData.questionnaireResponse,
-        questionnaireItem.linkId.valueString,
+        itemLinkId,
       );
       String initialValue = getInitialValue();
 
@@ -59,14 +57,13 @@ class QuestionnaireFieldItem extends QuestionnaireBaseItem {
             initialValue,
       );
 
-      questionnaireRendererData.rendererController
-              .indexedItems[questionnaireItem.linkId.valueString!] =
-          questionnaireRendererData.rendererController
-              .indexedItems[questionnaireItem.linkId.valueString!]!
+      questionnaireRendererData.rendererController.indexedItems[itemLinkId!] =
+          questionnaireRendererData
+              .rendererController.indexedItems[itemLinkId!]!
               .copyWith(textController: controller);
     } else {
-      controller = questionnaireRendererData.rendererController
-          .indexedItems[questionnaireItem.linkId.valueString!]!.textController!;
+      controller = questionnaireRendererData
+          .rendererController.indexedItems[itemLinkId]!.textController!;
     }
 
     return controller;
@@ -78,7 +75,7 @@ class QuestionnaireFieldItem extends QuestionnaireBaseItem {
         getAssignedTextController(InheritedQuestionnaireRenderer.of(context));
 
     return BaseDecorator(
-      title: questionnaireItem.text?.valueString,
+      title: itemTextTitle,
       roundBottomBorder: isLastItem,
       child: TextField(
         controller: localController,

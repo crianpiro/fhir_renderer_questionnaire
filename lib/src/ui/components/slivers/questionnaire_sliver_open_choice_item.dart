@@ -22,10 +22,7 @@ final class QuestionnaireSliverOpenChoiceItem
       roundBottomBorder: isLastItem,
       title: questionnaireItem.text?.valueString,
       children: questionnaireItem.answerOption?.map((answerOption) {
-            String displayValue =
-                answerOption.valueCoding?.display?.valueString ??
-                    answerOption.valueCoding?.code?.valueString ??
-                    "--";
+            String displayValue = getDisplayValue(answerOption);
 
             final selectedResponseItem = findQuestionnaireResponseItem(
               InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
@@ -33,7 +30,7 @@ final class QuestionnaireSliverOpenChoiceItem
             );
 
             bool isSelected =
-                getInitialOrSelectedValue(selectedResponseItem, answerOption);
+                isInitialOrSelectedValue(selectedResponseItem, answerOption);
 
             return SliverToBoxAdapter(
               child: CheckboxListTile(

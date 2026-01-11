@@ -40,13 +40,13 @@ class QuestionnaireBooleanItem extends QuestionnaireBaseItem {
   Widget buildQuestionnaireItem(BuildContext context) {
     final selectedResponseItem = findQuestionnaireResponseItem(
       InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
-      questionnaireItem.linkId.valueString,
+      itemLinkId,
     );
 
     bool? selectedValue = getInitialOrSelectedValue(selectedResponseItem);
 
     return BaseDecorator(
-      title: questionnaireItem.text?.valueString,
+      title: itemTextTitle,
       roundBottomBorder: isLastItem,
       children: [
         RadioListTile(

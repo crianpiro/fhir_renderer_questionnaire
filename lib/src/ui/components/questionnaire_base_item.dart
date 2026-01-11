@@ -1,9 +1,9 @@
 import 'package:fhir_r4/fhir_r4.dart';
-import 'package:fhir_renderer_questionnaire/src/core/utils/fhir_renderer_questionnaire_utils.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/data/item_behavioral_data.dart';
 import '../layout/inherited_questionnaire_renderer.dart';
+import '../../core/utils/fhir_renderer_questionnaire_utils.dart';
 import '../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
 
 abstract class QuestionnaireBaseItem extends StatelessWidget {
@@ -28,6 +28,7 @@ abstract class QuestionnaireBaseItem extends StatelessWidget {
       );
 
   String? get itemLinkId => questionnaireItem.linkId.valueString;
+  String? get itemTextTitle => questionnaireItem.text?.valueString;
 
   FocusNode assignFocusNode(
       InheritedQuestionnaireRenderer inheritedQuestionnaireRenderer) {

@@ -14,8 +14,7 @@ class QuestionnaireOpenChoiceItem extends QuestionnaireBaseItem {
     super.key,
   });
 
-  bool getInitialOrSelectedValue(
-      QuestionnaireResponseItem? selectedResponseItem,
+  bool isInitialOrSelectedValue(QuestionnaireResponseItem? selectedResponseItem,
       QuestionnaireAnswerOption answerOption) {
     return selectedResponseItem?.answer?.any(
           (answer) =>
@@ -31,6 +30,12 @@ class QuestionnaireOpenChoiceItem extends QuestionnaireBaseItem {
             );
   }
 
+  String getDisplayValue(QuestionnaireAnswerOption answerOption) {
+    return answerOption.valueCoding?.display?.valueString ??
+        answerOption.valueCoding?.code?.valueString ??
+        "--";
+  }
+
   @override
   Widget buildQuestionnaireItem(BuildContext context) {
     final InheritedQuestionnaireRenderer questionnaireRendererData =
@@ -39,10 +44,7 @@ class QuestionnaireOpenChoiceItem extends QuestionnaireBaseItem {
       roundBottomBorder: isLastItem,
       title: questionnaireItem.text?.valueString,
       children: questionnaireItem.answerOption?.map((answerOption) {
-            String displayValue =
-                answerOption.valueCoding?.display?.valueString ??
-                    answerOption.valueCoding?.code?.valueString ??
-                    "--";
+            String displayValue = getDisplayValue(answerOption);
 
             final selectedResponseItem = findQuestionnaireResponseItem(
               InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
@@ -50,7 +52,7 @@ class QuestionnaireOpenChoiceItem extends QuestionnaireBaseItem {
             );
 
             bool isSelected =
-                getInitialOrSelectedValue(selectedResponseItem, answerOption);
+                isInitialOrSelectedValue(selectedResponseItem, answerOption);
 
             return CheckboxListTile(
               value: isSelected,

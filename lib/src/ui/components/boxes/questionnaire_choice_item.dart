@@ -35,7 +35,7 @@ class QuestionnaireChoiceItem extends QuestionnaireBaseItem {
   Widget buildQuestionnaireItem(BuildContext context) {
     return BaseDecorator(
       roundBottomBorder: isLastItem,
-      title: questionnaireItem.text?.valueString,
+      title: itemTextTitle,
       children: questionnaireItem.answerOption?.map((answerOption) {
             String displayValue =
                 answerOption.valueCoding?.display?.valueString ??
@@ -44,7 +44,7 @@ class QuestionnaireChoiceItem extends QuestionnaireBaseItem {
 
             final selectedResponseItem = findQuestionnaireResponseItem(
               InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
-              questionnaireItem.linkId.valueString,
+              itemLinkId,
             );
 
             String? selectedValue =
