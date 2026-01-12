@@ -9,6 +9,7 @@ import '../components/boxes/questionnaire_date_time_item.dart';
 import '../components/boxes/questionnaire_choice_item.dart';
 import '../components/boxes/questionnaire_open_choice_item.dart';
 import '../components/boxes/questionnaire_group_item.dart';
+import '../components/boxes/questionnaire_item_wrapper.dart';
 import '../components/boxes/base_decorator.dart';
 
 /// Factory implementation for creating box-based (traditional Container-based) questionnaire widgets.
@@ -118,6 +119,20 @@ final class BoxComponentFactory implements QuestionnaireComponentFactory {
       title: "Unimplemented type: $typeName",
       useNotImplementedStyle: true,
       roundBottomBorder: false,
+    );
+  }
+
+  @override
+  Widget createItemWrapper({
+    required int index,
+    required QuestionnaireItem questionnaireItem,
+    required bool isLastItem,
+  }) {
+    return QuestionnaireItemWrapper(
+      index: index,
+      questionnaireItem: questionnaireItem,
+      isLastItem: isLastItem,
+      factory: this,
     );
   }
 }

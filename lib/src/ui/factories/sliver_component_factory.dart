@@ -9,6 +9,7 @@ import '../components/slivers/questionnaire_sliver_date_time_item.dart';
 import '../components/slivers/questionnaire_sliver_choice_item.dart';
 import '../components/slivers/questionnaire_sliver_open_choice_item.dart';
 import '../components/slivers/questionnaire_sliver_group_item.dart';
+import '../components/slivers/questionnaire_sliver_item_wrapper.dart';
 import '../components/slivers/sliver_base_decorator.dart';
 
 /// Factory implementation for creating sliver-based questionnaire widgets.
@@ -118,6 +119,19 @@ final class SliverComponentFactory implements QuestionnaireComponentFactory {
       title: "Unimplemented type: $typeName",
       useNotImplementedStyle: true,
       roundBottomBorder: false,
+    );
+  }
+
+  @override
+  Widget createItemWrapper({
+    required int index,
+    required QuestionnaireItem questionnaireItem,
+    required bool isLastItem,
+  }) {
+    return QuestionnaireSliverItemWrapper(
+      index: index,
+      questionnaireItem: questionnaireItem,
+      isLastItem: isLastItem,
     );
   }
 }

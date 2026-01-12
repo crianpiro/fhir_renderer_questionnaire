@@ -15,7 +15,7 @@ final class QuestionnaireSliverOpenChoiceItem
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildQuestionnaireItem(BuildContext context) {
     final InheritedQuestionnaireRenderer questionnaireRendererData =
         InheritedQuestionnaireRenderer.of(context);
     return SliverBaseDecorator(

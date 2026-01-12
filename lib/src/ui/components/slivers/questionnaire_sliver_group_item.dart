@@ -15,7 +15,7 @@ final class QuestionnaireSliverGroupItem extends QuestionnaireGroupItem {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildQuestionnaireItem(BuildContext context) {
     List<QuestionnaireItem>? items = getFilteredGroupItems(
         questionnaireItem, InheritedQuestionnaireRenderer.of(context));
 

@@ -14,7 +14,7 @@ final class QuestionnaireSliverDateTimeItem extends QuestionnaireDateTimeItem {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildQuestionnaireItem(BuildContext context) {
     final currentResponseItem = findQuestionnaireResponseItem(
       InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
       itemLinkId,

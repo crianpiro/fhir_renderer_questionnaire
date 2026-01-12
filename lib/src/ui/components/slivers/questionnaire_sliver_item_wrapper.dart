@@ -19,6 +19,8 @@ final class QuestionnaireSliverItemWrapper extends QuestionnaireItemWrapper {
 
   @override
   Widget build(BuildContext context) {
+    assignDependents(InheritedQuestionnaireRenderer.of(context));
+
     final isRequired = questionnaireItem.required_?.valueBoolean ?? false;
     final responseItem = findQuestionnaireResponseItem(
       InheritedQuestionnaireRenderer.of(context).questionnaireResponse,

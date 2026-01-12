@@ -110,11 +110,13 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem
             isLastItem,
             questionnaireItem.copyWith(item: items),
             (questionnaireItem) {
-              return QuestionnaireItemWrapper(
+              // Use the factory to create the appropriate wrapper type
+              // For BoxComponentFactory -> QuestionnaireItemWrapper
+              // For SliverComponentFactory -> QuestionnaireSliverItemWrapper
+              return factory.createItemWrapper(
                 index: index,
                 questionnaireItem: questionnaireItem,
                 isLastItem: isLastItem,
-                factory: factory,
               );
             },
           );

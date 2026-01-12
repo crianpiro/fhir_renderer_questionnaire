@@ -13,7 +13,7 @@ final class QuestionnaireSliverBooleanItem extends QuestionnaireBooleanItem {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildQuestionnaireItem(BuildContext context) {
     final selectedResponseItem = findQuestionnaireResponseItem(
       InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
       itemLinkId,

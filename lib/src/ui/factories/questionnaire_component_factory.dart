@@ -61,4 +61,13 @@ abstract class QuestionnaireComponentFactory {
     String typeName,
     bool isLastItem,
   );
+
+  /// Creates an item wrapper widget (used for custom builders).
+  /// Returns QuestionnaireItemWrapper for box factory,
+  /// QuestionnaireSliverItemWrapper for sliver factory.
+  Widget createItemWrapper({
+    required int index,
+    required QuestionnaireItem questionnaireItem,
+    required bool isLastItem,
+  });
 }
