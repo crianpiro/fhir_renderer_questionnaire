@@ -1,4 +1,5 @@
 import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/controllers/renderer_questionnaire_controller.dart';
 import 'fhir_renderer_questionnaire_response_utils.dart';
 import 'package:intl/intl.dart';
 
@@ -9,19 +10,56 @@ import 'package:intl/intl.dart';
 /// * Compare questionnaire responses against conditional logic
 /// * Extract and convert numeric values from various FHIR answer types
 final class FhirRendererQuestionnaireUtils {
-  /// Determines if a questionnaire item is enabled based on enable/disable conditions.
+  /// Determines if a questionnaire item is enabled based on enable/disable conditions,
+  /// with optional caching support.
   ///
   /// Evaluates the `enableWhen` conditions of a questionnaire item against the current
   /// questionnaire response. Supports both 'all' (AND logic) and 'any' (OR logic) behaviors.
   ///
+  /// When a [controller] is provided, results are cached to avoid redundant evaluations.
+  ///
   /// Parameters:
   ///   * [questionnaireResponse] - The current questionnaire response to evaluate against
   ///   * [questionnaireItem] - The questionnaire item with potential enable conditions
+  ///   * [controller] - Optional controller for caching results
   ///
   /// Returns:
   ///   `true` if the item has no enable conditions or if the conditions are satisfied,
   ///   `false` otherwise.
   static bool isQuestionnaireItemEnabled(
+    QuestionnaireResponse questionnaireResponse,
+    QuestionnaireItem questionnaireItem, {
+    RendererQuestionnaireController? controller,
+  }) {
+    // Check cache if controller is provided
+    if (controller != null && questionnaireItem.linkId.valueString != null) {
+      final responseHash = questionnaireResponse.hashCode;
+      final cached = controller.getCachedEnableWhen(
+        questionnaireItem.linkId.valueString!,
+        responseHash,
+      );
+      if (cached != null) {
+        return cached;
+      }
+    }
+
+    // Compute the result
+    final result = _evaluateEnableWhen(questionnaireResponse, questionnaireItem);
+
+    // Cache the result if controller is provided
+    if (controller != null && questionnaireItem.linkId.valueString != null) {
+      controller.cacheEnableWhen(
+        questionnaireItem.linkId.valueString!,
+        questionnaireResponse.hashCode,
+        result,
+      );
+    }
+
+    return result;
+  }
+
+  /// Internal method that performs the actual enableWhen evaluation.
+  static bool _evaluateEnableWhen(
     QuestionnaireResponse questionnaireResponse,
     QuestionnaireItem questionnaireItem,
   ) {

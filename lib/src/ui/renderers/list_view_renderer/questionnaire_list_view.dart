@@ -10,13 +10,13 @@ class QuestionnaireListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<QuestionnaireItem>? items = InheritedQuestionnaireRenderer.of(context)
-        .questionnaire
-        .item
+    final inheritedData = InheritedQuestionnaireRenderer.of(context);
+    List<QuestionnaireItem>? items = inheritedData.questionnaire.item
         ?.where(
           (i) => FhirRendererQuestionnaireUtils.isQuestionnaireItemEnabled(
-            InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
+            inheritedData.questionnaireResponse,
             i,
+            controller: inheritedData.rendererController,
           ),
         )
         .toList();
@@ -24,12 +24,12 @@ class QuestionnaireListView extends StatelessWidget {
     if (items != null) {
       return ListView.builder(
         itemCount: items.length,
-        controller: InheritedQuestionnaireRenderer.of(context)
-            .rendererController
-            .listViewScrollController,
+        controller: inheritedData.rendererController.listViewScrollController,
         itemBuilder: (context, index) {
+          final item = items[index];
           return QuestionnaireItemWrapper(
-            questionnaireItem: items[index],
+            key: ValueKey(item.linkId.valueString),
+            questionnaireItem: item,
             index: index,
             isLastItem: items.length - 1 == index,
           );

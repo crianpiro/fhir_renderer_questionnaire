@@ -85,12 +85,11 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem
         if (inheritedQuestionnaireRenderer.groupItemBuilder != null) {
           List<QuestionnaireItem>? items =
               questionnaireItem.item?.where((item) {
-            InheritedQuestionnaireRenderer questionnaireRendererData =
-                inheritedQuestionnaireRenderer;
             final enabled =
                 FhirRendererQuestionnaireUtils.isQuestionnaireItemEnabled(
-              questionnaireRendererData.questionnaireResponse,
+              inheritedQuestionnaireRenderer.questionnaireResponse,
               item,
+              controller: inheritedQuestionnaireRenderer.rendererController,
             );
             if (inheritedQuestionnaireRenderer.rendererController.indexedItems
                 .containsKey(
@@ -221,13 +220,15 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem
 
   @override
   Widget buildQuestionnaireItem(BuildContext context) {
+    // Cache the inherited data to avoid multiple tree traversals
+    final inheritedData = InheritedQuestionnaireRenderer.of(context);
     final isRequired = questionnaireItem.required_?.valueBoolean ?? false;
     final responseItem = findQuestionnaireResponseItem(
-      InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
+      inheritedData.questionnaireResponse,
       itemLinkId,
     );
     return Focus(
-      focusNode: assignFocusNode(InheritedQuestionnaireRenderer.of(context)),
+      focusNode: assignFocusNode(inheritedData),
       canRequestFocus: true,
       onFocusChange: (value) {
         if (value) {
@@ -236,17 +237,15 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem
       },
       child: Container(
         decoration: BoxDecoration(
-          border: markAsRequired(InheritedQuestionnaireRenderer.of(context),
-                  responseItem, isRequired)
+          border: markAsRequired(inheritedData, responseItem, isRequired)
               ? Border.all(color: Colors.red)
               : null,
         ),
         child: IgnorePointer(
-          ignoring: InheritedQuestionnaireRenderer.of(context).readOnly
-              ? InheritedQuestionnaireRenderer.of(context).readOnly
+          ignoring: inheritedData.readOnly
+              ? inheritedData.readOnly
               : questionnaireItem.readOnly?.valueBoolean ?? false,
-          child: assignQuestionnaireWidget(
-              InheritedQuestionnaireRenderer.of(context)),
+          child: assignQuestionnaireWidget(inheritedData),
         ),
       ),
     );

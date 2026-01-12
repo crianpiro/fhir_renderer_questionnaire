@@ -79,19 +79,23 @@ abstract class QuestionnaireBaseItem extends StatelessWidget {
 
   void assignDependents(
       InheritedQuestionnaireRenderer inheritedQuestionnaireRenderer) {
-    final dependents = questionnaireItem.enableWhen
-        ?.map((condition) => "${condition.question.valueString}")
-        .toList();
+    // Only assign if not already present to avoid recreating FocusNode on every build
+    if (!inheritedQuestionnaireRenderer.rendererController.indexedItems
+        .containsKey(itemLinkId!)) {
+      final dependents = questionnaireItem.enableWhen
+          ?.map((condition) => "${condition.question.valueString}")
+          .toList();
 
-    final currentIndex =
-        inheritedQuestionnaireRenderer.rendererController.indexedItems.length;
-    inheritedQuestionnaireRenderer
-            .rendererController.indexedItems[itemLinkId!] =
-        ItemBehavioralData(
-            index: currentIndex,
-            markAsRequired: false,
-            focusNode: FocusNode(),
-            dependentOn: dependents);
+      final currentIndex =
+          inheritedQuestionnaireRenderer.rendererController.indexedItems.length;
+      inheritedQuestionnaireRenderer
+              .rendererController.indexedItems[itemLinkId!] =
+          ItemBehavioralData(
+              index: currentIndex,
+              markAsRequired: false,
+              focusNode: FocusNode(),
+              dependentOn: dependents);
+    }
   }
 
   bool markAsRequired(

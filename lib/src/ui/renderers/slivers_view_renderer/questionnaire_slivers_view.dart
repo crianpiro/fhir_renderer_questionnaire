@@ -10,36 +10,36 @@ class QuestionnaireSliversView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<QuestionnaireItem>? items = InheritedQuestionnaireRenderer.of(context)
-        .questionnaire
-        .item
+    final inheritedData = InheritedQuestionnaireRenderer.of(context);
+    List<QuestionnaireItem>? items = inheritedData.questionnaire.item
         ?.where(
           (i) => FhirRendererQuestionnaireUtils.isQuestionnaireItemEnabled(
-            InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
+            inheritedData.questionnaireResponse,
             i,
+            controller: inheritedData.rendererController,
           ),
         )
         .toList();
 
     if (items != null) {
+      // Clear old keys before adding new ones
+      inheritedData.rendererController.groupBundleKeys.clear();
+
       return CustomScrollView(
-        controller: InheritedQuestionnaireRenderer.of(context)
-            .rendererController
-            .listViewScrollController,
-        slivers: items.map((item) {
-          final index = items.indexOf(item);
-          GlobalKey globalKey = GlobalKey();
-          InheritedQuestionnaireRenderer.of(context)
-              .rendererController
-              .groupBundleKeys
-              .add(globalKey);
+        controller: inheritedData.rendererController.listViewScrollController,
+        slivers: List.generate(items.length, (index) {
+          final item = items[index];
+          final linkId = item.linkId.valueString;
+          final globalKey = GlobalKey(debugLabel: 'sliver_item_$linkId');
+          inheritedData.rendererController.groupBundleKeys.add(globalKey);
+
           return QuestionnaireSliverItemWrapper(
             key: globalKey,
             questionnaireItem: item,
             index: index,
             isLastItem: index == items.length - 1,
           );
-        }).toList(),
+        }),
       );
     }
 

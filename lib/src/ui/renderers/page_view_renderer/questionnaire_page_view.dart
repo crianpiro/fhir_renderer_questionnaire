@@ -10,13 +10,13 @@ class QuestionnairePageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<QuestionnaireItem>? items = InheritedQuestionnaireRenderer.of(context)
-        .questionnaire
-        .item
+    final inheritedData = InheritedQuestionnaireRenderer.of(context);
+    List<QuestionnaireItem>? items = inheritedData.questionnaire.item
         ?.where(
           (i) => FhirRendererQuestionnaireUtils.isQuestionnaireItemEnabled(
-            InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
+            inheritedData.questionnaireResponse,
             i,
+            controller: inheritedData.rendererController,
           ),
         )
         .toList();
@@ -24,16 +24,15 @@ class QuestionnairePageView extends StatelessWidget {
     if (items != null) {
       return SafeArea(
         child: PageView.builder(
-          controller: InheritedQuestionnaireRenderer.of(context)
-              .rendererController
-              .pageViewController,
+          controller: inheritedData.rendererController.pageViewController,
           itemCount: items.length,
-          onPageChanged:
-              InheritedQuestionnaireRenderer.of(context).onPageChanged,
+          onPageChanged: inheritedData.onPageChanged,
           itemBuilder: (context, index) {
+            final item = items[index];
             return SingleChildScrollView(
               child: QuestionnaireItemWrapper(
-                questionnaireItem: items[index],
+                key: ValueKey(item.linkId.valueString),
+                questionnaireItem: item,
                 index: index,
                 isLastItem: items.length - 1 == index,
               ),

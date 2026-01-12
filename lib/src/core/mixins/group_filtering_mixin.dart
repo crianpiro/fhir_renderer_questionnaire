@@ -21,8 +21,11 @@ mixin GroupFilteringMixin {
       final enabled = FhirRendererQuestionnaireUtils.isQuestionnaireItemEnabled(
         rendererData.questionnaireResponse,
         item,
+        controller: rendererData.rendererController,
       );
 
+      // Note: The enabled parameter in copyWith is vestigial and doesn't affect
+      // ItemBehavioralData. The enabled state is now cached in the controller.
       if (rendererData.rendererController.indexedItems.containsKey(
         item.linkId.valueString!,
       )) {

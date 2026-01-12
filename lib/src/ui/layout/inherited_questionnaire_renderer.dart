@@ -67,17 +67,18 @@ final class InheritedQuestionnaireRenderer extends InheritedWidget {
   }
 
   @override
-  bool updateShouldNotify(InheritedQuestionnaireRenderer oldWidget) =>
-      questionnaire != oldWidget.questionnaire ||
-      readOnly != oldWidget.readOnly ||
-      rendererController != oldWidget.rendererController ||
-      questionnaireResponse != oldWidget.questionnaireResponse ||
-      checkRequiredItems != oldWidget.checkRequiredItems ||
-      choiceItemBuilder != oldWidget.choiceItemBuilder ||
-      fieldItemBuilder != oldWidget.fieldItemBuilder ||
-      groupItemBuilder != oldWidget.groupItemBuilder ||
-      dateTimeItemBuilder != oldWidget.dateTimeItemBuilder ||
-      boolItemBuilder != oldWidget.boolItemBuilder ||
-      displayItemBuilder != oldWidget.displayItemBuilder ||
-      openChoiceItemBuilder != oldWidget.openChoiceItemBuilder;
+  bool updateShouldNotify(InheritedQuestionnaireRenderer oldWidget) {
+    // Use identical() for questionnaireResponse to only notify on actual object replacement,
+    // not on copyWith() modifications. This reduces unnecessary rebuilds.
+    // Most other fields are stable across rebuilds, so we can safely check them.
+    return !identical(questionnaire, oldWidget.questionnaire) ||
+        readOnly != oldWidget.readOnly ||
+        !identical(rendererController, oldWidget.rendererController) ||
+        !identical(questionnaireResponse, oldWidget.questionnaireResponse) ||
+        checkRequiredItems != oldWidget.checkRequiredItems;
+    // Note: Builder functions are intentionally excluded from this check.
+    // They are typically stable across rebuilds, and checking them would cause
+    // unnecessary rebuilds when lambdas are recreated. If builders change,
+    // the parent widget will rebuild anyway.
+  }
 }

@@ -46,6 +46,12 @@ class RendererQuestionnaireController {
   /// manage focus and validation.
   final Map<String, ItemBehavioralData> indexedItems = {};
 
+  /// Cache for enableWhen condition evaluation results.
+  /// Key format: "linkId:responseHashCode"
+  /// Value: whether the item is enabled
+  /// This cache is cleared when the response changes.
+  final Map<String, bool> _enableWhenCache = {};
+
   /// Creates a [RendererQuestionnaireController].
   ///
   /// The [questionnaire] parameter is required and defines the structure of the
@@ -79,6 +85,22 @@ class RendererQuestionnaireController {
     onReadOnlyModeChanged?.call();
   }
 
+  /// Gets a cached enableWhen evaluation result.
+  /// Returns null if not cached.
+  bool? getCachedEnableWhen(String linkId, int responseHashCode) {
+    return _enableWhenCache['$linkId:$responseHashCode'];
+  }
+
+  /// Caches an enableWhen evaluation result.
+  void cacheEnableWhen(String linkId, int responseHashCode, bool enabled) {
+    _enableWhenCache['$linkId:$responseHashCode'] = enabled;
+  }
+
+  /// Clears the enableWhen cache. Should be called when the response changes.
+  void clearEnableWhenCache() {
+    _enableWhenCache.clear();
+  }
+
   /// Generates the current [QuestionnaireResponse] from the renderer's state.
   ///
   /// This method calls the [onGenerateQuestionnaireResponse] callback which collects
@@ -86,5 +108,21 @@ class RendererQuestionnaireController {
   QuestionnaireResponse generateQuestionnaireResponse() {
     return onGenerateQuestionnaireResponse?.call() ??
         initialQuestionnaireResponse!;
+  }
+
+  /// Disposes of all resources held by this controller.
+  ///
+  /// This method should be called when the controller is no longer needed,
+  /// typically in the dispose method of the widget using this controller.
+  /// It cleans up FocusNodes, TextEditingControllers, and other resources
+  /// to prevent memory leaks.
+  void dispose() {
+    // Dispose all FocusNodes and TextEditingControllers
+    for (final itemData in indexedItems.values) {
+      itemData.focusNode.dispose();
+      itemData.textController?.dispose();
+    }
+    indexedItems.clear();
+    groupBundleKeys.clear();
   }
 }
