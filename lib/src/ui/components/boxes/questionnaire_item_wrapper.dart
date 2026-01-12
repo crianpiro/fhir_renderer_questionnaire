@@ -198,8 +198,8 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
           return inheritedQuestionnaireRenderer.fieldItemBuilder!(
             index,
             isLastItem,
-            //TODO
-            TextEditingController(),
+            getAssignedTextController(
+                inheritedQuestionnaireRenderer, "initialValue"),
             findQuestionnaireResponseItem(
               inheritedQuestionnaireRenderer.questionnaireResponse,
               itemLinkId,

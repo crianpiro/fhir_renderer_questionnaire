@@ -44,6 +44,39 @@ abstract class QuestionnaireBaseItem extends StatelessWidget {
     );
   }
 
+  TextEditingController getAssignedTextController(
+      InheritedQuestionnaireRenderer questionnaireRendererData,
+      String initialValue) {
+    TextEditingController controller;
+    if (questionnaireRendererData.rendererController.indexedItems.containsKey(
+          itemLinkId,
+        ) &&
+        questionnaireRendererData
+                .rendererController.indexedItems[itemLinkId]!.textController ==
+            null) {
+      final currentResponseItem = findQuestionnaireResponseItem(
+        questionnaireRendererData.questionnaireResponse,
+        itemLinkId,
+      );
+
+      controller = TextEditingController(
+        text: currentResponseItem
+                ?.answer?.firstOrNull?.valueString?.valueString ??
+            initialValue,
+      );
+
+      questionnaireRendererData.rendererController.indexedItems[itemLinkId!] =
+          questionnaireRendererData
+              .rendererController.indexedItems[itemLinkId!]!
+              .copyWith(textController: controller);
+    } else {
+      controller = questionnaireRendererData
+          .rendererController.indexedItems[itemLinkId]!.textController!;
+    }
+
+    return controller;
+  }
+
   void assignDependents(
       InheritedQuestionnaireRenderer inheritedQuestionnaireRenderer) {
     final dependents = questionnaireItem.enableWhen

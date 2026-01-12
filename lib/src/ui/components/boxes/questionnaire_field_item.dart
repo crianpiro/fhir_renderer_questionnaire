@@ -36,60 +36,39 @@ class QuestionnaireFieldItem extends QuestionnaireBaseItem {
     return "";
   }
 
-  TextEditingController getAssignedTextController(
-      InheritedQuestionnaireRenderer questionnaireRendererData) {
-    TextEditingController controller;
-    if (questionnaireRendererData.rendererController.indexedItems.containsKey(
-          itemLinkId,
-        ) &&
-        questionnaireRendererData
-                .rendererController.indexedItems[itemLinkId]!.textController ==
-            null) {
-      final currentResponseItem = findQuestionnaireResponseItem(
-        questionnaireRendererData.questionnaireResponse,
-        itemLinkId,
+  void onTextChanged(
+      InheritedQuestionnaireRenderer inheritedQuestionnaireRenderer,
+      String value) {
+    if (inheritedQuestionnaireRenderer.rendererController.indexedItems
+            .containsKey(itemLinkId) &&
+        inheritedQuestionnaireRenderer
+                .rendererController.indexedItems[itemLinkId]!.dependentOn !=
+            null &&
+        inheritedQuestionnaireRenderer.rendererController
+            .indexedItems[itemLinkId]!.dependentOn!.isNotEmpty) {
+      final resp = FhirRendererQuestionnaireResponseUtils
+          .setResponseAnswerInQuestionnaireResponse(
+        inheritedQuestionnaireRenderer.questionnaireResponse,
+        questionnaireItem,
+        value.trim().isEmpty
+            ? null
+            : QuestionnaireResponseAnswer(valueX: FhirString(value)),
       );
-      String initialValue = getInitialValue();
-
-      controller = TextEditingController(
-        text: currentResponseItem
-                ?.answer?.firstOrNull?.valueString?.valueString ??
-            initialValue,
-      );
-
-      questionnaireRendererData.rendererController.indexedItems[itemLinkId!] =
-          questionnaireRendererData
-              .rendererController.indexedItems[itemLinkId!]!
-              .copyWith(textController: controller);
-    } else {
-      controller = questionnaireRendererData
-          .rendererController.indexedItems[itemLinkId]!.textController!;
+      inheritedQuestionnaireRenderer.onResponseChanged(resp);
     }
-
-    return controller;
   }
 
   @override
   Widget buildQuestionnaireItem(BuildContext context) {
-    TextEditingController localController =
-        getAssignedTextController(InheritedQuestionnaireRenderer.of(context));
+    TextEditingController localController = getAssignedTextController(
+        InheritedQuestionnaireRenderer.of(context), getInitialValue());
 
     return BaseDecorator(
       title: itemTextTitle,
       roundBottomBorder: isLastItem,
       child: TextField(
         controller: localController,
-        onChanged: (value) {
-          final resp = FhirRendererQuestionnaireResponseUtils
-              .setResponseAnswerInQuestionnaireResponse(
-            InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
-            questionnaireItem,
-            value.trim().isEmpty
-                ? null
-                : QuestionnaireResponseAnswer(valueX: FhirString(value)),
-          );
-          InheritedQuestionnaireRenderer.of(context).onResponseChanged(resp);
-        },
+        onChanged: (value) {},
         maxLines: questionnaireItem.type == QuestionnaireItemType.text
             ? 5
             : ((questionnaireItem.maxLength?.valueInt ?? 50) /
