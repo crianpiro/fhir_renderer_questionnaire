@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
+import '../../../core/utils/keyboard_type_helper.dart';
 import '../boxes/questionnaire_field_item.dart';
 import 'sliver_base_decorator.dart';
 
@@ -55,6 +56,9 @@ final class QuestionnaireSliverFieldItem extends QuestionnaireFieldItem {
             itemType: questionnaireItem.type,
           ),
           autovalidateMode: AutovalidateMode.onUserInteraction,
+          keyboardType: KeyboardTypeHelper.getKeyboardType(questionnaireItem.type),
+          textInputAction: KeyboardTypeHelper.getTextInputAction(questionnaireItem.type),
+          inputFormatters: KeyboardTypeHelper.getInputFormatters(questionnaireItem.type),
           maxLines: questionnaireItem.type == QuestionnaireItemType.text
               ? 5
               : ((questionnaireItem.maxLength?.valueInt ?? 50) /

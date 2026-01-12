@@ -14,6 +14,10 @@ Types of changes
 ### Added
 * Regex validation support for text field types using standard FHIR extension `http://hl7.org/fhir/StructureDefinition/regex`
 * **Automatic default validation** for field types: `integer`, `decimal`, `url`, and `quantity` (no extensions required)
+* **Automatic keyboard type selection** based on field type (integer → number pad, decimal → decimal pad, url → URL keyboard, text → multiline)
+* Input formatters to restrict invalid characters during typing (e.g., letters in integer fields, multiple decimal points in decimal fields)
+* Smart text input actions (newline for multiline text, next for single-line fields)
+* New `KeyboardTypeHelper` utility class providing keyboard configuration for different field types
 * Support for `entryFormat` extension to provide custom validation error messages
 * Automatic validation feedback with `TextFormField` for real-time input validation
 * `regexValidationPattern` and `regexValidationError` fields in `ItemBehavioralData`

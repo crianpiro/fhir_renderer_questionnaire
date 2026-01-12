@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
+import '../../../core/utils/keyboard_type_helper.dart';
 import 'base_decorator.dart';
 import '../questionnaire_base_item.dart';
 import '../../../core/mixins/text_field_value_mixin.dart';
@@ -66,6 +67,9 @@ class QuestionnaireFieldItem extends QuestionnaireBaseItem
           itemType: questionnaireItem.type,
         ),
         autovalidateMode: AutovalidateMode.onUserInteraction,
+        keyboardType: KeyboardTypeHelper.getKeyboardType(questionnaireItem.type),
+        textInputAction: KeyboardTypeHelper.getTextInputAction(questionnaireItem.type),
+        inputFormatters: KeyboardTypeHelper.getInputFormatters(questionnaireItem.type),
         maxLines: questionnaireItem.type == QuestionnaireItemType.text
             ? 5
             : ((questionnaireItem.maxLength?.valueInt ?? 50) /
