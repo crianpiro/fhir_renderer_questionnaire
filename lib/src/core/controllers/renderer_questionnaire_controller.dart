@@ -118,6 +118,7 @@ class RendererQuestionnaireController {
   /// to prevent memory leaks.
   void dispose() {
     // Dispose all FocusNodes and TextEditingControllers
+    onGenerateQuestionnaireResponse = null;
     for (final itemData in indexedItems.values) {
       itemData.focusNode.dispose();
       itemData.textController?.dispose();

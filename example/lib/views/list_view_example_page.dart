@@ -1,6 +1,8 @@
 import 'dart:developer';
 
-import 'package:example/data/mocks.dart';
+import 'package:example/data/regex_validation_mock.dart';
+import 'package:example/widgets/segmented_choice.dart';
+import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +10,7 @@ import 'package:flutter/material.dart';
 //the QuestionnaireRendererController instance.
 class CubitOrBlocOrController {
   RendererQuestionnaireController rendererController =
-      RendererQuestionnaireController(questionnaire: example);
+      RendererQuestionnaireController(questionnaire: regexValidationExample);
 }
 
 class ListViewExamplePage extends StatelessWidget {
@@ -36,46 +38,46 @@ class ListViewExamplePage extends StatelessWidget {
       ),
       body: QuestionnaireListViewRenderer(
         rendererController: controller.rendererController,
-        // choiceItemBuilder: (
-        //   index,
-        //   isLastItem,
-        //   selectedResponse,
-        //   questionnaireItem,
-        //   onAnswerOptionSelected,
-        // ) {
-        //   return Padding(
-        //     padding: const EdgeInsets.all(10.0),
-        //     child: Column(
-        //       crossAxisAlignment: CrossAxisAlignment.start,
-        //       children: [
-        //         Text(
-        //           "${questionnaireItem.text}",
-        //           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-        //         ),
-        //         SegmentedChoice<QuestionnaireAnswerOption>(
-        //           selectedValue:
-        //               questionnaireItem.answerOption
-        //                   ?.where(
-        //                     (item) =>
-        //                         item.valueCoding ==
-        //                         selectedResponse
-        //                             ?.answer
-        //                             ?.firstOrNull
-        //                             ?.valueCoding,
-        //                   )
-        //                   .firstOrNull,
-        //           values: questionnaireItem.answerOption!,
-        //           valueNameResolver:
-        //               (value) => "${value.valueCoding?.display?.valueString}",
-        //           enabled: true,
-        //           onSelectedValueChanged: (value) {
-        //             onAnswerOptionSelected(value);
-        //           },
-        //         ),
-        //       ],
-        //     ),
-        //   );
-        // },
+        choiceItemBuilder: (
+          index,
+          isLastItem,
+          selectedResponse,
+          questionnaireItem,
+          onAnswerOptionSelected,
+        ) {
+          return Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "${questionnaireItem.text}",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                SegmentedChoice<QuestionnaireAnswerOption>(
+                  selectedValue:
+                      questionnaireItem.answerOption
+                          ?.where(
+                            (item) =>
+                                item.valueCoding ==
+                                selectedResponse
+                                    ?.answer
+                                    ?.firstOrNull
+                                    ?.valueCoding,
+                          )
+                          .firstOrNull,
+                  values: questionnaireItem.answerOption!,
+                  valueNameResolver:
+                      (value) => "${value.valueCoding?.display?.valueString}",
+                  enabled: true,
+                  onSelectedValueChanged: (value) {
+                    onAnswerOptionSelected(value);
+                  },
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

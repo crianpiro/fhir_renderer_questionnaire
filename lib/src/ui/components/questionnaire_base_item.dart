@@ -2,6 +2,7 @@ import 'package:fhir_r4/fhir_r4.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/data/item_behavioral_data.dart';
+import '../../core/extensions/fhir_extensions.dart';
 import '../layout/inherited_questionnaire_renderer.dart';
 import '../../core/utils/fhir_renderer_questionnaire_utils.dart';
 import '../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
@@ -94,7 +95,9 @@ abstract class QuestionnaireBaseItem extends StatelessWidget {
               index: currentIndex,
               markAsRequired: false,
               focusNode: FocusNode(),
-              dependentOn: dependents);
+              dependentOn: dependents,
+              regexValidationPattern: questionnaireItem.regexValidationPattern,
+              regexValidationError: questionnaireItem.regexValidationErrorMessage);
     }
   }
 

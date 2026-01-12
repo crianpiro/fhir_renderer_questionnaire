@@ -171,7 +171,8 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem
         return factory.createOpenChoiceItem(
             index, isLastItem, questionnaireItem);
 
-      //TODO: Implement the regular expressions to validate the content
+      // Regex validation is implemented via FHIR extension: http://hl7.org/fhir/StructureDefinition/regex
+      // See QuestionnaireFieldItem and QuestionnaireSliverFieldItem for implementation
       case QuestionnaireItemType.text:
       case QuestionnaireItemType.quantity:
       case QuestionnaireItemType.decimal:

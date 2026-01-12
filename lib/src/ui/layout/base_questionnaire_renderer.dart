@@ -147,9 +147,9 @@ abstract class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer>
 
   @override
   void dispose() {
-    widget.rendererController.onGenerateQuestionnaireResponse = null;
     widget.rendererController.initialQuestionnaireResponse =
         questionnaireResponse;
+    widget.rendererController.dispose();
     super.dispose();
   }
 }

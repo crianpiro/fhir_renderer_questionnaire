@@ -8,9 +8,10 @@ import '../../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
 import 'base_decorator.dart';
 import '../questionnaire_base_item.dart';
 import '../../../core/mixins/text_field_value_mixin.dart';
+import '../../../core/mixins/regex_validation_mixin.dart';
 
 class QuestionnaireFieldItem extends QuestionnaireBaseItem
-    with TextFieldValueMixin {
+    with TextFieldValueMixin, RegexValidationMixin {
   const QuestionnaireFieldItem({
     required super.questionnaireItem,
     required super.index,
@@ -42,16 +43,24 @@ class QuestionnaireFieldItem extends QuestionnaireBaseItem
 
   @override
   Widget buildQuestionnaireItem(BuildContext context) {
+    final inheritedData = InheritedQuestionnaireRenderer.of(context);
     TextEditingController localController = getAssignedTextController(
-        InheritedQuestionnaireRenderer.of(context),
+        inheritedData,
         getInitialValue(questionnaireItem));
+
+    // Get regex validation pattern from ItemBehavioralData
+    final itemData = inheritedData.rendererController.indexedItems[itemLinkId];
+    final regexPattern = itemData?.regexValidationPattern;
+    final regexErrorMessage = itemData?.regexValidationError;
 
     return BaseDecorator(
       title: itemTextTitle,
       roundBottomBorder: isLastItem,
-      child: TextField(
+      child: TextFormField(
         controller: localController,
         onChanged: (value) {},
+        validator: (value) => validateInput(value, regexPattern, regexErrorMessage),
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         maxLines: questionnaireItem.type == QuestionnaireItemType.text
             ? 5
             : ((questionnaireItem.maxLength?.valueInt ?? 50) /
@@ -59,6 +68,11 @@ class QuestionnaireFieldItem extends QuestionnaireBaseItem
                 .floor(),
         minLines: questionnaireItem.type == QuestionnaireItemType.text ? 5 : 1,
         maxLength: questionnaireItem.maxLength?.valueInt,
+        decoration: InputDecoration(
+          errorMaxLines: 2,
+          helperText: regexErrorMessage,
+          helperMaxLines: 2,
+        ),
       ),
     );
   }

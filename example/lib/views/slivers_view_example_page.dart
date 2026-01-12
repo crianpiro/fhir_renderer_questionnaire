@@ -9,9 +9,9 @@ import 'package:flutter/material.dart';
 class CubitOrBlocOrController {
   RendererQuestionnaireController rendererController =
       RendererQuestionnaireController(
-        sliversInitialIndex: 3,
-        questionnaire: example,
-        forceReadOnlyView: true,
+        sliversInitialIndex: 0,
+        questionnaire: exampleAnamnese,
+        forceReadOnlyView: false,
       );
 }
 
@@ -51,7 +51,6 @@ class SliversViewExamplePage extends StatelessWidget {
               SliverAppBar(
                 key: Key("${questionnaireItem.linkId.valueString}"),
                 pinned: true,
-                toolbarHeight: 50,
                 automaticallyImplyLeading: false,
                 title: Row(
                   children: [
