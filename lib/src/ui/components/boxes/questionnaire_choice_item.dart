@@ -1,35 +1,19 @@
-import 'package:fhir_r4/fhir_r4.dart';
 import 'package:flutter/material.dart';
 
 import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
 import 'base_decorator.dart';
 import '../questionnaire_base_item.dart';
+import '../../../core/mixins/choice_value_mixin.dart';
 
-class QuestionnaireChoiceItem extends QuestionnaireBaseItem {
+class QuestionnaireChoiceItem extends QuestionnaireBaseItem
+    with ChoiceValueMixin {
   const QuestionnaireChoiceItem({
     required super.questionnaireItem,
     required super.index,
     required super.isLastItem,
     super.key,
   });
-
-  String? getInitialOrSelectedValue(
-      QuestionnaireResponseItem? selectedResponseItem) {
-    if (selectedResponseItem != null) {
-      return selectedResponseItem
-          .answer?.firstOrNull?.valueCoding?.code?.valueString;
-    } else if (questionnaireItem.initial != null &&
-        questionnaireItem.initial!.isNotEmpty &&
-        questionnaireItem.initial!.first.valueX is Coding &&
-        (questionnaireItem.initial!.first.valueX as Coding).code?.valueString !=
-            null) {
-      return (questionnaireItem.initial!.first.valueX as Coding)
-          .code
-          ?.valueString;
-    }
-    return null;
-  }
 
   @override
   Widget buildQuestionnaireItem(BuildContext context) {
@@ -47,8 +31,8 @@ class QuestionnaireChoiceItem extends QuestionnaireBaseItem {
               itemLinkId,
             );
 
-            String? selectedValue =
-                getInitialOrSelectedValue(selectedResponseItem);
+            String? selectedValue = getInitialOrSelectedValue(
+                selectedResponseItem, questionnaireItem);
 
             return RadioListTile(
               value: selectedValue,

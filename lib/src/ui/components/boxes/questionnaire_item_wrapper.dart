@@ -1,25 +1,24 @@
 import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_renderer_questionnaire/src/core/utils/fhir_renderer_questionnaire_utils.dart';
-import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/base_decorator.dart';
 import 'package:flutter/material.dart';
 
 import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
 import '../questionnaire_base_item.dart';
-import 'questionnaire_boolean_item.dart';
-import 'questionnaire_choice_item.dart';
-import 'questionnaire_date_time_item.dart';
-import 'questionnaire_display_item.dart';
-import 'questionnaire_field_item.dart';
-import 'questionnaire_group_item.dart';
-import 'questionnaire_open_choice_item.dart';
+import '../../factories/questionnaire_component_factory.dart';
+import '../../factories/box_component_factory.dart';
+import '../../../core/mixins/text_field_value_mixin.dart';
 
-class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
+class QuestionnaireItemWrapper extends QuestionnaireBaseItem
+    with TextFieldValueMixin {
+  final QuestionnaireComponentFactory factory;
+
   const QuestionnaireItemWrapper({
     super.key,
     required super.questionnaireItem,
     required super.index,
     required super.isLastItem,
+    this.factory = const BoxComponentFactory(),
   });
 
   Widget assignQuestionnaireWidget(
@@ -30,11 +29,8 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
           return inheritedQuestionnaireRenderer.displayItemBuilder!(
               index, isLastItem, questionnaireItem);
         }
-        return QuestionnaireDisplayItem(
-          index: index,
-          questionnaireItem: questionnaireItem,
-          isLastItem: isLastItem,
-        );
+        return factory.createDisplayItem(index, isLastItem, questionnaireItem);
+
       case QuestionnaireItemType.boolean:
         if (inheritedQuestionnaireRenderer.boolItemBuilder != null) {
           return inheritedQuestionnaireRenderer.boolItemBuilder!(
@@ -57,11 +53,8 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
             },
           );
         }
-        return QuestionnaireBooleanItem(
-          index: index,
-          questionnaireItem: questionnaireItem,
-          isLastItem: isLastItem,
-        );
+        return factory.createBooleanItem(index, isLastItem, questionnaireItem);
+
       case QuestionnaireItemType.time:
       case QuestionnaireItemType.date:
       case QuestionnaireItemType.dateTime:
@@ -86,11 +79,8 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
             },
           );
         }
-        return QuestionnaireDateTimeItem(
-          index: index,
-          questionnaireItem: questionnaireItem,
-          isLastItem: isLastItem,
-        );
+        return factory.createDateTimeItem(index, isLastItem, questionnaireItem);
+
       case QuestionnaireItemType.group:
         if (inheritedQuestionnaireRenderer.groupItemBuilder != null) {
           List<QuestionnaireItem>? items =
@@ -124,15 +114,13 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
                 index: index,
                 questionnaireItem: questionnaireItem,
                 isLastItem: isLastItem,
+                factory: factory,
               );
             },
           );
         }
-        return QuestionnaireGroupItem(
-          index: index,
-          questionnaireItem: questionnaireItem,
-          isLastItem: isLastItem,
-        );
+        return factory.createGroupItem(index, isLastItem, questionnaireItem);
+
       case QuestionnaireItemType.choice:
         if (inheritedQuestionnaireRenderer.choiceItemBuilder != null) {
           return inheritedQuestionnaireRenderer.choiceItemBuilder!(
@@ -155,11 +143,8 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
             },
           );
         }
-        return QuestionnaireChoiceItem(
-          index: index,
-          questionnaireItem: questionnaireItem,
-          isLastItem: isLastItem,
-        );
+        return factory.createChoiceItem(index, isLastItem, questionnaireItem);
+
       case QuestionnaireItemType.openChoice:
         if (inheritedQuestionnaireRenderer.openChoiceItemBuilder != null) {
           return inheritedQuestionnaireRenderer.openChoiceItemBuilder!(
@@ -182,11 +167,9 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
             },
           );
         }
-        return QuestionnaireOpenChoiceItem(
-          index: index,
-          questionnaireItem: questionnaireItem,
-          isLastItem: isLastItem,
-        );
+        return factory.createOpenChoiceItem(
+            index, isLastItem, questionnaireItem);
+
       //TODO: Implement the regular expressions to validate the content
       case QuestionnaireItemType.text:
       case QuestionnaireItemType.quantity:
@@ -199,7 +182,9 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
             index,
             isLastItem,
             getAssignedTextController(
-                inheritedQuestionnaireRenderer, "initialValue"),
+              inheritedQuestionnaireRenderer,
+              getInitialValue(questionnaireItem),
+            ),
             findQuestionnaireResponseItem(
               inheritedQuestionnaireRenderer.questionnaireResponse,
               itemLinkId,
@@ -222,16 +207,13 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem {
             },
           );
         }
-        return QuestionnaireFieldItem(
-          index: index,
-          questionnaireItem: questionnaireItem,
-          isLastItem: isLastItem,
-        );
+        return factory.createFieldItem(index, isLastItem, questionnaireItem);
+
       default:
-        return BaseDecorator(
-            title: "Unimplemented type: ${questionnaireItem.type}",
-            useNotImplementedStyle: true,
-            roundBottomBorder: false);
+        return factory.createUnimplementedItem(
+          "${questionnaireItem.type}",
+          isLastItem,
+        );
     }
   }
 

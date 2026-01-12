@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../../core/extensions/mapping_extension.dart';
 import '../questionnaire_base_item.dart';
+import '../../../core/mixins/group_filtering_mixin.dart';
 import 'questionnaire_item_wrapper.dart';
 
-class QuestionnaireGroupItem extends QuestionnaireBaseItem {
+class QuestionnaireGroupItem extends QuestionnaireBaseItem
+    with GroupFilteringMixin {
   const QuestionnaireGroupItem({
     super.key,
     required super.index,
@@ -14,29 +16,10 @@ class QuestionnaireGroupItem extends QuestionnaireBaseItem {
     required super.isLastItem,
   });
 
-  List<QuestionnaireItem>? getGroupItems(
-      InheritedQuestionnaireRenderer questionnaireRendererData) {
-    return questionnaireItem.item?.where((item) {
-      final enabled =
-          isItemEnabled(questionnaireRendererData.questionnaireResponse, item);
-
-      if (questionnaireRendererData.rendererController.indexedItems.containsKey(
-        item.linkId.valueString!,
-      )) {
-        final itemData = questionnaireRendererData
-            .rendererController.indexedItems[item.linkId.valueString!]!;
-        questionnaireRendererData
-                .rendererController.indexedItems[item.linkId.valueString!] =
-            itemData.copyWith(enabled: enabled);
-      }
-      return enabled;
-    }).toList();
-  }
-
   @override
   Widget buildQuestionnaireItem(BuildContext context) {
-    List<QuestionnaireItem>? items =
-        getGroupItems(InheritedQuestionnaireRenderer.of(context));
+    List<QuestionnaireItem>? items = getFilteredGroupItems(
+        questionnaireItem, InheritedQuestionnaireRenderer.of(context));
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
       padding: const EdgeInsets.only(bottom: 10.0),

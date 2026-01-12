@@ -17,10 +17,11 @@ final class QuestionnaireSliverDateTimeItem extends QuestionnaireDateTimeItem {
   Widget build(BuildContext context) {
     final currentResponseItem = findQuestionnaireResponseItem(
       InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
-      questionnaireItem.linkId.valueString,
+      itemLinkId,
     );
 
-    String? displayText = extractDisplayText(currentResponseItem);
+    String displayText =
+        extractDisplayText(currentResponseItem, questionnaireItem);
 
     return SliverBaseDecorator(
       title: questionnaireItem.text?.valueString,
@@ -35,6 +36,7 @@ final class QuestionnaireSliverDateTimeItem extends QuestionnaireDateTimeItem {
           onPressed: () async {
             final selectedValue = await onSelectValue(
               context,
+              questionnaireItem,
               currentResponseItem,
             );
 
@@ -55,7 +57,7 @@ final class QuestionnaireSliverDateTimeItem extends QuestionnaireDateTimeItem {
             children: [
               Padding(
                 padding: const EdgeInsets.only(right: 5),
-                child: getItemIcon(),
+                child: getItemIcon(questionnaireItem.type),
               ),
               Text(displayText),
             ],

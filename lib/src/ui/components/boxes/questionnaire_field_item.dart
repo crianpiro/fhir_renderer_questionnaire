@@ -7,34 +7,16 @@ import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
 import 'base_decorator.dart';
 import '../questionnaire_base_item.dart';
+import '../../../core/mixins/text_field_value_mixin.dart';
 
-class QuestionnaireFieldItem extends QuestionnaireBaseItem {
+class QuestionnaireFieldItem extends QuestionnaireBaseItem
+    with TextFieldValueMixin {
   const QuestionnaireFieldItem({
     required super.questionnaireItem,
     required super.index,
     required super.isLastItem,
     super.key,
   });
-
-  String getInitialValue() {
-    if (questionnaireItem.initial != null &&
-        questionnaireItem.initial!.isNotEmpty) {
-      final initial = questionnaireItem.initial!.first;
-      if (initial.valueX is FhirString) {
-        return (initial.valueX as FhirString).valueString ?? "";
-      } else if (initial.valueX is FhirDecimal) {
-        return (initial.valueX as FhirDecimal).valueDouble.toString();
-      } else if (initial.valueX is FhirInteger) {
-        return (initial.valueX as FhirInteger).valueInt.toString();
-      } else if (initial.valueX is Quantity) {
-        return (initial.valueX as Quantity).value?.valueDouble?.toString() ??
-            "";
-      } else if (initial.valueX is FhirUri) {
-        return (initial.valueX as FhirUri).valueUri?.toString() ?? "";
-      }
-    }
-    return "";
-  }
 
   void onTextChanged(
       InheritedQuestionnaireRenderer inheritedQuestionnaireRenderer,
@@ -61,7 +43,8 @@ class QuestionnaireFieldItem extends QuestionnaireBaseItem {
   @override
   Widget buildQuestionnaireItem(BuildContext context) {
     TextEditingController localController = getAssignedTextController(
-        InheritedQuestionnaireRenderer.of(context), getInitialValue());
+        InheritedQuestionnaireRenderer.of(context),
+        getInitialValue(questionnaireItem));
 
     return BaseDecorator(
       title: itemTextTitle,

@@ -5,8 +5,10 @@ import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
 import 'base_decorator.dart';
 import '../questionnaire_base_item.dart';
+import '../../../core/mixins/boolean_value_mixin.dart';
 
-class QuestionnaireBooleanItem extends QuestionnaireBaseItem {
+class QuestionnaireBooleanItem extends QuestionnaireBaseItem
+    with BooleanValueMixin {
   const QuestionnaireBooleanItem({
     super.key,
     required super.questionnaireItem,
@@ -25,17 +27,6 @@ class QuestionnaireBooleanItem extends QuestionnaireBaseItem {
     InheritedQuestionnaireRenderer.of(context).onResponseChanged(resp);
   }
 
-  bool? getInitialOrSelectedValue(
-      QuestionnaireResponseItem? selectedResponseItem) {
-    return selectedResponseItem
-                ?.answer?.firstOrNull?.valueBoolean?.valueBoolean ??
-            questionnaireItem.initial != null &&
-                questionnaireItem.initial!.isNotEmpty &&
-                questionnaireItem.initial!.first.valueX is FhirBoolean
-        ? (questionnaireItem.initial!.first.valueX as FhirBoolean).valueBoolean
-        : null;
-  }
-
   @override
   Widget buildQuestionnaireItem(BuildContext context) {
     final selectedResponseItem = findQuestionnaireResponseItem(
@@ -43,7 +34,8 @@ class QuestionnaireBooleanItem extends QuestionnaireBaseItem {
       itemLinkId,
     );
 
-    bool? selectedValue = getInitialOrSelectedValue(selectedResponseItem);
+    bool? selectedValue =
+        getInitialOrSelectedValue(selectedResponseItem, questionnaireItem);
 
     return BaseDecorator(
       title: itemTextTitle,

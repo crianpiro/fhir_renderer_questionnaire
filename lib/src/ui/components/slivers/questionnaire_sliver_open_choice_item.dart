@@ -26,11 +26,11 @@ final class QuestionnaireSliverOpenChoiceItem
 
             final selectedResponseItem = findQuestionnaireResponseItem(
               InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
-              questionnaireItem.linkId.valueString,
+              itemLinkId,
             );
 
-            bool isSelected =
-                isInitialOrSelectedValue(selectedResponseItem, answerOption);
+            bool isSelected = isInitialOrSelectedValue(
+                selectedResponseItem, questionnaireItem, answerOption);
 
             return SliverToBoxAdapter(
               child: CheckboxListTile(

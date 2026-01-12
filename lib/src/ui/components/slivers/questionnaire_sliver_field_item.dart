@@ -19,7 +19,8 @@ final class QuestionnaireSliverFieldItem extends QuestionnaireFieldItem {
   @override
   Widget build(BuildContext context) {
     TextEditingController localController = getAssignedTextController(
-        InheritedQuestionnaireRenderer.of(context), getInitialValue());
+        InheritedQuestionnaireRenderer.of(context),
+        getInitialValue(questionnaireItem));
 
     return SliverBaseDecorator(
       title: questionnaireItem.text?.valueString,

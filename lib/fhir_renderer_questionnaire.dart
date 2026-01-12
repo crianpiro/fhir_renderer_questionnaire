@@ -36,3 +36,18 @@ export 'src/ui/renderers/renderers.dart'
         QuestionnaireSliversViewRenderer;
 export 'src/core/controllers/renderer_questionnaire_controller.dart'
     show RendererQuestionnaireController;
+
+// Mixins for value handling (useful for custom builder implementations)
+export 'src/core/mixins/text_field_value_mixin.dart' show TextFieldValueMixin;
+export 'src/core/mixins/boolean_value_mixin.dart' show BooleanValueMixin;
+export 'src/core/mixins/choice_value_mixin.dart' show ChoiceValueMixin;
+export 'src/core/mixins/open_choice_value_mixin.dart' show OpenChoiceValueMixin;
+export 'src/core/mixins/datetime_value_mixin.dart' show DateTimeValueMixin;
+export 'src/core/mixins/group_filtering_mixin.dart' show GroupFilteringMixin;
+
+// Factories for component creation (advanced usage)
+export 'src/ui/factories/questionnaire_component_factory.dart'
+    show QuestionnaireComponentFactory;
+export 'src/ui/factories/box_component_factory.dart' show BoxComponentFactory;
+export 'src/ui/factories/sliver_component_factory.dart'
+    show SliverComponentFactory;

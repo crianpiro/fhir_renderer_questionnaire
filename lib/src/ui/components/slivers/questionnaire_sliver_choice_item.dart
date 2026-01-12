@@ -26,11 +26,11 @@ final class QuestionnaireSliverChoiceItem extends QuestionnaireChoiceItem {
 
             final selectedResponseItem = findQuestionnaireResponseItem(
               InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
-              questionnaireItem.linkId.valueString,
+              itemLinkId,
             );
 
-            String? selectedValue =
-                getInitialOrSelectedValue(selectedResponseItem);
+            String? selectedValue = getInitialOrSelectedValue(
+                selectedResponseItem, questionnaireItem);
 
             return SliverToBoxAdapter(
               child: RadioListTile(

@@ -16,10 +16,11 @@ final class QuestionnaireSliverBooleanItem extends QuestionnaireBooleanItem {
   Widget build(BuildContext context) {
     final selectedResponseItem = findQuestionnaireResponseItem(
       InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
-      questionnaireItem.linkId.valueString,
+      itemLinkId,
     );
 
-    bool? selectedValue = getInitialOrSelectedValue(selectedResponseItem);
+    bool? selectedValue =
+        getInitialOrSelectedValue(selectedResponseItem, questionnaireItem);
 
     return SliverBaseDecorator(
       title: questionnaireItem.text?.valueString,

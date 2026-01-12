@@ -16,8 +16,8 @@ final class QuestionnaireSliverGroupItem extends QuestionnaireGroupItem {
 
   @override
   Widget build(BuildContext context) {
-    List<QuestionnaireItem>? items =
-        getGroupItems(InheritedQuestionnaireRenderer.of(context));
+    List<QuestionnaireItem>? items = getFilteredGroupItems(
+        questionnaireItem, InheritedQuestionnaireRenderer.of(context));
 
     return SliverMainAxisGroup(
       slivers: [
