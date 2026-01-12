@@ -59,7 +59,12 @@ class QuestionnaireFieldItem extends QuestionnaireBaseItem
       child: TextFormField(
         controller: localController,
         onChanged: (value) {},
-        validator: (value) => validateInput(value, regexPattern, regexErrorMessage),
+        validator: (value) => validateInput(
+          value,
+          regexPattern,
+          regexErrorMessage,
+          itemType: questionnaireItem.type,
+        ),
         autovalidateMode: AutovalidateMode.onUserInteraction,
         maxLines: questionnaireItem.type == QuestionnaireItemType.text
             ? 5

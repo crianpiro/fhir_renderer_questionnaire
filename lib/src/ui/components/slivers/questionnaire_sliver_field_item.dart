@@ -48,7 +48,12 @@ final class QuestionnaireSliverFieldItem extends QuestionnaireFieldItem {
             );
             inheritedData.onResponseChanged(resp);
           },
-          validator: (value) => validateInput(value, regexPattern, regexErrorMessage),
+          validator: (value) => validateInput(
+            value,
+            regexPattern,
+            regexErrorMessage,
+            itemType: questionnaireItem.type,
+          ),
           autovalidateMode: AutovalidateMode.onUserInteraction,
           maxLines: questionnaireItem.type == QuestionnaireItemType.text
               ? 5

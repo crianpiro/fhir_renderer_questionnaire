@@ -13,12 +13,14 @@ Types of changes
 
 ### Added
 * Regex validation support for text field types using standard FHIR extension `http://hl7.org/fhir/StructureDefinition/regex`
+* **Automatic default validation** for field types: `integer`, `decimal`, `url`, and `quantity` (no extensions required)
 * Support for `entryFormat` extension to provide custom validation error messages
 * Automatic validation feedback with `TextFormField` for real-time input validation
 * `regexValidationPattern` and `regexValidationError` fields in `ItemBehavioralData`
 * Extension methods `regexValidationPattern` and `regexValidationErrorMessage` on `QuestionnaireItem`
-* New `RegexValidationMixin` for reusable validation logic across components
-* Example questionnaire demonstrating regex validation patterns (email, phone, ZIP code, URL, date formats, alphanumeric codes)
+* New `RegexValidationMixin` for reusable validation logic with support for default patterns
+* New `DefaultValidationPatterns` class providing built-in patterns for common field types
+* Example questionnaires demonstrating both custom regex patterns and automatic default validation
 * `forceReadOnlyView` in the `RendererQuestionnaireController` to force the renderer to be in read-only mode for the entire view
 * Support for `onPageChanged` callback in `QuestionnairePageViewRenderer` to track page navigation
 * Initial values support for default slivers in `QuestionnaireSliversViewRenderer`
