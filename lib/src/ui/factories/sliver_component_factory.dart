@@ -9,6 +9,8 @@ import '../components/slivers/questionnaire_sliver_date_time_item.dart';
 import '../components/slivers/questionnaire_sliver_choice_item.dart';
 import '../components/slivers/questionnaire_sliver_open_choice_item.dart';
 import '../components/slivers/questionnaire_sliver_group_item.dart';
+import '../components/slivers/questionnaire_sliver_attachment_item.dart';
+import '../components/slivers/questionnaire_sliver_reference_item.dart';
 import '../components/slivers/questionnaire_sliver_item_wrapper.dart';
 import '../components/slivers/sliver_base_decorator.dart';
 
@@ -104,6 +106,32 @@ final class SliverComponentFactory implements QuestionnaireComponentFactory {
     QuestionnaireItem item,
   ) {
     return QuestionnaireSliverGroupItem(
+      index: index,
+      questionnaireItem: item,
+      isLastItem: isLastItem,
+    );
+  }
+
+  @override
+  Widget createAttachmentItem(
+    int index,
+    bool isLastItem,
+    QuestionnaireItem item,
+  ) {
+    return QuestionnaireSliverAttachmentItem(
+      index: index,
+      questionnaireItem: item,
+      isLastItem: isLastItem,
+    );
+  }
+
+  @override
+  Widget createReferenceItem(
+    int index,
+    bool isLastItem,
+    QuestionnaireItem item,
+  ) {
+    return QuestionnaireSliverReferenceItem(
       index: index,
       questionnaireItem: item,
       isLastItem: isLastItem,

@@ -201,6 +201,14 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem
         }
         return factory.createFieldItem(index, isLastItem, questionnaireItem);
 
+      case QuestionnaireItemType.attachment:
+        // File upload for binary content (images, PDFs, documents)
+        return factory.createAttachmentItem(index, isLastItem, questionnaireItem);
+
+      case QuestionnaireItemType.reference:
+        // Reference to another FHIR resource
+        return factory.createReferenceItem(index, isLastItem, questionnaireItem);
+
       default:
         return factory.createUnimplementedItem(
           "${questionnaireItem.type}",

@@ -56,6 +56,20 @@ abstract class QuestionnaireComponentFactory {
     QuestionnaireItem item,
   );
 
+  /// Creates an attachment item widget (for file upload/binary content).
+  Widget createAttachmentItem(
+    int index,
+    bool isLastItem,
+    QuestionnaireItem item,
+  );
+
+  /// Creates a reference item widget (for FHIR resource references).
+  Widget createReferenceItem(
+    int index,
+    bool isLastItem,
+    QuestionnaireItem item,
+  );
+
   /// Creates a placeholder widget for unimplemented item types.
   Widget createUnimplementedItem(
     String typeName,

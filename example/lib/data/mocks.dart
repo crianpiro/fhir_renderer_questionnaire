@@ -3386,5 +3386,43 @@ Questionnaire focusAndEnableWhenTest = Questionnaire.fromJson({
         },
       ],
     },
+    {
+      "linkId": "new_types_section",
+      "type": "group",
+      "text": "New FHIR Types (Attachment & Reference)",
+      "item": [
+        {
+          "linkId": "profile_photo",
+          "type": "attachment",
+          "text": "Upload Profile Photo",
+          "required": false,
+        },
+        {
+          "linkId": "supporting_documents",
+          "type": "attachment",
+          "text": "Supporting Documents (can attach multiple)",
+          "required": false,
+          "repeats": true,
+        },
+        {
+          "linkId": "referring_practitioner",
+          "type": "reference",
+          "text": "Referring Practitioner",
+          "required": false,
+        },
+        {
+          "linkId": "primary_care_physician",
+          "type": "reference",
+          "text": "Primary Care Physician",
+          "required": false,
+        },
+        {
+          "linkId": "related_patient",
+          "type": "reference",
+          "text": "Related Patient (e.g., Parent/Guardian)",
+          "required": false,
+        },
+      ],
+    },
   ],
 });

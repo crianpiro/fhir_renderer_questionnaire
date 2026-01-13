@@ -9,6 +9,8 @@ import '../components/boxes/questionnaire_date_time_item.dart';
 import '../components/boxes/questionnaire_choice_item.dart';
 import '../components/boxes/questionnaire_open_choice_item.dart';
 import '../components/boxes/questionnaire_group_item.dart';
+import '../components/boxes/questionnaire_attachment_item.dart';
+import '../components/boxes/questionnaire_reference_item.dart';
 import '../components/boxes/questionnaire_item_wrapper.dart';
 import '../components/boxes/base_decorator.dart';
 
@@ -104,6 +106,32 @@ final class BoxComponentFactory implements QuestionnaireComponentFactory {
     QuestionnaireItem item,
   ) {
     return QuestionnaireGroupItem(
+      index: index,
+      questionnaireItem: item,
+      isLastItem: isLastItem,
+    );
+  }
+
+  @override
+  Widget createAttachmentItem(
+    int index,
+    bool isLastItem,
+    QuestionnaireItem item,
+  ) {
+    return QuestionnaireAttachmentItem(
+      index: index,
+      questionnaireItem: item,
+      isLastItem: isLastItem,
+    );
+  }
+
+  @override
+  Widget createReferenceItem(
+    int index,
+    bool isLastItem,
+    QuestionnaireItem item,
+  ) {
+    return QuestionnaireReferenceItem(
       index: index,
       questionnaireItem: item,
       isLastItem: isLastItem,
