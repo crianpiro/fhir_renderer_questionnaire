@@ -76,24 +76,27 @@ class SliversViewExamplePage extends StatelessWidget {
                   sliver: SliverPadding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     sliver: SliverMainAxisGroup(
-                      slivers:
-                          questionnaireItem.item!.map((question) {
-                            return DecoratedSliver(
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  top:
-                                      question.item !=
-                                              questionnaireItem.item!.first.item
-                                          ? const BorderSide(
-                                            color: Colors.black,
-                                            width: 0.5,
-                                          )
-                                          : BorderSide.none,
-                                ),
-                              ),
-                              sliver: childrenAssigner(question),
-                            );
-                          }).toList(),
+                      slivers: List.generate(
+                        questionnaireItem.item!.length,
+                        (i) => DecoratedSliver(
+                          decoration: BoxDecoration(
+                            border: Border(
+                              top:
+                                  questionnaireItem.item![i].item !=
+                                          questionnaireItem.item!.first.item
+                                      ? const BorderSide(
+                                        color: Colors.black,
+                                        width: 0.5,
+                                      )
+                                      : BorderSide.none,
+                            ),
+                          ),
+                          sliver: childrenAssigner(
+                            questionnaireItem.item![i],
+                            i,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),

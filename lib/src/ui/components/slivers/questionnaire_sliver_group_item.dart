@@ -3,7 +3,6 @@ import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/questionnair
 import 'package:flutter/material.dart';
 
 import '../../layout/inherited_questionnaire_renderer.dart';
-import '../../../core/extensions/mapping_extension.dart';
 import 'questionnaire_sliver_item_wrapper.dart';
 
 final class QuestionnaireSliverGroupItem extends QuestionnaireGroupItem {
@@ -33,13 +32,13 @@ final class QuestionnaireSliverGroupItem extends QuestionnaireGroupItem {
           ),
         ),
         if (items != null)
-          ...(items.mapIndexed((subIndex, subItem) {
-            return QuestionnaireSliverItemWrapper(
-              questionnaireItem: subItem,
-              index: subIndex,
-              isLastItem: items.length - 1 == subIndex,
-            );
-          }).toList()),
+          ...List.generate(
+              items.length,
+              (i) => QuestionnaireSliverItemWrapper(
+                    questionnaireItem: items[i],
+                    index: i,
+                    isLastItem: items.length - 1 == i,
+                  ))
       ],
     );
   }

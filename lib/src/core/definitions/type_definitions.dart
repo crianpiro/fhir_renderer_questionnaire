@@ -52,7 +52,8 @@ typedef QuestionnaireGroupWidgetBuilder = Widget Function(
     int index,
     bool isLastItem,
     QuestionnaireItem questionnaireItem,
-    Widget Function(QuestionnaireItem questionnaireItem) childrenAssigner);
+    Widget Function(QuestionnaireItem questionnaireItem, int index)
+        childrenAssigner);
 
 /// A typedef for building a choice widget for a questionnaire.
 ///

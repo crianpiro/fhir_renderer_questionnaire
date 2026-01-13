@@ -98,7 +98,7 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem
             index,
             isLastItem,
             questionnaireItem.copyWith(item: items),
-            (questionnaireItem) {
+            (questionnaireItem, index) {
               // Use the factory to create the appropriate wrapper type
               // For BoxComponentFactory -> QuestionnaireItemWrapper
               // For SliverComponentFactory -> QuestionnaireSliverItemWrapper
@@ -203,11 +203,13 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem
 
       case QuestionnaireItemType.attachment:
         // File upload for binary content (images, PDFs, documents)
-        return factory.createAttachmentItem(index, isLastItem, questionnaireItem);
+        return factory.createAttachmentItem(
+            index, isLastItem, questionnaireItem);
 
       case QuestionnaireItemType.reference:
         // Reference to another FHIR resource
-        return factory.createReferenceItem(index, isLastItem, questionnaireItem);
+        return factory.createReferenceItem(
+            index, isLastItem, questionnaireItem);
 
       default:
         return factory.createUnimplementedItem(

@@ -2,7 +2,6 @@ import 'package:fhir_r4/fhir_r4.dart';
 import 'package:flutter/material.dart';
 
 import '../../layout/inherited_questionnaire_renderer.dart';
-import '../../../core/extensions/mapping_extension.dart';
 import '../questionnaire_base_item.dart';
 import '../../../core/mixins/group_filtering_mixin.dart';
 import 'questionnaire_item_wrapper.dart';
@@ -45,13 +44,13 @@ class QuestionnaireGroupItem extends QuestionnaireBaseItem
             ),
           ),
           if (items != null)
-            ...(items.mapIndexed((subIndex, subItem) {
-              return QuestionnaireItemWrapper(
-                questionnaireItem: subItem,
-                index: subIndex,
-                isLastItem: items.length - 1 == subIndex,
-              );
-            }).toList()),
+            ...List.generate(
+                items.length,
+                (i) => QuestionnaireItemWrapper(
+                      questionnaireItem: items[i],
+                      index: i,
+                      isLastItem: items.length - 1 == i,
+                    )),
         ],
       ),
     );
