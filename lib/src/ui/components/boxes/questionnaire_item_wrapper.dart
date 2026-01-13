@@ -85,23 +85,13 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem
         if (inheritedQuestionnaireRenderer.groupItemBuilder != null) {
           List<QuestionnaireItem>? items =
               questionnaireItem.item?.where((item) {
-            final enabled =
-                FhirRendererQuestionnaireUtils.isQuestionnaireItemEnabled(
+            // Evaluate whether this item is enabled
+            // The enabled state is cached in the controller for performance
+            return FhirRendererQuestionnaireUtils.isQuestionnaireItemEnabled(
               inheritedQuestionnaireRenderer.questionnaireResponse,
               item,
               controller: inheritedQuestionnaireRenderer.rendererController,
             );
-            if (inheritedQuestionnaireRenderer.rendererController.indexedItems
-                .containsKey(
-              item.linkId.valueString!,
-            )) {
-              final itemData = inheritedQuestionnaireRenderer
-                  .rendererController.indexedItems[item.linkId.valueString!]!;
-              inheritedQuestionnaireRenderer.rendererController
-                      .indexedItems[item.linkId.valueString!] =
-                  itemData.copyWith(enabled: enabled);
-            }
-            return enabled;
           }).toList();
 
           return inheritedQuestionnaireRenderer.groupItemBuilder!(

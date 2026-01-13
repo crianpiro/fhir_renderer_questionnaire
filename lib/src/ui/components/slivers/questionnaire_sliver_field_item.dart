@@ -67,10 +67,8 @@ final class QuestionnaireSliverFieldItem extends QuestionnaireFieldItem {
           minLines:
               questionnaireItem.type == QuestionnaireItemType.text ? 5 : 1,
           maxLength: questionnaireItem.maxLength?.valueInt,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             errorMaxLines: 2,
-            helperText: regexErrorMessage,
-            helperMaxLines: 2,
           ),
         ),
       ),

@@ -63,10 +63,14 @@ final class FhirRendererQuestionnaireUtils {
     QuestionnaireResponse questionnaireResponse,
     QuestionnaireItem questionnaireItem,
   ) {
-    if (questionnaireItem.enableWhen != null) {
+    if (questionnaireItem.enableWhen != null && questionnaireItem.enableWhen!.isNotEmpty) {
       List<QuestionnaireEnableWhen> enableWhen = questionnaireItem.enableWhen!;
 
-      bool enabled = false;
+      // Determine the behavior (default is "any" / OR logic)
+      final isAndBehavior = questionnaireItem.enableBehavior?.valueEnum ==
+          EnableWhenBehaviorEnum.all;
+
+      // Evaluate each enableWhen condition
       for (QuestionnaireEnableWhen enableWhenCondition in enableWhen) {
         QuestionnaireResponseItem? questionnaireResponseItem =
             FhirRendererQuestionnaireResponseUtils.findIsolatedItem(
@@ -74,31 +78,46 @@ final class FhirRendererQuestionnaireUtils {
           enableWhenCondition.question.valueString,
         );
 
-        if (questionnaireResponseItem != null) {
-          if (questionnaireItem.enableBehavior?.valueEnum ==
-              EnableWhenBehaviorEnum.all) {
-            return questionnaireResponseItem.answer?.every(
+        // Check if this condition is satisfied
+        bool conditionSatisfied = false;
+        if (questionnaireResponseItem != null &&
+            questionnaireResponseItem.answer != null &&
+            questionnaireResponseItem.answer!.isNotEmpty) {
+          // Use .every() or .any() based on enableBehavior to evaluate
+          // multiple answers within this single item
+          conditionSatisfied = isAndBehavior
+              ? questionnaireResponseItem.answer!.every(
                   (answerInItem) => _compareAnswerAndCondition(
                     answerInItem,
                     enableWhenCondition,
                   ),
-                ) ??
-                false;
-          } else {
-            return questionnaireResponseItem.answer?.any(
+                )
+              : questionnaireResponseItem.answer!.any(
                   (answerInItem) => _compareAnswerAndCondition(
                     answerInItem,
                     enableWhenCondition,
                   ),
-                ) ??
-                false;
+                );
+        }
+
+        // Short-circuit based on behavior
+        if (isAndBehavior) {
+          // AND logic: if any condition fails, item is disabled
+          if (!conditionSatisfied) {
+            return false;
           }
         } else {
-          continue;
+          // OR logic: if any condition succeeds, item is enabled
+          if (conditionSatisfied) {
+            return true;
+          }
         }
       }
 
-      return enabled;
+      // Determine final result based on behavior
+      // - AND behavior: reached here means all conditions satisfied = true
+      // - OR behavior: reached here means no conditions satisfied = false
+      return isAndBehavior;
     }
     return true;
   }
@@ -223,7 +242,9 @@ final class FhirRendererQuestionnaireUtils {
         break;
       case Quantity _:
         if (questResponseAnswer.value != null) {
-          return questResponseAnswer.value!.valueInt?.toDouble() ?? 0;
+          return questResponseAnswer.value!.valueDouble ??
+              questResponseAnswer.value!.valueInt?.toDouble() ??
+              0.0;
         }
         break;
       case FhirString _:
@@ -296,7 +317,9 @@ final class FhirRendererQuestionnaireUtils {
         break;
       case Quantity _:
         if (questResponseAnswer.value != null) {
-          return questResponseAnswer.value!.valueInt?.toDouble() ?? 0;
+          return questResponseAnswer.value!.valueDouble ??
+              questResponseAnswer.value!.valueInt?.toDouble() ??
+              0.0;
         }
         break;
       case FhirString _:

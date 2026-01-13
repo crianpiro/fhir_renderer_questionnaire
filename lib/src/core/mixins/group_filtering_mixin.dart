@@ -18,23 +18,13 @@ mixin GroupFilteringMixin {
     InheritedQuestionnaireRenderer rendererData,
   ) {
     return groupItem.item?.where((item) {
-      final enabled = FhirRendererQuestionnaireUtils.isQuestionnaireItemEnabled(
+      // Evaluate and return whether this item is enabled
+      // The enabled state is cached in the controller for performance
+      return FhirRendererQuestionnaireUtils.isQuestionnaireItemEnabled(
         rendererData.questionnaireResponse,
         item,
         controller: rendererData.rendererController,
       );
-
-      // Note: The enabled parameter in copyWith is vestigial and doesn't affect
-      // ItemBehavioralData. The enabled state is now cached in the controller.
-      if (rendererData.rendererController.indexedItems.containsKey(
-        item.linkId.valueString!,
-      )) {
-        final itemData = rendererData
-            .rendererController.indexedItems[item.linkId.valueString!]!;
-        rendererData.rendererController.indexedItems[item.linkId.valueString!] =
-            itemData.copyWith(enabled: enabled);
-      }
-      return enabled;
     }).toList();
   }
 }

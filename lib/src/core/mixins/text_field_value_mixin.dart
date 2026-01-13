@@ -21,9 +21,9 @@ mixin TextFieldValueMixin {
       if (initial.valueX is FhirString) {
         return (initial.valueX as FhirString).valueString ?? "";
       } else if (initial.valueX is FhirDecimal) {
-        return (initial.valueX as FhirDecimal).valueDouble.toString();
+        return (initial.valueX as FhirDecimal).valueDouble?.toString() ?? "";
       } else if (initial.valueX is FhirInteger) {
-        return (initial.valueX as FhirInteger).valueInt.toString();
+        return (initial.valueX as FhirInteger).valueInt?.toString() ?? "";
       } else if (initial.valueX is Quantity) {
         return (initial.valueX as Quantity).value?.valueDouble?.toString() ??
             "";

@@ -10,7 +10,7 @@ class CubitOrBlocOrController {
   RendererQuestionnaireController rendererController =
       RendererQuestionnaireController(
         sliversInitialIndex: 0,
-        questionnaire: exampleAnamnese,
+        questionnaire: example,
         forceReadOnlyView: false,
       );
 }

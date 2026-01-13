@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 class CubitOrBlocOrController {
   RendererQuestionnaireController rendererController =
       RendererQuestionnaireController(
-        questionnaire: exampleAnamnese,
+        questionnaire: example,
         pageViewController: PageController(initialPage: 2),
       );
 }

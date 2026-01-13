@@ -71,6 +71,8 @@ abstract class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer>
 
   /// Updates the local state when the questionnaire response changes.
   void onResponseChanged(QuestionnaireResponse updatedQuestionnaireResponse) {
+    // Clear the enableWhen cache when response changes to avoid stale state
+    widget.rendererController.clearEnableWhenCache();
     if (context.mounted) {
       setState(() {
         questionnaireResponse = updatedQuestionnaireResponse;
@@ -149,7 +151,7 @@ abstract class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer>
   void dispose() {
     widget.rendererController.initialQuestionnaireResponse =
         questionnaireResponse;
-    widget.rendererController.dispose();
+    // Note: Controller disposal is the responsibility of the owner, not the renderer
     super.dispose();
   }
 }

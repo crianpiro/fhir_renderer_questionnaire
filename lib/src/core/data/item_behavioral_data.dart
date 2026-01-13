@@ -26,7 +26,6 @@ final class ItemBehavioralData {
 
   ItemBehavioralData copyWith({
     int? index,
-    bool? enabled,
     bool? markAsRequired,
     FocusNode? focusNode,
     List<String>? dependentOn,
