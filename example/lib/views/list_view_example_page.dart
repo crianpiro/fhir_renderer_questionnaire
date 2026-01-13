@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:example/data/mocks.dart';
-import 'package:example/data/regex_validation_mock.dart';
 import 'package:example/widgets/segmented_choice.dart';
 import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';

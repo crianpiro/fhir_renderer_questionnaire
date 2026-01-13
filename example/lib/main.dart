@@ -1,3 +1,4 @@
+import 'package:example/views/focus_test_page.dart';
 import 'package:example/views/list_view_example_page.dart';
 import 'package:example/views/page_view_renderer_page.dart';
 import 'package:example/views/slivers_view_example_page.dart';
@@ -68,6 +69,21 @@ class HomePage extends StatelessWidget {
                   );
                 },
                 child: Text("SliversViewRenderer"),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => FocusTestPage(),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green.shade100,
+                  foregroundColor: Colors.green.shade900,
+                ),
+                child: const Text("Focus & EnableWhen Test"),
               ),
             ],
           ),

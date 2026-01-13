@@ -22,16 +22,26 @@ class QuestionnaireSliversView extends StatelessWidget {
         .toList();
 
     if (items != null) {
-      // Clear old keys before adding new ones
-      inheritedData.rendererController.groupBundleKeys.clear();
+      // Only initialize keys when the list is empty (first build)
+      // or when the number of items changes (items enabled/disabled)
+      final needsKeyUpdate = inheritedData.rendererController.groupBundleKeys.isEmpty ||
+          inheritedData.rendererController.groupBundleKeys.length != items.length;
+
+      if (needsKeyUpdate) {
+        inheritedData.rendererController.groupBundleKeys.clear();
+        for (var item in items) {
+          final linkId = item.linkId.valueString;
+          inheritedData.rendererController.groupBundleKeys.add(
+            GlobalKey(debugLabel: 'sliver_item_$linkId'),
+          );
+        }
+      }
 
       return CustomScrollView(
         controller: inheritedData.rendererController.listViewScrollController,
         slivers: List.generate(items.length, (index) {
           final item = items[index];
-          final linkId = item.linkId.valueString;
-          final globalKey = GlobalKey(debugLabel: 'sliver_item_$linkId');
-          inheritedData.rendererController.groupBundleKeys.add(globalKey);
+          final globalKey = inheritedData.rendererController.groupBundleKeys[index];
 
           return QuestionnaireSliverItemWrapper(
             key: globalKey,
