@@ -22,28 +22,28 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: example
     steps:
       - uses: actions/checkout@v2 # Only works with v2
       - uses: subosito/flutter-action@v1
         with:
           flutter-version: 3.29.0
       - name: Install dependencies
+        working-directory: example
         run: flutter pub get
 
       - name: Setup Pages
         id: pages
+        working-directory: example
         uses: actions/configure-pages@v5
       
       - name: Build web
+        working-directory: example
         run: flutter build web --release --base-href "${{ steps.pages.outputs.base_path }}/"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: build/web
+          path: example/build/web
   
   deploy:
     environment:
