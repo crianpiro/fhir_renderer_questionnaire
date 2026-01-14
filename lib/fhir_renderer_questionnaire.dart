@@ -1,4 +1,4 @@
-/// A Flutter package for rendering FHIR Questionnaires.
+/// A Flutter package for rendering FHIR R4 Questionnaires.
 ///
 /// This library provides widgets and controllers to render FHIR R4 questionnaires
 /// in Flutter applications. It supports multiple rendering layouts:
@@ -7,45 +7,160 @@
 /// * **Page View** - Displays questionnaire items as paginated screens for step-by-step navigation
 /// * **Slivers View** - Uses slivers for advanced scrolling behavior and custom layouts
 ///
-/// ## Usage
+/// ## Quick Start
 ///
 /// Import the package and choose a renderer based on your UI needs:
 ///
 /// ```dart
 /// import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 ///
-/// // Use QuestionnaireListViewRenderer for list-based layout
-/// // Use QuestionnairePageViewRenderer for paginated layout
-/// // Use QuestionnaireSliversViewRenderer for sliver-based layout
+/// // Create a controller
+/// final controller = RendererQuestionnaireController(
+///   questionnaire: myQuestionnaire,
+/// );
+///
+/// // Use a renderer widget
+/// QuestionnaireListViewRenderer(
+///   rendererController: controller,
+///   getRendererControllerInstance: (ctrl) {
+///     // Access controller state here
+///   },
+/// )
 /// ```
 ///
 /// ## Key Components
 ///
+/// ### Renderers
 /// * [QuestionnaireListViewRenderer] - List-based questionnaire renderer
 /// * [QuestionnairePageViewRenderer] - Page-based questionnaire renderer
 /// * [QuestionnaireSliversViewRenderer] - Sliver-based questionnaire renderer
-/// * [RendererQuestionnaireController] - Controller for accessing questionnaire state
 ///
-/// For more information, see the individual widget documentation.
+/// ### Controller
+/// * [RendererQuestionnaireController] - Controller for managing questionnaire state
+///
+/// ### Utilities
+/// * [FhirRendererQuestionnaireUtils] - Utility methods for enableWhen evaluation
+/// * [FhirRendererQuestionnaireResponseUtils] - Utility methods for response manipulation
+/// * [KeyboardTypeHelper] - Keyboard configuration for field types
+/// * [DefaultValidationPatterns] - Default regex validation patterns
+///
+/// ### Builder Types
+/// Use these type definitions when implementing custom builders:
+/// * [QuestionnaireDisplayWidgetBuilder] - For display items
+/// * [QuestionnaireFieldWidgetBuilder] - For text field items
+/// * [QuestionnaireBooleanWidgetBuilder] - For boolean items
+/// * [QuestionnaireChoiceWidgetBuilder] - For choice/open-choice items
+/// * [QuestionnaireDateTimeWidgetBuilder] - For date/time items
+/// * [QuestionnaireGroupWidgetBuilder] - For group items
+///
+/// ## FHIR SDC Extensions
+///
+/// The package supports the following FHIR SDC extensions:
+/// * `questionnaire-itemControl` - For dropdown rendering (`drop-down`, `radio-button`, `check-box`)
+/// * `regex` - For custom input validation patterns
+/// * `entryFormat` - For custom validation error messages
+///
+/// ## Custom Builders
+///
+/// To customize widget rendering, use the mixins provided:
+/// * [TextFieldValueMixin] - For text field value handling
+/// * [BooleanValueMixin] - For boolean value handling
+/// * [ChoiceBaseMixin] - For choice value handling
+/// * [OpenChoiceValueMixin] - For open-choice value handling
+/// * [DateTimeValueMixin] - For date/time value handling
+/// * [RegexValidationMixin] - For input validation
+/// * [ChoiceWidgetBuilderMixin] - For choice widget building
+///
+/// For more information, see the individual class documentation.
 library fhir_renderer_questionnaire;
 
+// ============================================================================
+// MAIN RENDERERS
+// ============================================================================
+
+/// Main renderer widgets for displaying questionnaires
 export 'src/ui/renderers/renderers.dart'
     show
         QuestionnaireListViewRenderer,
         QuestionnairePageViewRenderer,
         QuestionnaireSliversViewRenderer;
+
+// ============================================================================
+// CONTROLLER
+// ============================================================================
+
+/// Controller for managing questionnaire state and responses
 export 'src/core/controllers/renderer_questionnaire_controller.dart'
     show RendererQuestionnaireController;
 
-// Mixins for value handling (useful for custom builder implementations)
+// ============================================================================
+// TYPE DEFINITIONS
+// ============================================================================
+
+/// Builder callback types for custom widget implementations
+export 'src/core/definitions/type_definitions.dart'
+    show
+        QuestionnaireDisplayWidgetBuilder,
+        QuestionnaireDateTimeWidgetBuilder,
+        QuestionnaireBooleanWidgetBuilder,
+        QuestionnaireGroupWidgetBuilder,
+        QuestionnaireChoiceWidgetBuilder,
+        QuestionnaireFieldWidgetBuilder;
+
+// ============================================================================
+// UTILITIES
+// ============================================================================
+
+/// Core utility classes for questionnaire processing
+export 'src/core/utils/fhir_renderer_questionnaire_utils.dart'
+    show FhirRendererQuestionnaireUtils;
+export 'src/core/utils/fhir_renderer_questionnaire_response_utils.dart'
+    show FhirRendererQuestionnaireResponseUtils;
+export 'src/core/utils/keyboard_type_helper.dart' show KeyboardTypeHelper;
+
+// ============================================================================
+// VALIDATION
+// ============================================================================
+
+/// Validation utilities for field input
+export 'src/core/validation/default_validation_patterns.dart'
+    show DefaultValidationPatterns;
+
+// ============================================================================
+// DATA MODELS
+// ============================================================================
+
+/// Data models for internal state management
+export 'src/core/data/item_behavioral_data.dart' show ItemBehavioralData;
+
+// ============================================================================
+// MIXINS - Value Handling
+// ============================================================================
+
+/// Mixins for value extraction and handling in custom builders
 export 'src/core/mixins/text_field_value_mixin.dart' show TextFieldValueMixin;
 export 'src/core/mixins/boolean_value_mixin.dart' show BooleanValueMixin;
 export 'src/core/mixins/choice_base_mixin.dart' show ChoiceBaseMixin;
 export 'src/core/mixins/open_choice_value_mixin.dart' show OpenChoiceValueMixin;
 export 'src/core/mixins/datetime_value_mixin.dart' show DateTimeValueMixin;
 export 'src/core/mixins/group_filtering_mixin.dart' show GroupFilteringMixin;
+export 'src/core/mixins/regex_validation_mixin.dart' show RegexValidationMixin;
+export 'src/core/mixins/choice_widget_builder_mixin.dart'
+    show ChoiceWidgetBuilderMixin;
 
-// Factories for component creation (advanced usage)
+// ============================================================================
+// EXTENSIONS
+// ============================================================================
+
+/// Extension methods for FHIR objects
+export 'src/core/extensions/fhir_extensions.dart'
+    show FhirRendererQuestionnaireExtensions, QuestionnaireItemValidationExtensions;
+
+// ============================================================================
+// FACTORIES
+// ============================================================================
+
+/// Factories for component creation (advanced usage)
 export 'src/ui/factories/questionnaire_component_factory.dart'
     show QuestionnaireComponentFactory;
 export 'src/ui/factories/box_component_factory.dart' show BoxComponentFactory;

@@ -3399,6 +3399,95 @@ Questionnaire focusAndEnableWhenTest = Questionnaire.fromJson({
       ],
     },
     {
+      "linkId": "dropdown_tests",
+      "type": "group",
+      "text": "Dropdown Widget Tests (itemControl extension)",
+      "item": [
+        {
+          "linkId": "country_dropdown",
+          "type": "choice",
+          "text": "Select Country (dropdown - single select)",
+          "repeats": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "drop-down",
+                    "display": "Drop down"
+                  }
+                ]
+              }
+            }
+          ],
+          "answerOption": [
+            {"valueCoding": {"code": "us", "display": "United States"}},
+            {"valueCoding": {"code": "uk", "display": "United Kingdom"}},
+            {"valueCoding": {"code": "ca", "display": "Canada"}},
+            {"valueCoding": {"code": "au", "display": "Australia"}},
+            {"valueCoding": {"code": "de", "display": "Germany"}},
+            {"valueCoding": {"code": "fr", "display": "France"}},
+          ],
+        },
+        {
+          "linkId": "languages_dropdown",
+          "type": "choice",
+          "text": "Select Languages (dropdown - multi select)",
+          "repeats": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "drop-down",
+                    "display": "Drop down"
+                  }
+                ]
+              }
+            }
+          ],
+          "answerOption": [
+            {"valueCoding": {"code": "en", "display": "English"}},
+            {"valueCoding": {"code": "es", "display": "Spanish"}},
+            {"valueCoding": {"code": "fr", "display": "French"}},
+            {"valueCoding": {"code": "de", "display": "German"}},
+            {"valueCoding": {"code": "zh", "display": "Chinese"}},
+            {"valueCoding": {"code": "ja", "display": "Japanese"}},
+          ],
+        },
+        {
+          "linkId": "department_dropdown",
+          "type": "open-choice",
+          "text": "Department (dropdown with custom option)",
+          "repeats": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "drop-down",
+                    "display": "Drop down"
+                  }
+                ]
+              }
+            }
+          ],
+          "answerOption": [
+            {"valueCoding": {"code": "cardiology", "display": "Cardiology"}},
+            {"valueCoding": {"code": "neurology", "display": "Neurology"}},
+            {"valueCoding": {"code": "oncology", "display": "Oncology"}},
+            {"valueCoding": {"code": "pediatrics", "display": "Pediatrics"}},
+          ],
+        },
+      ],
+    },
+    {
       "linkId": "validation_tests",
       "type": "group",
       "text": "Field Validation Tests",

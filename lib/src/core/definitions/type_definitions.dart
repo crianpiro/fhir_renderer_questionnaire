@@ -47,7 +47,7 @@ typedef QuestionnaireBooleanWidgetBuilder = Widget Function(
 /// [index]: The index of the item in the questionnaire.
 /// [isLastItem]: Determines if this is the last item in the questionnaire.
 /// [questionnaireItem]: The questionnaire group item to be displayed.
-/// [childrenAssigner]: A function to assign deafult widget to the group item children.
+/// [childrenAssigner]: A function to assign default widget to the group item children.
 typedef QuestionnaireGroupWidgetBuilder = Widget Function(
     int index,
     bool isLastItem,
