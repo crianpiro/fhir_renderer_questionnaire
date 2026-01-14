@@ -64,13 +64,13 @@ Questionnaire defaultValidationExample = Questionnaire.fromJson({
       "extension": [
         {
           "url": "http://hl7.org/fhir/StructureDefinition/regex",
-          "valueString": r"^([0-9]|[1-9][0-9]|1[01][0-9]|120)$"
+          "valueString": r"^([0-9]|[1-9][0-9]|1[01][0-9]|120)$",
         },
         {
           "url": "http://hl7.org/fhir/StructureDefinition/entryFormat",
-          "valueString": "Age must be between 0 and 120"
-        }
-      ]
+          "valueString": "Age must be between 0 and 120",
+        },
+      ],
       // Custom regex OVERRIDES the default integer validation
       // This shows you can be more specific when needed
     },
@@ -79,6 +79,6 @@ Questionnaire defaultValidationExample = Questionnaire.fromJson({
       "text": "Additional Notes",
       "type": "string",
       // No validation for string fields
-    }
-  ]
+    },
+  ],
 });
