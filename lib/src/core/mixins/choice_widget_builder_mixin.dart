@@ -3,13 +3,21 @@ import 'package:flutter/material.dart';
 
 import '../../ui/layout/inherited_questionnaire_renderer.dart';
 import '../utils/fhir_renderer_questionnaire_response_utils.dart';
+import '../extensions/fhir_extensions.dart';
 
 /// Mixin providing shared widget building logic for choice and open-choice items.
 ///
-/// Consolidates the common option-rendering logic (radio buttons, checkboxes)
+/// Consolidates the common option-rendering logic (radio buttons, checkboxes, dropdowns)
 /// used by both QuestionnaireChoiceItem and QuestionnaireOpenChoiceItem.
+///
+/// Supports the questionnaire-itemControl extension for UI control selection.
 mixin ChoiceWidgetBuilderMixin {
-  /// Builds a list of option widgets (radio buttons or checkboxes) based on repeats property.
+  /// Builds a list of option widgets based on repeats property and itemControl extension.
+  ///
+  /// Supports multiple widget types:
+  /// - Radio buttons (default for single-select)
+  /// - Checkboxes (default for multi-select)
+  /// - Dropdown (when questionnaire-itemControl extension is 'drop-down')
   ///
   /// Parameters:
   /// - [context]: BuildContext for accessing inherited data
@@ -17,7 +25,7 @@ mixin ChoiceWidgetBuilderMixin {
   /// - [selectedResponseItem]: Current response item (if any)
   /// - [repeats]: Whether multiple selections are allowed
   ///
-  /// Returns a list of RadioListTile or CheckboxListTile widgets.
+  /// Returns a list of widgets (RadioListTile, CheckboxListTile, or DropdownButtonFormField).
   List<Widget> buildOptionWidgets({
     required BuildContext context,
     required QuestionnaireItem questionnaireItem,
@@ -31,10 +39,28 @@ mixin ChoiceWidgetBuilderMixin {
       return [];
     }
 
+    // Check for itemControl extension
+    final itemControl = questionnaireItem.itemControlCode;
+
+    // Handle dropdown control
+    if (itemControl == 'drop-down') {
+      return [
+        buildDropdownOption(
+          context: context,
+          questionnaireItem: questionnaireItem,
+          selectedResponseItem: selectedResponseItem,
+          repeats: repeats,
+          questionnaireRendererData: questionnaireRendererData,
+        ),
+      ];
+    }
+
+    // Default behavior: radio buttons or checkboxes
     return questionnaireItem.answerOption!.map((answerOption) {
       final displayValue = getDisplayValue(answerOption);
 
-      if (repeats) {
+      // Respect explicit itemControl if provided
+      if (itemControl == 'check-box' || (itemControl == null && repeats)) {
         // Multiple selection - use checkboxes
         return buildCheckboxOption(
           context: context,
@@ -111,6 +137,196 @@ mixin ChoiceWidgetBuilderMixin {
         ),
       ),
       title: Text(displayValue),
+    );
+  }
+
+  /// Builds a dropdown widget for single or multi-select options.
+  ///
+  /// For single-select: Returns a DropdownButtonFormField
+  /// For multi-select: Returns a custom multi-select dropdown implementation
+  Widget buildDropdownOption({
+    required BuildContext context,
+    required QuestionnaireItem questionnaireItem,
+    required QuestionnaireResponseItem? selectedResponseItem,
+    required bool repeats,
+    required InheritedQuestionnaireRenderer questionnaireRendererData,
+  }) {
+    if (repeats) {
+      return _buildMultiSelectDropdown(
+        context: context,
+        questionnaireItem: questionnaireItem,
+        selectedResponseItem: selectedResponseItem,
+        questionnaireRendererData: questionnaireRendererData,
+      );
+    } else {
+      return _buildSingleSelectDropdown(
+        context: context,
+        questionnaireItem: questionnaireItem,
+        selectedResponseItem: selectedResponseItem,
+        questionnaireRendererData: questionnaireRendererData,
+      );
+    }
+  }
+
+  /// Builds a single-select dropdown button.
+  Widget _buildSingleSelectDropdown({
+    required BuildContext context,
+    required QuestionnaireItem questionnaireItem,
+    required QuestionnaireResponseItem? selectedResponseItem,
+    required InheritedQuestionnaireRenderer questionnaireRendererData,
+  }) {
+    final selectedCode = getSelectedCodingValue(selectedResponseItem);
+    final options = questionnaireItem.answerOption ?? [];
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: DropdownButtonFormField<String>(
+        value: selectedCode,
+        decoration: InputDecoration(
+          labelText: questionnaireItem.text?.valueString,
+          border: const OutlineInputBorder(),
+        ),
+        items: options.map((answerOption) {
+          final code = answerOption.valueCoding?.code?.valueString ?? '';
+          final display = getDisplayValue(answerOption);
+
+          return DropdownMenuItem<String>(
+            value: code,
+            child: Text(display),
+          );
+        }).toList(),
+        onChanged: (String? value) {
+          if (value == null) return;
+
+          // Find the answer option that matches the selected code
+          final selectedOption = options.firstWhere(
+            (option) => option.valueCoding?.code?.valueString == value,
+          );
+
+          questionnaireRendererData.onResponseChanged(
+            FhirRendererQuestionnaireResponseUtils
+                .setAnswerOptionInQuestionnaireResponse(
+              questionnaireRendererData.questionnaireResponse,
+              questionnaireItem,
+              selectedOption,
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  /// Builds a multi-select dropdown (checkboxes in a popup).
+  Widget _buildMultiSelectDropdown({
+    required BuildContext context,
+    required QuestionnaireItem questionnaireItem,
+    required QuestionnaireResponseItem? selectedResponseItem,
+    required InheritedQuestionnaireRenderer questionnaireRendererData,
+  }) {
+    final options = questionnaireItem.answerOption ?? [];
+    final selectedOptions = <QuestionnaireAnswerOption>[];
+
+    // Collect currently selected options
+    for (final option in options) {
+      if (isOptionSelected(selectedResponseItem, questionnaireItem, option)) {
+        selectedOptions.add(option);
+      }
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: InputDecorator(
+        decoration: InputDecoration(
+          labelText: questionnaireItem.text?.valueString,
+          border: const OutlineInputBorder(),
+        ),
+        child: InkWell(
+          onTap: () => _showMultiSelectDialog(
+            context: context,
+            questionnaireItem: questionnaireItem,
+            selectedResponseItem: selectedResponseItem,
+            questionnaireRendererData: questionnaireRendererData,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  selectedOptions.isEmpty
+                      ? 'Select options...'
+                      : selectedOptions
+                          .map((opt) => getDisplayValue(opt))
+                          .join(', '),
+                  style: TextStyle(
+                    color: selectedOptions.isEmpty
+                        ? Theme.of(context).hintColor
+                        : null,
+                  ),
+                ),
+              ),
+              const Icon(Icons.arrow_drop_down),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Shows a dialog with checkboxes for multi-select.
+  Future<void> _showMultiSelectDialog({
+    required BuildContext context,
+    required QuestionnaireItem questionnaireItem,
+    required QuestionnaireResponseItem? selectedResponseItem,
+    required InheritedQuestionnaireRenderer questionnaireRendererData,
+  }) async {
+    final options = questionnaireItem.answerOption ?? [];
+
+    await showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text(questionnaireItem.text?.valueString ?? 'Select'),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: options.map((answerOption) {
+                    final isSelected = isOptionSelected(
+                      selectedResponseItem,
+                      questionnaireItem,
+                      answerOption,
+                    );
+                    final displayValue = getDisplayValue(answerOption);
+
+                    return CheckboxListTile(
+                      value: isSelected,
+                      onChanged: (bool? value) {
+                        questionnaireRendererData.onResponseChanged(
+                          FhirRendererQuestionnaireResponseUtils
+                              .setMultipleAnswerOptionsInQuestionnaireResponse(
+                            questionnaireRendererData.questionnaireResponse,
+                            questionnaireItem,
+                            answerOption,
+                          ),
+                        );
+                        setState(() {}); // Refresh dialog
+                      },
+                      title: Text(displayValue),
+                    );
+                  }).toList(),
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Done'),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 

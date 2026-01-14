@@ -53,4 +53,29 @@ extension QuestionnaireItemValidationExtensions on QuestionnaireItem {
 
     return null;
   }
+
+  /// Extracts the questionnaire-itemControl extension code.
+  ///
+  /// Looks for the FHIR SDC extension:
+  /// http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl
+  ///
+  /// Supported control codes:
+  /// - 'drop-down': Dropdown/select menu
+  /// - 'radio-button': Radio buttons (default for single-select choice)
+  /// - 'check-box': Checkboxes (default for multi-select choice)
+  /// - 'autocomplete': Searchable dropdown with type-ahead
+  ///
+  /// Returns the control code string if found, null otherwise.
+  String? get itemControlCode {
+    if (extension_?.isEmpty ?? true) return null;
+
+    for (final ext in extension_!) {
+      if (ext.url.toString() ==
+          'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl') {
+        return ext.valueCodeableConcept?.coding?.firstOrNull?.code?.valueString;
+      }
+    }
+
+    return null;
+  }
 }
