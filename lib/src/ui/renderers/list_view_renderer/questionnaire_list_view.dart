@@ -22,18 +22,26 @@ class QuestionnaireListView extends StatelessWidget {
         .toList();
 
     if (items != null) {
-      return ListView.builder(
-        itemCount: items.length,
-        controller: inheritedData.rendererController.listViewScrollController,
-        itemBuilder: (context, index) {
-          final item = items[index];
-          return QuestionnaireItemWrapper(
-            key: ValueKey(item.linkId.valueString),
-            questionnaireItem: item,
-            index: index,
-            isLastItem: items.length - 1 == index,
-          );
+      return GestureDetector(
+        onTap: () {
+          // Dismiss keyboard when tapping outside text fields
+          FocusScope.of(context).unfocus();
         },
+        // Only detect taps on empty space, not on child widgets
+        behavior: HitTestBehavior.opaque,
+        child: ListView.builder(
+          itemCount: items.length,
+          controller: inheritedData.rendererController.listViewScrollController,
+          itemBuilder: (context, index) {
+            final item = items[index];
+            return QuestionnaireItemWrapper(
+              key: ValueKey(item.linkId.valueString),
+              questionnaireItem: item,
+              index: index,
+              isLastItem: items.length - 1 == index,
+            );
+          },
+        ),
       );
     }
 

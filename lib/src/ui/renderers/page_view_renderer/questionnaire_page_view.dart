@@ -22,22 +22,30 @@ class QuestionnairePageView extends StatelessWidget {
         .toList();
 
     if (items != null) {
-      return SafeArea(
-        child: PageView.builder(
-          controller: inheritedData.rendererController.pageViewController,
-          itemCount: items.length,
-          onPageChanged: inheritedData.onPageChanged,
-          itemBuilder: (context, index) {
-            final item = items[index];
-            return SingleChildScrollView(
-              child: QuestionnaireItemWrapper(
-                key: ValueKey(item.linkId.valueString),
-                questionnaireItem: item,
-                index: index,
-                isLastItem: items.length - 1 == index,
-              ),
-            );
-          },
+      return GestureDetector(
+        onTap: () {
+          // Dismiss keyboard when tapping outside text fields
+          FocusScope.of(context).unfocus();
+        },
+        // Only detect taps on empty space, not on child widgets
+        behavior: HitTestBehavior.opaque,
+        child: SafeArea(
+          child: PageView.builder(
+            controller: inheritedData.rendererController.pageViewController,
+            itemCount: items.length,
+            onPageChanged: inheritedData.onPageChanged,
+            itemBuilder: (context, index) {
+              final item = items[index];
+              return SingleChildScrollView(
+                child: QuestionnaireItemWrapper(
+                  key: ValueKey(item.linkId.valueString),
+                  questionnaireItem: item,
+                  index: index,
+                  isLastItem: items.length - 1 == index,
+                ),
+              );
+            },
+          ),
         ),
       );
     }

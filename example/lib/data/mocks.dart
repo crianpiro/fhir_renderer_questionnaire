@@ -1152,7 +1152,7 @@ Questionnaire anamneseExample = Questionnaire.fromJson({
               },
             },
           ],
-          "enableBehavior": "all",
+          "enableBehavior": "any",
           "maxLength": 45,
         },
         {
@@ -2815,7 +2815,7 @@ Questionnaire anamneseExample = Questionnaire.fromJson({
               },
             },
           ],
-          "enableBehavior": "all",
+          "enableBehavior": "any",
           "repeats": true,
           "answerOption": [
             {
@@ -3342,6 +3342,58 @@ Questionnaire focusAndEnableWhenTest = Questionnaire.fromJson({
               "operator": "=",
               "answerString": "admin"
             }
+          ],
+        },
+      ],
+    },
+    {
+      "linkId": "choice_openchoice_tests",
+      "type": "group",
+      "text": "Choice & Open-Choice Tests (repeats behavior)",
+      "item": [
+        {
+          "linkId": "choice_single",
+          "type": "choice",
+          "text": "Favorite Color (single selection - radio buttons)",
+          "repeats": false,
+          "answerOption": [
+            {"valueCoding": {"code": "red", "display": "Red"}},
+            {"valueCoding": {"code": "blue", "display": "Blue"}},
+            {"valueCoding": {"code": "green", "display": "Green"}},
+          ],
+        },
+        {
+          "linkId": "choice_multiple",
+          "type": "choice",
+          "text": "Hobbies (multiple selection - checkboxes)",
+          "repeats": true,
+          "answerOption": [
+            {"valueCoding": {"code": "reading", "display": "Reading"}},
+            {"valueCoding": {"code": "sports", "display": "Sports"}},
+            {"valueCoding": {"code": "music", "display": "Music"}},
+            {"valueCoding": {"code": "cooking", "display": "Cooking"}},
+          ],
+        },
+        {
+          "linkId": "openchoice_single",
+          "type": "open-choice",
+          "text": "Preferred Programming Language (single + custom text)",
+          "repeats": false,
+          "answerOption": [
+            {"valueCoding": {"code": "dart", "display": "Dart"}},
+            {"valueCoding": {"code": "python", "display": "Python"}},
+            {"valueCoding": {"code": "javascript", "display": "JavaScript"}},
+          ],
+        },
+        {
+          "linkId": "openchoice_multiple",
+          "type": "open-choice",
+          "text": "Skills (multiple + custom text)",
+          "repeats": true,
+          "answerOption": [
+            {"valueCoding": {"code": "flutter", "display": "Flutter"}},
+            {"valueCoding": {"code": "react", "display": "React"}},
+            {"valueCoding": {"code": "nodejs", "display": "Node.js"}},
           ],
         },
       ],

@@ -37,19 +37,27 @@ class QuestionnaireSliversView extends StatelessWidget {
         }
       }
 
-      return CustomScrollView(
-        controller: inheritedData.rendererController.listViewScrollController,
-        slivers: List.generate(items.length, (index) {
-          final item = items[index];
-          final globalKey = inheritedData.rendererController.groupBundleKeys[index];
+      return GestureDetector(
+        onTap: () {
+          // Dismiss keyboard when tapping outside text fields
+          FocusScope.of(context).unfocus();
+        },
+        // Only detect taps on empty space, not on child widgets
+        behavior: HitTestBehavior.opaque,
+        child: CustomScrollView(
+          controller: inheritedData.rendererController.listViewScrollController,
+          slivers: List.generate(items.length, (index) {
+            final item = items[index];
+            final globalKey = inheritedData.rendererController.groupBundleKeys[index];
 
-          return QuestionnaireSliverItemWrapper(
-            key: globalKey,
-            questionnaireItem: item,
-            index: index,
-            isLastItem: index == items.length - 1,
-          );
-        }),
+            return QuestionnaireSliverItemWrapper(
+              key: globalKey,
+              questionnaireItem: item,
+              index: index,
+              isLastItem: index == items.length - 1,
+            );
+          }),
+        ),
       );
     }
 

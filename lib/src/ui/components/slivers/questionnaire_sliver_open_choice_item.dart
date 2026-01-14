@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../layout/inherited_questionnaire_renderer.dart';
-import '../../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
 import '../boxes/questionnaire_open_choice_item.dart';
-import 'sliver_base_decorator.dart';
 
 final class QuestionnaireSliverOpenChoiceItem
     extends QuestionnaireOpenChoiceItem {
@@ -16,38 +13,17 @@ final class QuestionnaireSliverOpenChoiceItem
 
   @override
   Widget buildQuestionnaireItem(BuildContext context) {
-    final InheritedQuestionnaireRenderer questionnaireRendererData =
-        InheritedQuestionnaireRenderer.of(context);
-    return SliverBaseDecorator(
-      roundBottomBorder: isLastItem,
-      title: questionnaireItem.text?.valueString,
-      children: questionnaireItem.answerOption?.map((answerOption) {
-            String displayValue = getDisplayValue(answerOption);
+    // Get the base widgets from parent implementation
+    final boxWidget = super.buildQuestionnaireItem(context);
 
-            final selectedResponseItem = findQuestionnaireResponseItem(
-              InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
-              itemLinkId,
-            );
+    // Extract children from the BaseDecorator and wrap each in SliverToBoxAdapter
+    // Since BaseDecorator uses Column with children, we need to extract them
+    // The parent returns a BaseDecorator with children as a list of widgets
+    final baseDecorator = boxWidget;
 
-            bool isSelected = isInitialOrSelectedValue(
-                selectedResponseItem, questionnaireItem, answerOption);
-
-            return SliverToBoxAdapter(
-              child: CheckboxListTile(
-                value: isSelected,
-                onChanged: (v) => questionnaireRendererData.onResponseChanged(
-                  FhirRendererQuestionnaireResponseUtils
-                      .setMultipleAnswerOptionsInQuestionnaireResponse(
-                    questionnaireRendererData.questionnaireResponse,
-                    questionnaireItem,
-                    answerOption,
-                  ),
-                ),
-                title: Text(displayValue),
-              ),
-            );
-          }).toList() ??
-          [],
+    // For sliver rendering, we need to wrap the entire box widget in a sliver
+    return SliverToBoxAdapter(
+      child: baseDecorator,
     );
   }
 }

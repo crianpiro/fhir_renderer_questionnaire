@@ -192,15 +192,38 @@ class ListViewExamplePage extends StatelessWidget {
 
 ## 🔆 Supported Questionnaire Items
 
-Currently, **fhir_renderer_questionnaire** only supports the following **Questionnaire Item types from FHIR R4**: `group`, `display`, `boolean`, `decimal`, `integer`, `date`, `dateTime`, `time`, `string`, `text`, `url`, `choice`, `open-choice` and `quantity`.
+**fhir_renderer_questionnaire** supports the following **Questionnaire Item types from FHIR R4**:
 
-## 🔆 📣 🔜 Roadmap 
+### ✅ Fully Implemented (16 types)
+- `group` - Container for nested items
+- `display` - Instructional/display text
+- `boolean` - Yes/No questions
+- `decimal` - Decimal numbers
+- `integer` - Whole numbers
+- `date` - Date picker
+- `dateTime` - Date and time picker
+- `time` - Time picker
+- `string` - Short text input
+- `text` - Multi-line text input
+- `url` - URL input
+- `choice` - Single selection from options
+- `open-choice` - Choice with free-text option
+- `quantity` - Numeric value with units
+- `attachment` - File upload (images, PDFs, documents) ✨ **NEW**
+- `reference` - Reference to FHIR resources (Practitioner, Patient, etc.) ✨ **NEW**
 
-🔳 Support validation with regular expressions for the types that use a text field.
+### 📊 Coverage
+**16 of 17 FHIR R4 types implemented** (94% coverage)
 
-🔳 Support for Questionnaire Item type `attachment`.
+Missing: `question` (deprecated generic type, rarely used)
 
-🔳 Support for Questionnaire Item type `reference`.
+## 🔆 📣 🔜 Roadmap
+
+✅ ~~Support validation with regular expressions for the types that use a text field~~ **DONE**
+
+✅ ~~Support for Questionnaire Item type `attachment`~~ **DONE**
+
+✅ ~~Support for Questionnaire Item type `reference`~~ **DONE**
 
 🔳 Support for localization extensions.
 

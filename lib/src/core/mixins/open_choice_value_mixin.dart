@@ -1,45 +1,27 @@
 import 'package:fhir_r4/fhir_r4.dart';
 
-/// Mixin providing open-choice (multi-select) value logic for FHIR questionnaire items.
+import 'choice_base_mixin.dart';
+
+/// Mixin providing open-choice value logic for FHIR questionnaire items.
 ///
-/// Handles multi-select choice questions where multiple answers can be selected.
-mixin OpenChoiceValueMixin {
-  /// Checks if a specific answer option is initially selected or currently selected.
+/// Handles open-choice questions that allow both predefined options and custom text input.
+/// Extends ChoiceBaseMixin to inherit common functionality.
+mixin OpenChoiceValueMixin on ChoiceBaseMixin {
+
+  /// Gets the custom text value (valueString) from response item if exists.
   ///
-  /// Searches both the response item answers and the initial values to determine
-  /// if the given answer option's coding matches any selected values.
-  ///
-  /// Returns true if the answer option is selected, false otherwise.
-  bool isInitialOrSelectedValue(
-    QuestionnaireResponseItem? responseItem,
-    QuestionnaireItem questionnaireItem,
-    QuestionnaireAnswerOption answerOption,
-  ) {
-    return responseItem?.answer?.any(
-          (answer) =>
-              answer.valueCoding?.code?.valueString ==
-              answerOption.valueCoding?.code?.valueString,
-        ) ??
-        questionnaireItem.initial != null &&
-            questionnaireItem.initial!.any(
-              (initial) =>
-                  initial.valueX is Coding &&
-                  (initial.valueX as Coding).code?.valueString ==
-                      answerOption.valueCoding?.code?.valueString,
-            );
+  /// Returns the string value or null if no string answer exists.
+  String? getCustomTextValue(QuestionnaireResponseItem? responseItem) {
+    if (responseItem?.answer == null) return null;
+
+    for (final answer in responseItem!.answer!) {
+      if (answer.valueX is FhirString) {
+        return (answer.valueX as FhirString).valueString;
+      }
+    }
+    return null;
   }
 
-  /// Extracts the display value from an answer option.
-  ///
-  /// Priority order:
-  /// 1. Coding display value
-  /// 2. Coding code value
-  /// 3. "--" (fallback if neither exists)
-  ///
-  /// Returns the most appropriate display string for the answer option.
-  String getDisplayValue(QuestionnaireAnswerOption answerOption) {
-    return answerOption.valueCoding?.display?.valueString ??
-        answerOption.valueCoding?.code?.valueString ??
-        "--";
-  }
+  // Note: isOptionSelected, getDisplayValue, and getSelectedCodingValue
+  // are inherited from ChoiceBaseMixin
 }

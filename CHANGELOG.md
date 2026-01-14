@@ -36,6 +36,7 @@ Types of changes
 * Major refactoring to reduce code duplication (~1040 insertions, ~694 deletions)
 * InheritedWidget optimization using `identical()` checks for better performance
 * Improved state propagation to prevent updates on unmounted widgets
+* Replaced `ChoiceValueMixin` with `ChoiceBaseMixin` for choice components - now exported publicly for custom implementations
 
 ### Fixed
 * Memory leak: `RendererQuestionnaireController.dispose()` is now properly called from `BaseQuestionnaireState.dispose()`
