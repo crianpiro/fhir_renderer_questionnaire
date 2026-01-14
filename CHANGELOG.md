@@ -9,41 +9,90 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
-### 1.0.0 (Unreleased)
+### 1.0.0
+
+This is the first stable release of `fhir_renderer_questionnaire`, featuring comprehensive FHIR R4 questionnaire rendering capabilities with 94% coverage of questionnaire item types (16 of 17).
 
 ### Added
-* Regex validation support for text field types using standard FHIR extension `http://hl7.org/fhir/StructureDefinition/regex`
-* **Automatic default validation** for field types: `integer`, `decimal`, `url`, and `quantity` (no extensions required)
-* **Automatic keyboard type selection** based on field type (integer → number pad, decimal → decimal pad, url → URL keyboard, text → multiline)
+
+#### New Item Types
+* **Support for `attachment` item type** - File upload functionality with support for images, PDFs, and documents
+* **Support for `reference` item type** - Reference to FHIR resources (Practitioner, Patient, etc.)
+
+#### Validation & Input Handling
+* Regex validation support using standard FHIR extension `http://hl7.org/fhir/StructureDefinition/regex`
+* Automatic default validation for field types: `integer`, `decimal`, `url`, and `quantity` (no extensions required)
+* Automatic keyboard type selection based on field type (integer → number pad, decimal → decimal pad, url → URL keyboard, text → multiline)
 * Input formatters to restrict invalid characters during typing (e.g., letters in integer fields, multiple decimal points in decimal fields)
 * Smart text input actions (newline for multiline text, next for single-line fields)
-* New `KeyboardTypeHelper` utility class providing keyboard configuration for different field types
 * Support for `entryFormat` extension to provide custom validation error messages
 * Automatic validation feedback with `TextFormField` for real-time input validation
-* `regexValidationPattern` and `regexValidationError` fields in `ItemBehavioralData`
-* Extension methods `regexValidationPattern` and `regexValidationErrorMessage` on `QuestionnaireItem`
-* New `RegexValidationMixin` for reusable validation logic with support for default patterns
+* New `KeyboardTypeHelper` utility class providing keyboard configuration for different field types
 * New `DefaultValidationPatterns` class providing built-in patterns for common field types
+* New `RegexValidationMixin` for reusable validation logic with support for default patterns
+* Extension methods `regexValidationPattern` and `regexValidationErrorMessage` on `QuestionnaireItem`
+* `regexValidationPattern` and `regexValidationError` fields in `ItemBehavioralData`
 * Example questionnaires demonstrating both custom regex patterns and automatic default validation
+
+#### Item Control Extensions
+* Support for FHIR `questionnaire-itemControl` extension for customizing choice rendering
+* Dropdown rendering for choice items using `drop-down` item control
+* Radio button rendering for choice items using `radio-button` item control
+* Checkbox rendering for choice items using `check-box` item control
+
+#### Features & Functionality
 * `forceReadOnlyView` in the `RendererQuestionnaireController` to force the renderer to be in read-only mode for the entire view
-* Support for `onPageChanged` callback in `QuestionnairePageViewRenderer` to track page navigation
+* `onPageChanged` callback in `QuestionnairePageViewRenderer` to track page navigation
 * Initial values support for default slivers in `QuestionnaireSliversViewRenderer`
-* Performance optimizations using caching system for `enableWhen` evaluations
-* Mixin-based architecture for better code reuse (boolean, choice, datetime, text field, open choice, group filtering, regex validation)
-* Factory pattern implementation for component creation (BoxComponentFactory, SliverComponentFactory)
+* Unit tests for core utilities: `FhirRendererQuestionnaireUtils` and `FhirRendererQuestionnaireResponseUtils`
+* Comprehensive test coverage for enableWhen evaluation logic (AND/OR behavior, operators, data types)
+* Tests for QuestionnaireResponse generation, manipulation, and answer handling
+
+#### Architecture & Performance
+* **Performance optimizations** using caching system for `enableWhen` evaluations
+* **Mixin-based architecture** for better code reuse (boolean, choice, datetime, text field, open choice, group filtering, regex validation)
+* **Factory pattern implementation** for component creation (BoxComponentFactory, SliverComponentFactory)
+* EnableWhen caching to prevent redundant conditional logic evaluations
+* InheritedWidget optimization using `identical()` checks for better performance
 
 ### Changed
-* Major refactoring to reduce code duplication (~1040 insertions, ~694 deletions)
-* InheritedWidget optimization using `identical()` checks for better performance
-* Improved state propagation to prevent updates on unmounted widgets
-* Replaced `ChoiceValueMixin` with `ChoiceBaseMixin` for choice components - now exported publicly for custom implementations
+
+#### Code Quality & Architecture
+* **Major refactoring** to reduce code duplication (~1040 insertions, ~694 deletions)
+* **Replaced `ChoiceValueMixin` with `ChoiceBaseMixin`** for choice components - now exported publicly for custom implementations
+* **Improved state propagation** to prevent updates on unmounted widgets
+* Optimized InheritedWidget checks for better performance
+* Better code organization with mixin-based approach
+* Improved rendering performance by removing unnecessary builds
 
 ### Fixed
-* Memory leak: `RendererQuestionnaireController.dispose()` is now properly called from `BaseQuestionnaireState.dispose()`
-* Proper cleanup of `FocusNode` and `TextEditingController` resources when questionnaire renderer is disposed
-* EnableWhen behavior for slivers and custom groups
-* Rendering optimizations to remove unnecessary builds
-* Proper linking of ScrollControllers and PageViewController
+
+#### Memory Management
+* **Memory leak fix**: `RendererQuestionnaireController.dispose()` is now properly called from `BaseQuestionnaireState.dispose()`
+* **Proper cleanup** of `FocusNode` and `TextEditingController` resources when questionnaire renderer is disposed
+
+#### EnableWhen Logic
+* **EnableWhen behavior** for slivers view renderer
+* **EnableWhen behavior** for custom group items
+* **EnableWhen unit tests** added to ensure correctness of conditional logic (AND/OR behavior)
+
+#### Rendering Issues
+* **Keys problem** in Slivers view causing incorrect widget reuse
+* **Proper subIndex handling** for nested questionnaire items
+* **Proper linking** of ScrollControllers and PageViewController
+* **Rendering optimizations** to remove unnecessary rebuilds
+* State propagation issues when widgets are unmounted
+
+### Breaking Changes
+* None - this is the first stable release
+
+### Migration Notes
+If upgrading from pre-1.0.0 versions (0.0.x):
+* `ChoiceValueMixin` has been replaced with `ChoiceBaseMixin` - update any custom implementations
+* Controller disposal is now automatic - remove manual disposal code if present
+* EnableWhen behavior has been fixed - test any complex conditional logic.
+
+---
 
 ### 0.0.7
 
@@ -55,7 +104,7 @@ Types of changes
 
 ### Breaking changes
 * `rendererController` is now required in all renderers.
-* `RenderereQuestionnaireController` was changed to allow you to extend it. 
+* `RendererQuestionnaireController` was changed to allow you to extend it. 
 * `QuestionnaireRendererController` removed. 
 
 ### Added

@@ -1,6 +1,6 @@
-/// A Flutter package for rendering FHIR R4 Questionnaires.
+/// A Flutter package for rendering FHIR® R4 Questionnaires.
 ///
-/// This library provides widgets and controllers to render FHIR R4 questionnaires
+/// This library provides widgets and controllers to render FHIR® R4 questionnaires
 /// in Flutter applications. It supports multiple rendering layouts:
 ///
 /// * **List View** - Displays all questionnaire items in a scrollable list
@@ -22,9 +22,6 @@
 /// // Use a renderer widget
 /// QuestionnaireListViewRenderer(
 ///   rendererController: controller,
-///   getRendererControllerInstance: (ctrl) {
-///     // Access controller state here
-///   },
 /// )
 /// ```
 ///
@@ -53,13 +50,6 @@
 /// * [QuestionnaireDateTimeWidgetBuilder] - For date/time items
 /// * [QuestionnaireGroupWidgetBuilder] - For group items
 ///
-/// ## FHIR SDC Extensions
-///
-/// The package supports the following FHIR SDC extensions:
-/// * `questionnaire-itemControl` - For dropdown rendering (`drop-down`, `radio-button`, `check-box`)
-/// * `regex` - For custom input validation patterns
-/// * `entryFormat` - For custom validation error messages
-///
 /// ## Custom Builders
 ///
 /// To customize widget rendering, use the mixins provided:
@@ -71,6 +61,12 @@
 /// * [RegexValidationMixin] - For input validation
 /// * [ChoiceWidgetBuilderMixin] - For choice widget building
 ///
+/// ## FHIR SDC Extensions
+///
+/// The package supports the following FHIR SDC extensions:
+/// * `questionnaire-itemControl` - For dropdown rendering (`drop-down`, `radio-button`, `check-box`)
+/// * `regex` - For custom input validation patterns
+/// * `entryFormat` - For custom validation error messages
 /// For more information, see the individual class documentation.
 library fhir_renderer_questionnaire;
 
@@ -127,13 +123,6 @@ export 'src/core/validation/default_validation_patterns.dart'
     show DefaultValidationPatterns;
 
 // ============================================================================
-// DATA MODELS
-// ============================================================================
-
-/// Data models for internal state management
-export 'src/core/data/item_behavioral_data.dart' show ItemBehavioralData;
-
-// ============================================================================
 // MIXINS - Value Handling
 // ============================================================================
 
@@ -154,7 +143,9 @@ export 'src/core/mixins/choice_widget_builder_mixin.dart'
 
 /// Extension methods for FHIR objects
 export 'src/core/extensions/fhir_extensions.dart'
-    show FhirRendererQuestionnaireExtensions, QuestionnaireItemValidationExtensions;
+    show
+        FhirRendererQuestionnaireExtensions,
+        QuestionnaireItemValidationExtensions;
 
 // ============================================================================
 // FACTORIES
