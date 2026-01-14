@@ -211,22 +211,16 @@ class ListViewExamplePage extends StatelessWidget {
 - `attachment` - File upload (images, PDFs, documents) ✨ **NEW**
 - `reference` - Reference to FHIR resources (Practitioner, Patient, etc.) ✨ **NEW**
 
-### 📊 Coverage
 **16 of 17 FHIR R4 types implemented** (94% coverage)
 
 Missing: `question` (deprecated generic type, rarely used)
 
-### Performance Optimization
-
-The package includes several performance optimizations:
-- **EnableWhen Caching**: Conditional logic evaluations are cached to prevent redundant calculations
-- **Optimized Rebuilds**: Uses `InheritedWidget` with `identical()` checks to minimize unnecessary rebuilds
-- **Lazy Loading**: ListView renderer uses `ListView.builder` for efficient rendering of long questionnaires
-- **Proper Disposal**: Automatic cleanup of controllers and focus nodes to prevent memory leaks
-
+✳️ **[Use the example project](https://crianpiro.github.io/fhir_renderer_questionnaire/)** ✳️
 
 ## 🔆 📣 🔜 Roadmap
 
 🔳 Support for localization extensions
+🔳 Complete unit tests
+🔳 Widget tests
 
 ❗❗ The roadmap above was created out of specific needs. If you have ideas for features or important functionality to support, please create an issue with your suggestion.
