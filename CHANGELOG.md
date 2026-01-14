@@ -13,13 +13,13 @@ Types of changes
 
 This is the first stable release of `fhir_renderer_questionnaire`, featuring comprehensive FHIR R4 questionnaire rendering capabilities with 94% coverage of questionnaire item types (16 of 17).
 
-### Added
+#### Added
 
-#### New Item Types
+##### New Item Types
 * **Support for `attachment` item type** - File upload functionality with support for images, PDFs, and documents
 * **Support for `reference` item type** - Reference to FHIR resources (Practitioner, Patient, etc.)
 
-#### Validation & Input Handling
+##### Validation & Input Handling
 * Regex validation support using standard FHIR extension `http://hl7.org/fhir/StructureDefinition/regex`
 * Automatic default validation for field types: `integer`, `decimal`, `url`, and `quantity` (no extensions required)
 * Automatic keyboard type selection based on field type (integer → number pad, decimal → decimal pad, url → URL keyboard, text → multiline)
@@ -34,13 +34,13 @@ This is the first stable release of `fhir_renderer_questionnaire`, featuring com
 * `regexValidationPattern` and `regexValidationError` fields in `ItemBehavioralData`
 * Example questionnaires demonstrating both custom regex patterns and automatic default validation
 
-#### Item Control Extensions
+##### Item Control Extensions
 * Support for FHIR `questionnaire-itemControl` extension for customizing choice rendering
 * Dropdown rendering for choice items using `drop-down` item control
 * Radio button rendering for choice items using `radio-button` item control
 * Checkbox rendering for choice items using `check-box` item control
 
-#### Features & Functionality
+##### Features & Functionality
 * `forceReadOnlyView` in the `RendererQuestionnaireController` to force the renderer to be in read-only mode for the entire view
 * `onPageChanged` callback in `QuestionnairePageViewRenderer` to track page navigation
 * Initial values support for default slivers in `QuestionnaireSliversViewRenderer`
@@ -48,16 +48,16 @@ This is the first stable release of `fhir_renderer_questionnaire`, featuring com
 * Comprehensive test coverage for enableWhen evaluation logic (AND/OR behavior, operators, data types)
 * Tests for QuestionnaireResponse generation, manipulation, and answer handling
 
-#### Architecture & Performance
+##### Architecture & Performance
 * **Performance optimizations** using caching system for `enableWhen` evaluations
 * **Mixin-based architecture** for better code reuse (boolean, choice, datetime, text field, open choice, group filtering, regex validation)
 * **Factory pattern implementation** for component creation (BoxComponentFactory, SliverComponentFactory)
 * EnableWhen caching to prevent redundant conditional logic evaluations
 * InheritedWidget optimization using `identical()` checks for better performance
 
-### Changed
+#### Changed
 
-#### Code Quality & Architecture
+##### Code Quality & Architecture
 * **Major refactoring** to reduce code duplication (~1040 insertions, ~694 deletions)
 * **Replaced `ChoiceValueMixin` with `ChoiceBaseMixin`** for choice components - now exported publicly for custom implementations
 * **Improved state propagation** to prevent updates on unmounted widgets
@@ -65,28 +65,28 @@ This is the first stable release of `fhir_renderer_questionnaire`, featuring com
 * Better code organization with mixin-based approach
 * Improved rendering performance by removing unnecessary builds
 
-### Fixed
+#### Fixed
 
-#### Memory Management
+##### Memory Management
 * **Memory leak fix**: `RendererQuestionnaireController.dispose()` is now properly called from `BaseQuestionnaireState.dispose()`
 * **Proper cleanup** of `FocusNode` and `TextEditingController` resources when questionnaire renderer is disposed
 
-#### EnableWhen Logic
+##### EnableWhen Logic
 * **EnableWhen behavior** for slivers view renderer
 * **EnableWhen behavior** for custom group items
 * **EnableWhen unit tests** added to ensure correctness of conditional logic (AND/OR behavior)
 
-#### Rendering Issues
+##### Rendering Issues
 * **Keys problem** in Slivers view causing incorrect widget reuse
 * **Proper subIndex handling** for nested questionnaire items
 * **Proper linking** of ScrollControllers and PageViewController
 * **Rendering optimizations** to remove unnecessary rebuilds
 * State propagation issues when widgets are unmounted
 
-### Breaking Changes
+#### Breaking Changes
 * None - this is the first stable release
 
-### Migration Notes
+#### Migration Notes
 If upgrading from pre-1.0.0 versions (0.0.x):
 * `ChoiceValueMixin` has been replaced with `ChoiceBaseMixin` - update any custom implementations
 * Controller disposal is now automatic - remove manual disposal code if present
