@@ -1,8 +1,8 @@
+import 'package:fhir_renderer_questionnaire/src/ui/renderers/slivers_view_renderer/questionnaire_slivers_view.dart';
 import 'package:flutter/material.dart';
 
 import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../layout/base_questionnaire_renderer.dart';
-import 'questionnaire_slivers_view.dart';
 
 /// A questionnaire renderer widget that displays questionnaire items using slivers.
 ///
@@ -85,11 +85,8 @@ final class _QuestionnaireSliversViewRendererState
       displayItemBuilder: widget.displayItemBuilder,
       rendererController: widget.rendererController,
       onResponseChanged: onResponseChanged,
-      child: Builder(
-        builder: (innerContext) {
-          return const QuestionnaireSliversView();
-        },
-      ),
+      readOnly: readOnly,
+      child: const QuestionnaireSliversView(),
     );
   }
 }

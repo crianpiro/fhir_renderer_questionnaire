@@ -2,12 +2,12 @@ import 'package:fhir_r4/fhir_r4.dart';
 import 'package:flutter/material.dart';
 
 import '../../layout/inherited_questionnaire_renderer.dart';
-import '../../../core/extensions/mapping_extension.dart';
-import '../../../core/utils/fhir_renderer_questionnaire_utils.dart';
 import '../questionnaire_base_item.dart';
+import '../../../core/mixins/group_filtering_mixin.dart';
 import 'questionnaire_item_wrapper.dart';
 
-class QuestionnaireGroupItem extends QuestionnaireBaseItem {
+class QuestionnaireGroupItem extends QuestionnaireBaseItem
+    with GroupFilteringMixin {
   const QuestionnaireGroupItem({
     super.key,
     required super.index,
@@ -16,30 +16,9 @@ class QuestionnaireGroupItem extends QuestionnaireBaseItem {
   });
 
   @override
-  Widget build(BuildContext context) {
-    List<QuestionnaireItem>? items = questionnaireItem.item?.where((item) {
-      InheritedQuestionnaireRenderer questionnaireRendererData =
-          InheritedQuestionnaireRenderer.of(context);
-      final enabled = FhirRendererQuestionnaireUtils.isQuestionnaireItemEnabled(
-        questionnaireRendererData.questionnaireResponse,
-        item,
-      );
-      if (InheritedQuestionnaireRenderer.of(context)
-          .rendererController
-          .indexedItems
-          .containsKey(
-            item.linkId.valueString!,
-          )) {
-        final itemData = InheritedQuestionnaireRenderer.of(context)
-            .rendererController
-            .indexedItems[item.linkId.valueString!]!;
-        InheritedQuestionnaireRenderer.of(context)
-                .rendererController
-                .indexedItems[item.linkId.valueString!] =
-            itemData.copyWith(enabled: enabled);
-      }
-      return enabled;
-    }).toList();
+  Widget buildQuestionnaireItem(BuildContext context) {
+    List<QuestionnaireItem>? items = getFilteredGroupItems(
+        questionnaireItem, InheritedQuestionnaireRenderer.of(context));
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
       padding: const EdgeInsets.only(bottom: 10.0),
@@ -50,7 +29,6 @@ class QuestionnaireGroupItem extends QuestionnaireBaseItem {
       child: Column(
         children: [
           Container(
-            height: 50,
             alignment: Alignment.centerLeft,
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.primaryContainer,
@@ -59,20 +37,20 @@ class QuestionnaireGroupItem extends QuestionnaireBaseItem {
             ),
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             child: Text(
-              questionnaireItem.text?.valueString ??
+              itemTextTitle ??
                   questionnaireItem.code?.firstOrNull?.code?.valueString ??
                   "",
               style: Theme.of(context).textTheme.titleLarge,
             ),
           ),
           if (items != null)
-            ...(items.mapIndexed((subIndex, subItem) {
-              return QuestionnaireItemWrapper(
-                questionnaireItem: subItem,
-                index: subIndex,
-                isLastItem: items.length - 1 == subIndex,
-              );
-            }).toList()),
+            ...List.generate(
+                items.length,
+                (i) => QuestionnaireItemWrapper(
+                      questionnaireItem: items[i],
+                      index: i,
+                      isLastItem: items.length - 1 == i,
+                    )),
         ],
       ),
     );

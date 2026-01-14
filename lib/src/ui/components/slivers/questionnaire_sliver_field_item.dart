@@ -5,9 +5,13 @@ import 'package:flutter/material.dart';
 
 import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
+import '../../../core/utils/keyboard_type_helper.dart';
 import '../boxes/questionnaire_field_item.dart';
 import 'sliver_base_decorator.dart';
 
+/// Sliver version of QuestionnaireFieldItem.
+///
+/// Inherits validation logic from parent via RegexValidationMixin.
 final class QuestionnaireSliverFieldItem extends QuestionnaireFieldItem {
   const QuestionnaireSliverFieldItem({
     required super.questionnaireItem,
@@ -17,58 +21,44 @@ final class QuestionnaireSliverFieldItem extends QuestionnaireFieldItem {
   });
 
   @override
-  Widget build(BuildContext context) {
-    TextEditingController localController;
-    if (InheritedQuestionnaireRenderer.of(context)
-            .rendererController
-            .indexedItems
-            .containsKey(
-              questionnaireItem.linkId.valueString,
-            ) &&
-        InheritedQuestionnaireRenderer.of(context)
-                .rendererController
-                .indexedItems[questionnaireItem.linkId.valueString]!
-                .textController ==
-            null) {
-      final currentResponseItem = findQuestionnaireResponseItem(
-        InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
-        questionnaireItem.linkId.valueString,
-      );
-      localController = TextEditingController(
-        text:
-            currentResponseItem?.answer?.firstOrNull?.valueString?.valueString,
-      );
-      InheritedQuestionnaireRenderer.of(context)
-              .rendererController
-              .indexedItems[questionnaireItem.linkId.valueString!] =
-          InheritedQuestionnaireRenderer.of(context)
-              .rendererController
-              .indexedItems[questionnaireItem.linkId.valueString]!
-              .copyWith(textController: localController);
-    } else {
-      localController = InheritedQuestionnaireRenderer.of(context)
-          .rendererController
-          .indexedItems[questionnaireItem.linkId.valueString!]!
-          .textController!;
-    }
+  Widget buildQuestionnaireItem(BuildContext context) {
+    final inheritedData = InheritedQuestionnaireRenderer.of(context);
+    TextEditingController localController = getAssignedTextController(
+        inheritedData,
+        getInitialValue(questionnaireItem));
+
+    // Get regex validation pattern from ItemBehavioralData
+    final itemData = inheritedData.rendererController.indexedItems[itemLinkId];
+    final regexPattern = itemData?.regexValidationPattern;
+    final regexErrorMessage = itemData?.regexValidationError;
 
     return SliverBaseDecorator(
       title: questionnaireItem.text?.valueString,
       roundBottomBorder: isLastItem,
       child: SliverToBoxAdapter(
-        child: TextField(
+        child: TextFormField(
           controller: localController,
           onChanged: (value) {
             final resp = FhirRendererQuestionnaireResponseUtils
                 .setResponseAnswerInQuestionnaireResponse(
-              InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
+              inheritedData.questionnaireResponse,
               questionnaireItem,
               value.trim().isEmpty
                   ? null
                   : QuestionnaireResponseAnswer(valueX: FhirString(value)),
             );
-            InheritedQuestionnaireRenderer.of(context).onResponseChanged(resp);
+            inheritedData.onResponseChanged(resp);
           },
+          validator: (value) => validateInput(
+            value,
+            regexPattern,
+            regexErrorMessage,
+            itemType: questionnaireItem.type,
+          ),
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          keyboardType: KeyboardTypeHelper.getKeyboardType(questionnaireItem.type),
+          textInputAction: KeyboardTypeHelper.getTextInputAction(questionnaireItem.type),
+          inputFormatters: KeyboardTypeHelper.getInputFormatters(questionnaireItem.type),
           maxLines: questionnaireItem.type == QuestionnaireItemType.text
               ? 5
               : ((questionnaireItem.maxLength?.valueInt ?? 50) /
@@ -77,6 +67,9 @@ final class QuestionnaireSliverFieldItem extends QuestionnaireFieldItem {
           minLines:
               questionnaireItem.type == QuestionnaireItemType.text ? 5 : 1,
           maxLength: questionnaireItem.maxLength?.valueInt,
+          decoration: const InputDecoration(
+            errorMaxLines: 2,
+          ),
         ),
       ),
     );

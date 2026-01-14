@@ -5,10 +5,14 @@ import 'package:flutter/material.dart';
 
 import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
+import '../../../core/utils/keyboard_type_helper.dart';
 import 'base_decorator.dart';
 import '../questionnaire_base_item.dart';
+import '../../../core/mixins/text_field_value_mixin.dart';
+import '../../../core/mixins/regex_validation_mixin.dart';
 
-class QuestionnaireFieldItem extends QuestionnaireBaseItem {
+class QuestionnaireFieldItem extends QuestionnaireBaseItem
+    with TextFieldValueMixin, RegexValidationMixin {
   const QuestionnaireFieldItem({
     required super.questionnaireItem,
     required super.index,
@@ -17,76 +21,45 @@ class QuestionnaireFieldItem extends QuestionnaireBaseItem {
   });
 
   @override
-  Widget build(BuildContext context) {
-    TextEditingController localController;
-    if (InheritedQuestionnaireRenderer.of(context)
-            .rendererController
-            .indexedItems
-            .containsKey(
-              questionnaireItem.linkId.valueString,
-            ) &&
-        InheritedQuestionnaireRenderer.of(context)
-                .rendererController
-                .indexedItems[questionnaireItem.linkId.valueString]!
-                .textController ==
-            null) {
-      final currentResponseItem = findQuestionnaireResponseItem(
-        InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
-        questionnaireItem.linkId.valueString,
-      );
-      String initialValue = "";
-      if (questionnaireItem.initial != null &&
-          questionnaireItem.initial!.isNotEmpty) {
-        final initial = questionnaireItem.initial!.first;
-        if (initial.valueX is FhirString) {
-          initialValue = (initial.valueX as FhirString).valueString ?? "";
-        } else if (initial.valueX is FhirDecimal) {
-          initialValue = (initial.valueX as FhirDecimal).valueDouble.toString();
-        } else if (initial.valueX is FhirInteger) {
-          initialValue = (initial.valueX as FhirInteger).valueInt.toString();
-        } else if (initial.valueX is Quantity) {
-          initialValue =
-              (initial.valueX as Quantity).value?.valueDouble?.toString() ?? "";
-        } else if (initial.valueX is FhirUri) {
-          initialValue = (initial.valueX as FhirUri).valueUri?.toString() ?? "";
-        }
-      }
+  Widget buildQuestionnaireItem(BuildContext context) {
+    final inheritedData = InheritedQuestionnaireRenderer.of(context);
+    TextEditingController localController = getAssignedTextController(
+        inheritedData, getInitialValue(questionnaireItem));
 
-      localController = TextEditingController(
-        text: currentResponseItem
-                ?.answer?.firstOrNull?.valueString?.valueString ??
-            initialValue,
-      );
-      InheritedQuestionnaireRenderer.of(context)
-              .rendererController
-              .indexedItems[questionnaireItem.linkId.valueString!] =
-          InheritedQuestionnaireRenderer.of(context)
-              .rendererController
-              .indexedItems[questionnaireItem.linkId.valueString]!
-              .copyWith(textController: localController);
-    } else {
-      localController = InheritedQuestionnaireRenderer.of(context)
-          .rendererController
-          .indexedItems[questionnaireItem.linkId.valueString!]!
-          .textController!;
-    }
+    // Get regex validation pattern from ItemBehavioralData
+    final itemData = inheritedData.rendererController.indexedItems[itemLinkId];
+    final regexPattern = itemData?.regexValidationPattern;
+    final regexErrorMessage = itemData?.regexValidationError;
 
     return BaseDecorator(
-      title: questionnaireItem.text?.valueString,
+      title: itemTextTitle,
       roundBottomBorder: isLastItem,
-      child: TextField(
+      child: TextFormField(
         controller: localController,
         onChanged: (value) {
           final resp = FhirRendererQuestionnaireResponseUtils
               .setResponseAnswerInQuestionnaireResponse(
-            InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
+            inheritedData.questionnaireResponse,
             questionnaireItem,
             value.trim().isEmpty
                 ? null
                 : QuestionnaireResponseAnswer(valueX: FhirString(value)),
           );
-          InheritedQuestionnaireRenderer.of(context).onResponseChanged(resp);
+          inheritedData.onResponseChanged(resp);
         },
+        validator: (value) => validateInput(
+          value,
+          regexPattern,
+          regexErrorMessage,
+          itemType: questionnaireItem.type,
+        ),
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        keyboardType:
+            KeyboardTypeHelper.getKeyboardType(questionnaireItem.type),
+        textInputAction:
+            KeyboardTypeHelper.getTextInputAction(questionnaireItem.type),
+        inputFormatters:
+            KeyboardTypeHelper.getInputFormatters(questionnaireItem.type),
         maxLines: questionnaireItem.type == QuestionnaireItemType.text
             ? 5
             : ((questionnaireItem.maxLength?.valueInt ?? 50) /
@@ -94,6 +67,9 @@ class QuestionnaireFieldItem extends QuestionnaireBaseItem {
                 .floor(),
         minLines: questionnaireItem.type == QuestionnaireItemType.text ? 5 : 1,
         maxLength: questionnaireItem.maxLength?.valueInt,
+        decoration: const InputDecoration(
+          errorMaxLines: 2,
+        ),
       ),
     );
   }

@@ -1,13 +1,13 @@
-import 'package:fhir_r4/fhir_r4.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
 import 'base_decorator.dart';
 import '../questionnaire_base_item.dart';
+import '../../../core/mixins/datetime_value_mixin.dart';
 
-class QuestionnaireDateTimeItem extends QuestionnaireBaseItem {
+class QuestionnaireDateTimeItem extends QuestionnaireBaseItem
+    with DateTimeValueMixin {
   const QuestionnaireDateTimeItem({
     super.key,
     required super.questionnaireItem,
@@ -15,167 +15,18 @@ class QuestionnaireDateTimeItem extends QuestionnaireBaseItem {
     required super.isLastItem,
   });
 
-  Widget getItemIcon() {
-    switch (questionnaireItem.type) {
-      case QuestionnaireItemType.time:
-        return const Icon(Icons.av_timer);
-      case QuestionnaireItemType.dateTime:
-      default:
-        return const Icon(Icons.calendar_month);
-    }
-  }
-
-  String extractDisplayText(
-    QuestionnaireResponseItem? questionnaireResponseItem,
-  ) {
-    String displayText = "";
-
-    switch (questionnaireItem.type) {
-      case QuestionnaireItemType.dateTime:
-        if (questionnaireResponseItem
-                ?.answer?.firstOrNull?.valueDateTime?.valueDateTime !=
-            null) {
-          displayText = DateFormat.yMd()
-              .add_jm()
-              .format(questionnaireResponseItem!
-                  .answer!.first.valueDateTime!.valueDateTime!)
-              .toString();
-        } else if (questionnaireItem.initial != null &&
-            questionnaireItem.initial!.isNotEmpty &&
-            questionnaireItem.initial!.first.valueX is FhirDateTime &&
-            (questionnaireItem.initial!.first.valueX as FhirDateTime)
-                    .valueDateTime !=
-                null) {
-          displayText = DateFormat.yMd()
-              .add_jm()
-              .format(
-                (questionnaireItem.initial!.first.valueX as FhirDateTime)
-                    .valueDateTime!,
-              )
-              .toString();
-        } else {
-          displayText = "Select date & time";
-        }
-        break;
-      case QuestionnaireItemType.date:
-        if (questionnaireResponseItem
-                ?.answer?.firstOrNull?.valueDate?.valueDateTime !=
-            null) {
-          displayText = DateFormat.yMd()
-              .format(
-                questionnaireResponseItem!
-                    .answer!.first.valueDate!.valueDateTime!,
-              )
-              .toString();
-        } else if (questionnaireItem.initial != null &&
-            questionnaireItem.initial!.isNotEmpty &&
-            questionnaireItem.initial!.first.valueX is FhirDate &&
-            (questionnaireItem.initial!.first.valueX as FhirDate)
-                    .valueDateTime !=
-                null) {
-          displayText = DateFormat.yMd()
-              .format(
-                (questionnaireItem.initial!.first.valueX as FhirDate)
-                    .valueDateTime!,
-              )
-              .toString();
-        } else {
-          displayText = "Select date";
-        }
-      case QuestionnaireItemType.time:
-        if (questionnaireResponseItem
-                ?.answer?.firstOrNull?.valueTime?.valueString !=
-            null) {
-          displayText = questionnaireResponseItem!
-              .answer!.firstOrNull!.valueTime!.valueString!;
-        } else if (questionnaireItem.initial != null &&
-            questionnaireItem.initial!.isNotEmpty &&
-            questionnaireItem.initial!.first.valueX is FhirTime &&
-            (questionnaireItem.initial!.first.valueX as FhirTime).valueString !=
-                null) {
-          displayText = (questionnaireItem.initial!.first.valueX as FhirTime)
-              .valueString!;
-        } else {
-          displayText = "Select time";
-        }
-      default:
-        break;
-    }
-
-    return displayText;
-  }
-
-  Future<QuestionnaireResponseAnswer?> onSelectValue(
-    BuildContext context,
-    QuestionnaireResponseItem? currentResponseItem,
-  ) async {
-    DateTime? selectedDate;
-    TimeOfDay? selectedTime;
-
-    ValueXQuestionnaireResponseAnswer? selectedAnswer;
-
-    if (questionnaireItem.type == QuestionnaireItemType.dateTime ||
-        questionnaireItem.type == QuestionnaireItemType.date) {
-      selectedDate = await showDatePicker(
-        context: context,
-        initialDate:
-            currentResponseItem?.answer?.firstOrNull?.valueDate?.valueDateTime,
-        firstDate: DateTime.now(),
-        lastDate: DateTime.now().add(const Duration(days: 365)),
-      );
-
-      if (selectedDate != null) {
-        selectedAnswer = FhirDate.fromDateTime(selectedDate);
-      }
-    }
-
-    if (context.mounted &&
-        (selectedDate != null &&
-                questionnaireItem.type == QuestionnaireItemType.dateTime ||
-            questionnaireItem.type == QuestionnaireItemType.time)) {
-      selectedTime = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.fromDateTime(
-          currentResponseItem?.answer?.firstOrNull?.valueDate?.valueDateTime ??
-              DateTime.now(),
-        ),
-      );
-
-      if (selectedDate != null && selectedTime != null) {
-        selectedAnswer = FhirDateTime.fromDateTime(
-          DateTime(
-            selectedDate.year,
-            selectedDate.month,
-            selectedDate.day,
-            selectedTime.hour,
-            selectedTime.minute,
-          ),
-        );
-      } else if (selectedTime != null) {
-        selectedAnswer = FhirTime.fromUnits(
-          hour: selectedTime.hour,
-          minute: selectedTime.minute,
-        );
-      }
-    }
-    if (selectedAnswer != null) {
-      return QuestionnaireResponseAnswer(valueX: selectedAnswer);
-    }
-
-    return null;
-  }
-
   @override
-  Widget build(BuildContext context) {
+  Widget buildQuestionnaireItem(BuildContext context) {
     final currentResponseItem = findQuestionnaireResponseItem(
       InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
-      questionnaireItem.linkId.valueString,
+      itemLinkId,
     );
 
-    String? displayText = extractDisplayText(currentResponseItem);
+    String displayText =
+        extractDisplayText(currentResponseItem, questionnaireItem);
 
     return BaseDecorator(
-      title: questionnaireItem.text?.valueString,
+      title: itemTextTitle,
       roundBottomBorder: isLastItem,
       child: ElevatedButton(
         style: ButtonStyle(
@@ -186,6 +37,7 @@ class QuestionnaireDateTimeItem extends QuestionnaireBaseItem {
         onPressed: () async {
           final selectedValue = await onSelectValue(
             context,
+            questionnaireItem,
             currentResponseItem,
           );
 
@@ -206,7 +58,7 @@ class QuestionnaireDateTimeItem extends QuestionnaireBaseItem {
           children: [
             Padding(
               padding: const EdgeInsets.only(right: 5),
-              child: getItemIcon(),
+              child: getItemIcon(questionnaireItem.type),
             ),
             Text(displayText),
           ],

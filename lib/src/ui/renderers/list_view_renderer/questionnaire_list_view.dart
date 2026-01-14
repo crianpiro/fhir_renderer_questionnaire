@@ -1,39 +1,47 @@
 import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/utils/fhir_renderer_questionnaire_utils.dart';
+import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/base_decorator.dart';
+import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/questionnaire_item_wrapper.dart';
+import 'package:fhir_renderer_questionnaire/src/ui/layout/inherited_questionnaire_renderer.dart';
 import 'package:flutter/material.dart';
 
-import '../../layout/inherited_questionnaire_renderer.dart';
-import '../../../core/utils/fhir_renderer_questionnaire_utils.dart';
-import '../../components/boxes/base_decorator.dart';
-import '../../components/boxes/questionnaire_item_wrapper.dart';
-
-final class QuestionnaireListView extends StatelessWidget {
+class QuestionnaireListView extends StatelessWidget {
   const QuestionnaireListView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    List<QuestionnaireItem>? items = InheritedQuestionnaireRenderer.of(context)
-        .questionnaire
-        .item
+    final inheritedData = InheritedQuestionnaireRenderer.of(context);
+    List<QuestionnaireItem>? items = inheritedData.questionnaire.item
         ?.where(
           (i) => FhirRendererQuestionnaireUtils.isQuestionnaireItemEnabled(
-            InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
+            inheritedData.questionnaireResponse,
             i,
+            controller: inheritedData.rendererController,
           ),
         )
         .toList();
 
     if (items != null) {
-      return ListView.builder(
-        itemCount: items.length,
-        controller:
-            InheritedQuestionnaireRenderer.of(context).listViewScrollController,
-        itemBuilder: (context, index) {
-          return QuestionnaireItemWrapper(
-            questionnaireItem: items[index],
-            index: index,
-            isLastItem: items.length - 1 == index,
-          );
+      return GestureDetector(
+        onTap: () {
+          // Dismiss keyboard when tapping outside text fields
+          FocusScope.of(context).unfocus();
         },
+        // Only detect taps on empty space, not on child widgets
+        behavior: HitTestBehavior.opaque,
+        child: ListView.builder(
+          itemCount: items.length,
+          controller: inheritedData.rendererController.listViewScrollController,
+          itemBuilder: (context, index) {
+            final item = items[index];
+            return QuestionnaireItemWrapper(
+              key: ValueKey(item.linkId.valueString),
+              questionnaireItem: item,
+              index: index,
+              isLastItem: items.length - 1 == index,
+            );
+          },
+        ),
       );
     }
 

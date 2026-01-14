@@ -1,8 +1,8 @@
+import 'package:fhir_renderer_questionnaire/src/ui/renderers/page_view_renderer/questionnaire_page_view.dart';
 import 'package:flutter/material.dart';
 
 import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../layout/base_questionnaire_renderer.dart';
-import 'questionnaire_page_view.dart';
 
 /// A questionnaire renderer widget that displays questionnaire items in a paginated view.
 ///
@@ -12,6 +12,8 @@ import 'questionnaire_page_view.dart';
 ///
 /// The widget is final and cannot be extended.
 final class QuestionnairePageViewRenderer extends BaseQuestionnaireRenderer {
+  final void Function(int)? onPageChanged;
+
   /// Creates a questionnaire page view renderer.
   ///
   /// All parameters are required as specified by [BaseQuestionnaireRenderer].
@@ -35,6 +37,7 @@ final class QuestionnairePageViewRenderer extends BaseQuestionnaireRenderer {
     super.groupItemBuilder,
     super.boolItemBuilder,
     super.displayItemBuilder,
+    this.onPageChanged,
     super.key,
   });
 
@@ -80,12 +83,10 @@ final class _QuestionnairePageViewRendererState extends BaseQuestionnaireState {
       boolItemBuilder: widget.boolItemBuilder,
       displayItemBuilder: widget.displayItemBuilder,
       rendererController: widget.rendererController,
+      onPageChanged: (widget as QuestionnairePageViewRenderer).onPageChanged,
       onResponseChanged: onResponseChanged,
-      child: Builder(
-        builder: (innerContext) {
-          return const QuestionnairePageView();
-        },
-      ),
+      readOnly: readOnly,
+      child: const QuestionnairePageView(),
     );
   }
 }

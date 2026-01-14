@@ -2,7 +2,7 @@ import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_renderer_questionnaire/src/core/utils/fhir_renderer_questionnaire_response_utils.dart';
 import 'package:flutter/material.dart';
 
-import '../data/field_behavioral_data.dart';
+import '../data/item_behavioral_data.dart';
 
 /// A controller for managing the state and behavior of a FHIR Questionnaire renderer.
 ///
@@ -16,6 +16,10 @@ class RendererQuestionnaireController {
   ///
   /// This is typically set by the `BaseQuestionnaireRenderer` when the renderer is initialized.
   QuestionnaireResponse Function()? onGenerateQuestionnaireResponse;
+
+  void Function()? onReadOnlyModeChanged;
+
+  bool forceReadOnlyView;
 
   /// The FHIR Questionnaire to be rendered.
   final Questionnaire questionnaire;
@@ -40,7 +44,13 @@ class RendererQuestionnaireController {
   ///
   /// This includes focus nodes and required status, allowing the controller to
   /// manage focus and validation.
-  final Map<String, FieldBehavioralData> indexedItems = {};
+  final Map<String, ItemBehavioralData> indexedItems = {};
+
+  /// Cache for enableWhen condition evaluation results.
+  /// Key format: "linkId:responseHashCode"
+  /// Value: whether the item is enabled
+  /// This cache is cleared when the response changes.
+  final Map<String, bool> _enableWhenCache = {};
 
   /// Creates a [RendererQuestionnaireController].
   ///
@@ -62,11 +72,33 @@ class RendererQuestionnaireController {
     this.pageViewController,
     this.initialQuestionnaireResponse,
     this.onGenerateQuestionnaireResponse,
+    this.forceReadOnlyView = false,
   }) {
     initialQuestionnaireResponse ??= FhirRendererQuestionnaireResponseUtils
         .generateInitialQuestionnaireResponse(
       questionnaire,
     );
+  }
+
+  void updateReadOnlyMode(bool enableReadOnly) {
+    forceReadOnlyView = enableReadOnly;
+    onReadOnlyModeChanged?.call();
+  }
+
+  /// Gets a cached enableWhen evaluation result.
+  /// Returns null if not cached.
+  bool? getCachedEnableWhen(String linkId, int responseHashCode) {
+    return _enableWhenCache['$linkId:$responseHashCode'];
+  }
+
+  /// Caches an enableWhen evaluation result.
+  void cacheEnableWhen(String linkId, int responseHashCode, bool enabled) {
+    _enableWhenCache['$linkId:$responseHashCode'] = enabled;
+  }
+
+  /// Clears the enableWhen cache. Should be called when the response changes.
+  void clearEnableWhenCache() {
+    _enableWhenCache.clear();
   }
 
   /// Generates the current [QuestionnaireResponse] from the renderer's state.
@@ -76,5 +108,22 @@ class RendererQuestionnaireController {
   QuestionnaireResponse generateQuestionnaireResponse() {
     return onGenerateQuestionnaireResponse?.call() ??
         initialQuestionnaireResponse!;
+  }
+
+  /// Disposes of all resources held by this controller.
+  ///
+  /// This method should be called when the controller is no longer needed,
+  /// typically in the dispose method of the widget using this controller.
+  /// It cleans up FocusNodes, TextEditingControllers, and other resources
+  /// to prevent memory leaks.
+  void dispose() {
+    // Dispose all FocusNodes and TextEditingControllers
+    onGenerateQuestionnaireResponse = null;
+    for (final itemData in indexedItems.values) {
+      itemData.focusNode.dispose();
+      itemData.textController?.dispose();
+    }
+    indexedItems.clear();
+    groupBundleKeys.clear();
   }
 }

@@ -59,6 +59,7 @@ abstract class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer>
     with WidgetsBindingObserver {
   /// The current response state of the questionnaire.
   late QuestionnaireResponse questionnaireResponse;
+  late bool readOnly;
 
   /// Whether to validate and check required items.
   bool checkRequiredItems = false;
@@ -70,9 +71,13 @@ abstract class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer>
 
   /// Updates the local state when the questionnaire response changes.
   void onResponseChanged(QuestionnaireResponse updatedQuestionnaireResponse) {
-    setState(() {
-      questionnaireResponse = updatedQuestionnaireResponse;
-    });
+    // Clear the enableWhen cache when response changes to avoid stale state
+    widget.rendererController.clearEnableWhenCache();
+    if (context.mounted) {
+      setState(() {
+        questionnaireResponse = updatedQuestionnaireResponse;
+      });
+    }
   }
 
   /// Triggered when the controller requests to generate/validate the response.
@@ -80,20 +85,31 @@ abstract class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer>
   /// This sets [checkRequiredItems] to true, forcing validation UI updates,
   /// and focuses the first missing required field if any.
   QuestionnaireResponse onGenerateQuestionnaireResponse() {
-    setState(() {
-      checkRequiredItems = true;
-    });
+    if (context.mounted) {
+      setState(() {
+        checkRequiredItems = true;
+      });
+    }
 
     //Add the markAsRequired here instead of in building time.
     if (widget.rendererController.indexedItems.isNotEmpty) {
       for (var entry in widget.rendererController.indexedItems.entries) {
-        if (entry.value.markedRequired) {
+        if (entry.value.markAsRequired) {
           entry.value.focusNode.requestFocus();
           break;
         }
       }
     }
+
     return questionnaireResponse;
+  }
+
+  void onReadOnlyModeChanged() {
+    if (context.mounted) {
+      setState(() {
+        readOnly = widget.rendererController.forceReadOnlyView;
+      });
+    }
   }
 
   /// Callback executed after the widget is created.
@@ -123,9 +139,19 @@ abstract class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer>
   void initState() {
     questionnaireResponse =
         widget.rendererController.initialQuestionnaireResponse!;
+    readOnly = widget.rendererController.forceReadOnlyView;
     widget.rendererController.onGenerateQuestionnaireResponse =
         onGenerateQuestionnaireResponse;
+    widget.rendererController.onReadOnlyModeChanged = onReadOnlyModeChanged;
     WidgetsBinding.instance.addPostFrameCallback(onCreated);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    widget.rendererController.initialQuestionnaireResponse =
+        questionnaireResponse;
+    // Note: Controller disposal is the responsibility of the owner, not the renderer
+    super.dispose();
   }
 }

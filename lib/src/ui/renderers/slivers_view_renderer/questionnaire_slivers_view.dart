@@ -1,45 +1,63 @@
 import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/utils/fhir_renderer_questionnaire_utils.dart';
+import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/base_decorator.dart';
+import 'package:fhir_renderer_questionnaire/src/ui/components/slivers/questionnaire_sliver_item_wrapper.dart';
+import 'package:fhir_renderer_questionnaire/src/ui/layout/inherited_questionnaire_renderer.dart';
 import 'package:flutter/material.dart';
 
-import '../../layout/inherited_questionnaire_renderer.dart';
-import '../../../core/utils/fhir_renderer_questionnaire_utils.dart';
-import '../../components/boxes/base_decorator.dart';
-import '../../components/slivers/questionnaire_sliver_item_wrapper.dart';
-
-final class QuestionnaireSliversView extends StatelessWidget {
+class QuestionnaireSliversView extends StatelessWidget {
   const QuestionnaireSliversView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    List<QuestionnaireItem>? items = InheritedQuestionnaireRenderer.of(context)
-        .questionnaire
-        .item
+    final inheritedData = InheritedQuestionnaireRenderer.of(context);
+    List<QuestionnaireItem>? items = inheritedData.questionnaire.item
         ?.where(
           (i) => FhirRendererQuestionnaireUtils.isQuestionnaireItemEnabled(
-            InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
+            inheritedData.questionnaireResponse,
             i,
+            controller: inheritedData.rendererController,
           ),
         )
         .toList();
 
     if (items != null) {
-      return CustomScrollView(
-        controller:
-            InheritedQuestionnaireRenderer.of(context).listViewScrollController,
-        slivers: items.map((item) {
-          final index = items.indexOf(item);
-          GlobalKey globalKey = GlobalKey();
-          InheritedQuestionnaireRenderer.of(context)
-              .rendererController
-              .groupBundleKeys
-              .add(globalKey);
-          return QuestionnaireSliverItemWrapper(
-            key: globalKey,
-            questionnaireItem: item,
-            index: index,
-            isLastItem: index == items.length - 1,
+      // Only initialize keys when the list is empty (first build)
+      // or when the number of items changes (items enabled/disabled)
+      final needsKeyUpdate = inheritedData.rendererController.groupBundleKeys.isEmpty ||
+          inheritedData.rendererController.groupBundleKeys.length != items.length;
+
+      if (needsKeyUpdate) {
+        inheritedData.rendererController.groupBundleKeys.clear();
+        for (var item in items) {
+          final linkId = item.linkId.valueString;
+          inheritedData.rendererController.groupBundleKeys.add(
+            GlobalKey(debugLabel: 'sliver_item_$linkId'),
           );
-        }).toList(),
+        }
+      }
+
+      return GestureDetector(
+        onTap: () {
+          // Dismiss keyboard when tapping outside text fields
+          FocusScope.of(context).unfocus();
+        },
+        // Only detect taps on empty space, not on child widgets
+        behavior: HitTestBehavior.opaque,
+        child: CustomScrollView(
+          controller: inheritedData.rendererController.listViewScrollController,
+          slivers: List.generate(items.length, (index) {
+            final item = items[index];
+            final globalKey = inheritedData.rendererController.groupBundleKeys[index];
+
+            return QuestionnaireSliverItemWrapper(
+              key: globalKey,
+              questionnaireItem: item,
+              index: index,
+              isLastItem: index == items.length - 1,
+            );
+          }),
+        ),
       );
     }
 
