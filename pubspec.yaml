@@ -10,7 +10,7 @@ topics:
   - questionnaires
   - rendering
   - customization
-  - fhir_r4
+  - fhir-r4
 
 environment:
   sdk: ^3.5.3
