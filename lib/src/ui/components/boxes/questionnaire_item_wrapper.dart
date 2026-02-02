@@ -203,6 +203,29 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem
 
       case QuestionnaireItemType.attachment:
         // File upload for binary content (images, PDFs, documents)
+        if (inheritedQuestionnaireRenderer.attachmentItemBuilder != null) {
+          return inheritedQuestionnaireRenderer.attachmentItemBuilder!(
+            index,
+            isLastItem,
+            findQuestionnaireResponseItem(
+              inheritedQuestionnaireRenderer.questionnaireResponse,
+              itemLinkId,
+            ),
+            questionnaireItem,
+            (attachment) {
+              final resp = FhirRendererQuestionnaireResponseUtils
+                  .setResponseAnswerInQuestionnaireResponse(
+                inheritedQuestionnaireRenderer.questionnaireResponse,
+                questionnaireItem,
+                attachment != null
+                    ? QuestionnaireResponseAnswer(valueX: attachment)
+                    : null,
+              );
+
+              inheritedQuestionnaireRenderer.onResponseChanged(resp);
+            },
+          );
+        }
         return factory.createAttachmentItem(
             index, isLastItem, questionnaireItem);
 

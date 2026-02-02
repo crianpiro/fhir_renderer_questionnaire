@@ -18,6 +18,9 @@ Types of changes
 * **Custom Reference Builder example** demonstrating autocomplete-style FHIR resource selection
 * Mock data for Practitioners and Organizations with searchable dropdown
 
+##### Builder Support for Attachment Items
+* **`QuestionnaireAttachmentWidgetBuilder`** - New builder callback type for customizing attachment item rendering
+
 #### Fixed
 
 ##### Reference Item Cursor Jumping

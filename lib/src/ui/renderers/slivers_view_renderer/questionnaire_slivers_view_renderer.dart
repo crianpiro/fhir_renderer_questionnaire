@@ -37,6 +37,7 @@ final class QuestionnaireSliversViewRenderer extends BaseQuestionnaireRenderer {
     super.boolItemBuilder,
     super.displayItemBuilder,
     super.referenceItemBuilder,
+    super.attachmentItemBuilder,
     super.key,
   });
 
@@ -85,6 +86,7 @@ final class _QuestionnaireSliversViewRendererState
       boolItemBuilder: widget.boolItemBuilder,
       displayItemBuilder: widget.displayItemBuilder,
       referenceItemBuilder: widget.referenceItemBuilder,
+      attachmentItemBuilder: widget.attachmentItemBuilder,
       rendererController: widget.rendererController,
       onResponseChanged: onResponseChanged,
       readOnly: readOnly,

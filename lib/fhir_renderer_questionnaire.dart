@@ -50,6 +50,7 @@
 /// * [QuestionnaireDateTimeWidgetBuilder] - For date/time items
 /// * [QuestionnaireGroupWidgetBuilder] - For group items
 /// * [QuestionnaireReferenceWidgetBuilder] - For reference items
+/// * [QuestionnaireAttachmentWidgetBuilder] - For attachment items
 ///
 /// ## Custom Builders
 ///
@@ -103,7 +104,8 @@ export 'src/core/definitions/type_definitions.dart'
         QuestionnaireGroupWidgetBuilder,
         QuestionnaireChoiceWidgetBuilder,
         QuestionnaireFieldWidgetBuilder,
-        QuestionnaireReferenceWidgetBuilder;
+        QuestionnaireReferenceWidgetBuilder,
+        QuestionnaireAttachmentWidgetBuilder;
 
 // ============================================================================
 // UTILITIES
