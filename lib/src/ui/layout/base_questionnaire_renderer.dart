@@ -24,6 +24,7 @@ abstract class BaseQuestionnaireRenderer extends StatefulWidget {
     this.groupItemBuilder,
     this.boolItemBuilder,
     this.displayItemBuilder,
+    this.referenceItemBuilder,
   });
 
   /// Controller to manage the state and actions of the questionnaire renderer.
@@ -49,6 +50,9 @@ abstract class BaseQuestionnaireRenderer extends StatefulWidget {
 
   /// Custom builder for display items.
   final QuestionnaireDisplayWidgetBuilder? displayItemBuilder;
+
+  /// Custom builder for reference items.
+  final QuestionnaireReferenceWidgetBuilder? referenceItemBuilder;
 }
 
 /// The base state for [BaseQuestionnaireRenderer].

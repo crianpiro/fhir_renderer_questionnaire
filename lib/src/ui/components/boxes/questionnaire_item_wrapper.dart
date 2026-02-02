@@ -208,6 +208,52 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem
 
       case QuestionnaireItemType.reference:
         // Reference to another FHIR resource
+        if (inheritedQuestionnaireRenderer.referenceItemBuilder != null) {
+          final currentResponse = findQuestionnaireResponseItem(
+            inheritedQuestionnaireRenderer.questionnaireResponse,
+            itemLinkId,
+          );
+          final existingReference =
+              currentResponse?.answer?.firstOrNull?.valueReference;
+
+          return inheritedQuestionnaireRenderer.referenceItemBuilder!(
+            index,
+            isLastItem,
+            getAssignedTextController(
+              inheritedQuestionnaireRenderer,
+              existingReference?.reference?.valueString ?? '',
+            ),
+            getSecondaryTextController(
+              inheritedQuestionnaireRenderer,
+              'display',
+              existingReference?.display?.valueString ?? '',
+            ),
+            currentResponse,
+            questionnaireItem,
+            (referenceString, displayName) {
+              QuestionnaireResponseAnswer? answer;
+
+              if (referenceString.trim().isNotEmpty) {
+                final reference = Reference(
+                  reference: FhirString(referenceString.trim()),
+                  display: displayName.trim().isNotEmpty
+                      ? FhirString(displayName.trim())
+                      : null,
+                );
+                answer = QuestionnaireResponseAnswer(valueX: reference);
+              }
+
+              final resp = FhirRendererQuestionnaireResponseUtils
+                  .setResponseAnswerInQuestionnaireResponse(
+                inheritedQuestionnaireRenderer.questionnaireResponse,
+                questionnaireItem,
+                answer,
+              );
+
+              inheritedQuestionnaireRenderer.onResponseChanged(resp);
+            },
+          );
+        }
         return factory.createReferenceItem(
             index, isLastItem, questionnaireItem);
 

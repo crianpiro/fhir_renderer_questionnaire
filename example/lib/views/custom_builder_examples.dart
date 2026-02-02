@@ -486,6 +486,266 @@ class CustomGroupBuilderPage extends StatelessWidget {
   }
 }
 
+/// Example page demonstrating custom reference builder with autocomplete
+class CustomReferenceBuilderPage extends StatelessWidget {
+  CustomReferenceBuilderPage({super.key});
+
+  final RendererQuestionnaireController controller =
+      RendererQuestionnaireController(
+        questionnaire: documentUploadQuestionnaire,
+      );
+
+  // Mock data for FHIR resources (in a real app, this would come from a FHIR server)
+  static const List<Map<String, String>> _mockPractitioners = [
+    {'id': 'pract-001', 'name': 'Dr. Sarah Johnson', 'specialty': 'Family Medicine'},
+    {'id': 'pract-002', 'name': 'Dr. Michael Chen', 'specialty': 'Internal Medicine'},
+    {'id': 'pract-003', 'name': 'Dr. Emily Williams', 'specialty': 'Pediatrics'},
+    {'id': 'pract-004', 'name': 'Dr. James Brown', 'specialty': 'Cardiology'},
+    {'id': 'pract-005', 'name': 'Dr. Lisa Davis', 'specialty': 'Dermatology'},
+  ];
+
+  static const List<Map<String, String>> _mockOrganizations = [
+    {'id': 'org-001', 'name': 'City General Hospital', 'type': 'Hospital'},
+    {'id': 'org-002', 'name': 'Downtown Medical Center', 'type': 'Clinic'},
+    {'id': 'org-003', 'name': 'Wellness Pharmacy', 'type': 'Pharmacy'},
+    {'id': 'org-004', 'name': 'LabCorp Diagnostics', 'type': 'Laboratory'},
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Custom Reference Builder'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              final response = controller.generateQuestionnaireResponse();
+              log(response.toString());
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Response logged to console')),
+              );
+            },
+            icon: const Icon(Icons.check),
+          ),
+        ],
+      ),
+      body: QuestionnaireListViewRenderer(
+        rendererController: controller,
+        referenceItemBuilder: (
+          index,
+          isLastItem,
+          referenceController,
+          displayController,
+          selectedResponse,
+          questionnaireItem,
+          onReferenceChanged,
+        ) {
+          final itemText = questionnaireItem.text?.valueString ?? '';
+          final isPractitioner = itemText.toLowerCase().contains('physician') ||
+              itemText.toLowerCase().contains('referral');
+          final isPharmacy = itemText.toLowerCase().contains('pharmacy');
+
+          // Determine which mock data to use based on the item context
+          final mockData = isPharmacy
+              ? _mockOrganizations
+              : isPractitioner
+                  ? _mockPractitioners
+                  : [..._mockPractitioners, ..._mockOrganizations];
+
+          final resourceType = isPharmacy
+              ? 'Organization'
+              : isPractitioner
+                  ? 'Practitioner'
+                  : 'Resource';
+
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Title with icon
+                Row(
+                  children: [
+                    Icon(
+                      isPractitioner
+                          ? Icons.person
+                          : isPharmacy
+                              ? Icons.local_pharmacy
+                              : Icons.link,
+                      color: Theme.of(context).colorScheme.primary,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        itemText,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+
+                // Autocomplete field for searching resources
+                Autocomplete<Map<String, String>>(
+                  optionsBuilder: (TextEditingValue textEditingValue) {
+                    if (textEditingValue.text.isEmpty) {
+                      return mockData;
+                    }
+                    return mockData.where((resource) {
+                      final name = resource['name']!.toLowerCase();
+                      final query = textEditingValue.text.toLowerCase();
+                      return name.contains(query);
+                    });
+                  },
+                  displayStringForOption: (option) => option['name']!,
+                  fieldViewBuilder: (context, textController, focusNode, onSubmitted) {
+                    // Sync with the persistent controller
+                    if (textController.text.isEmpty && displayController.text.isNotEmpty) {
+                      textController.text = displayController.text;
+                    }
+                    return TextField(
+                      controller: textController,
+                      focusNode: focusNode,
+                      decoration: InputDecoration(
+                        labelText: 'Search $resourceType',
+                        hintText: 'Type to search...',
+                        prefixIcon: const Icon(Icons.search),
+                        suffixIcon: textController.text.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(Icons.clear),
+                                onPressed: () {
+                                  textController.clear();
+                                  referenceController.clear();
+                                  displayController.clear();
+                                  onReferenceChanged('', '');
+                                },
+                              )
+                            : null,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        filled: true,
+                        fillColor: Theme.of(context)
+                            .colorScheme
+                            .surfaceContainerHighest
+                            .withValues(alpha: 0.3),
+                      ),
+                      onSubmitted: (_) => onSubmitted(),
+                    );
+                  },
+                  optionsViewBuilder: (context, onSelected, options) {
+                    return Align(
+                      alignment: Alignment.topLeft,
+                      child: Material(
+                        elevation: 4,
+                        borderRadius: BorderRadius.circular(12),
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxHeight: 250, maxWidth: 350),
+                          child: ListView.builder(
+                            padding: EdgeInsets.zero,
+                            shrinkWrap: true,
+                            itemCount: options.length,
+                            itemBuilder: (context, index) {
+                              final option = options.elementAt(index);
+                              return ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
+                                  child: Text(
+                                    option['name']![0],
+                                    style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimaryContainer,
+                                    ),
+                                  ),
+                                ),
+                                title: Text(option['name']!),
+                                subtitle: Text(
+                                  option['specialty'] ?? option['type'] ?? '',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                ),
+                                trailing: Text(
+                                  option['id']!,
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: Colors.grey.shade500,
+                                    fontFamily: 'monospace',
+                                  ),
+                                ),
+                                onTap: () => onSelected(option),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                  onSelected: (selection) {
+                    final refString = '$resourceType/${selection['id']}';
+                    final displayName = selection['name']!;
+                    referenceController.text = refString;
+                    displayController.text = displayName;
+                    onReferenceChanged(refString, displayName);
+                  },
+                ),
+
+                // Show current selection if exists
+                if (referenceController.text.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.green.shade50,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.green.shade200),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.check_circle, color: Colors.green.shade600, size: 20),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                displayController.text,
+                                style: const TextStyle(fontWeight: FontWeight.w500),
+                              ),
+                              Text(
+                                referenceController.text,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey.shade600,
+                                  fontFamily: 'monospace',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+
+                if (!isLastItem) const Divider(height: 24),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
 /// Example page demonstrating custom display builder
 class CustomDisplayBuilderPage extends StatelessWidget {
   CustomDisplayBuilderPage({super.key});

@@ -20,6 +20,7 @@ final class InheritedQuestionnaireRenderer extends InheritedWidget {
     this.dateTimeItemBuilder,
     this.boolItemBuilder,
     this.displayItemBuilder,
+    this.referenceItemBuilder,
     this.readOnly = false,
   });
 
@@ -48,6 +49,8 @@ final class InheritedQuestionnaireRenderer extends InheritedWidget {
   final QuestionnaireDateTimeWidgetBuilder? dateTimeItemBuilder;
 
   final QuestionnaireChoiceWidgetBuilder? openChoiceItemBuilder;
+
+  final QuestionnaireReferenceWidgetBuilder? referenceItemBuilder;
 
   final void Function(QuestionnaireResponse response) onResponseChanged;
 

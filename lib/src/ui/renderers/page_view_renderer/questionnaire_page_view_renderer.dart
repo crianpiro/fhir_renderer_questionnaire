@@ -37,6 +37,7 @@ final class QuestionnairePageViewRenderer extends BaseQuestionnaireRenderer {
     super.groupItemBuilder,
     super.boolItemBuilder,
     super.displayItemBuilder,
+    super.referenceItemBuilder,
     this.onPageChanged,
     super.key,
   });
@@ -82,6 +83,7 @@ final class _QuestionnairePageViewRendererState extends BaseQuestionnaireState {
       dateTimeItemBuilder: widget.dateTimeItemBuilder,
       boolItemBuilder: widget.boolItemBuilder,
       displayItemBuilder: widget.displayItemBuilder,
+      referenceItemBuilder: widget.referenceItemBuilder,
       rendererController: widget.rendererController,
       onPageChanged: (widget as QuestionnairePageViewRenderer).onPageChanged,
       onResponseChanged: onResponseChanged,

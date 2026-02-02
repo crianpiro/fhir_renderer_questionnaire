@@ -49,6 +49,7 @@
 /// * [QuestionnaireChoiceWidgetBuilder] - For choice/open-choice items
 /// * [QuestionnaireDateTimeWidgetBuilder] - For date/time items
 /// * [QuestionnaireGroupWidgetBuilder] - For group items
+/// * [QuestionnaireReferenceWidgetBuilder] - For reference items
 ///
 /// ## Custom Builders
 ///
@@ -101,7 +102,8 @@ export 'src/core/definitions/type_definitions.dart'
         QuestionnaireBooleanWidgetBuilder,
         QuestionnaireGroupWidgetBuilder,
         QuestionnaireChoiceWidgetBuilder,
-        QuestionnaireFieldWidgetBuilder;
+        QuestionnaireFieldWidgetBuilder,
+        QuestionnaireReferenceWidgetBuilder;
 
 // ============================================================================
 // UTILITIES
