@@ -33,13 +33,16 @@ class QuestionnaireReferenceItem extends QuestionnaireBaseItem {
     final existingReference =
         currentResponse?.answer?.firstOrNull?.valueReference;
 
-    // Controllers for reference and display name
-    final referenceController = TextEditingController(
-      text: existingReference?.reference?.valueString ?? '',
+    // Get persistent controllers to prevent cursor jumping on rebuild
+    final referenceController = getAssignedTextController(
+      inheritedData,
+      existingReference?.reference?.valueString ?? '',
     );
 
-    final displayController = TextEditingController(
-      text: existingReference?.display?.valueString ?? '',
+    final displayController = getSecondaryTextController(
+      inheritedData,
+      'display',
+      existingReference?.display?.valueString ?? '',
     );
 
     // Get allowed resource types from extension if available

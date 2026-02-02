@@ -5,6 +5,12 @@ homepage: https://alphacodelabs.de/
 repository: https://github.com/crianpiro/fhir_renderer_questionnaire
 funding:
   - https://buymeacoffee.com/crianpiro
+topics:
+  - fhir
+  - questionnaires
+  - rendering
+  - customization
+  - fhir_r4
 
 environment:
   sdk: ^3.5.3

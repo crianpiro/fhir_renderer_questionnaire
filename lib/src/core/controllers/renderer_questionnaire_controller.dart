@@ -46,6 +46,13 @@ class RendererQuestionnaireController {
   /// manage focus and validation.
   final Map<String, ItemBehavioralData> indexedItems = {};
 
+  /// A map of auxiliary text controllers for items that need multiple text inputs.
+  ///
+  /// Key format: "linkId_suffix" (e.g., "item1_display" for a secondary display field).
+  /// This map is used for items like reference fields that have both a reference
+  /// and a display name input.
+  final Map<String, TextEditingController> auxiliaryTextControllers = {};
+
   /// Cache for enableWhen condition evaluation results.
   /// Key format: "linkId:responseHashCode"
   /// Value: whether the item is enabled
@@ -124,6 +131,11 @@ class RendererQuestionnaireController {
       itemData.textController?.dispose();
     }
     indexedItems.clear();
+    // Dispose auxiliary text controllers
+    for (final controller in auxiliaryTextControllers.values) {
+      controller.dispose();
+    }
+    auxiliaryTextControllers.clear();
     groupBundleKeys.clear();
   }
 }
