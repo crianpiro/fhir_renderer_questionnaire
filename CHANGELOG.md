@@ -9,6 +9,25 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+### 1.1.0
+
+#### Added
+
+##### Builder Support for Reference Items
+* **`QuestionnaireReferenceWidgetBuilder`** - New builder callback type for customizing reference item rendering
+* **Custom Reference Builder example** demonstrating autocomplete-style FHIR resource selection
+* Mock data for Practitioners and Organizations with searchable dropdown
+
+##### Builder Support for Attachment Items
+* **`QuestionnaireAttachmentWidgetBuilder`** - New builder callback type for customizing attachment item rendering
+
+#### Fixed
+
+##### Reference Item Cursor Jumping
+* **Fixed cursor jumping to beginning** when typing in `QuestionnaireReferenceItem` fields
+
+---
+
 ### 1.0.0
 
 This is the first stable release of `fhir_renderer_questionnaire`, featuring comprehensive FHIR R4 questionnaire rendering capabilities with 94% coverage of questionnaire item types (16 of 17).

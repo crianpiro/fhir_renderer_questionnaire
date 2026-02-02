@@ -239,6 +239,14 @@ class HomePage extends StatelessWidget {
               color: Colors.blueGrey,
               onTap: () => _navigateTo(context, CustomDisplayBuilderPage()),
             ),
+            _buildExampleCard(
+              context,
+              title: 'Custom Reference Builder',
+              description: 'Autocomplete-style FHIR resource references',
+              icon: Icons.link,
+              color: Colors.deepPurple,
+              onTap: () => _navigateTo(context, CustomReferenceBuilderPage()),
+            ),
             const SizedBox(height: 16),
             _buildSectionHeader(context, 'Testing'),
             _buildExampleCard(

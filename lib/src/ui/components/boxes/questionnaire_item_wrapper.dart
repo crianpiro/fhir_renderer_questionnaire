@@ -203,11 +203,80 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem
 
       case QuestionnaireItemType.attachment:
         // File upload for binary content (images, PDFs, documents)
+        if (inheritedQuestionnaireRenderer.attachmentItemBuilder != null) {
+          return inheritedQuestionnaireRenderer.attachmentItemBuilder!(
+            index,
+            isLastItem,
+            findQuestionnaireResponseItem(
+              inheritedQuestionnaireRenderer.questionnaireResponse,
+              itemLinkId,
+            ),
+            questionnaireItem,
+            (attachment) {
+              final resp = FhirRendererQuestionnaireResponseUtils
+                  .setResponseAnswerInQuestionnaireResponse(
+                inheritedQuestionnaireRenderer.questionnaireResponse,
+                questionnaireItem,
+                attachment != null
+                    ? QuestionnaireResponseAnswer(valueX: attachment)
+                    : null,
+              );
+
+              inheritedQuestionnaireRenderer.onResponseChanged(resp);
+            },
+          );
+        }
         return factory.createAttachmentItem(
             index, isLastItem, questionnaireItem);
 
       case QuestionnaireItemType.reference:
         // Reference to another FHIR resource
+        if (inheritedQuestionnaireRenderer.referenceItemBuilder != null) {
+          final currentResponse = findQuestionnaireResponseItem(
+            inheritedQuestionnaireRenderer.questionnaireResponse,
+            itemLinkId,
+          );
+          final existingReference =
+              currentResponse?.answer?.firstOrNull?.valueReference;
+
+          return inheritedQuestionnaireRenderer.referenceItemBuilder!(
+            index,
+            isLastItem,
+            getAssignedTextController(
+              inheritedQuestionnaireRenderer,
+              existingReference?.reference?.valueString ?? '',
+            ),
+            getSecondaryTextController(
+              inheritedQuestionnaireRenderer,
+              'display',
+              existingReference?.display?.valueString ?? '',
+            ),
+            currentResponse,
+            questionnaireItem,
+            (referenceString, displayName) {
+              QuestionnaireResponseAnswer? answer;
+
+              if (referenceString.trim().isNotEmpty) {
+                final reference = Reference(
+                  reference: FhirString(referenceString.trim()),
+                  display: displayName.trim().isNotEmpty
+                      ? FhirString(displayName.trim())
+                      : null,
+                );
+                answer = QuestionnaireResponseAnswer(valueX: reference);
+              }
+
+              final resp = FhirRendererQuestionnaireResponseUtils
+                  .setResponseAnswerInQuestionnaireResponse(
+                inheritedQuestionnaireRenderer.questionnaireResponse,
+                questionnaireItem,
+                answer,
+              );
+
+              inheritedQuestionnaireRenderer.onResponseChanged(resp);
+            },
+          );
+        }
         return factory.createReferenceItem(
             index, isLastItem, questionnaireItem);
 

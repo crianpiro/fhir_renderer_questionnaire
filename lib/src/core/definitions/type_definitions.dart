@@ -85,3 +85,40 @@ typedef QuestionnaireFieldWidgetBuilder = Widget Function(
   QuestionnaireItem questionnaireItem,
   Function(String answer) onAnswerChanged,
 );
+
+/// A typedef for building a reference widget for a questionnaire.
+///
+/// [index]: The index of the item in the questionnaire.
+/// [isLastItem]: Determines if this is the last item in the questionnaire.
+/// [referenceController]: The controller for the reference input field.
+/// [displayController]: The controller for the display name input field.
+/// [selectedResponse]: The current reference response item selected, if any.
+/// [questionnaireItem]: The questionnaire item to be processed.
+/// [onReferenceChanged]: Callback when the reference value is changed.
+///   Takes the reference string (e.g., "Patient/123") and display name.
+typedef QuestionnaireReferenceWidgetBuilder = Widget Function(
+  int index,
+  bool isLastItem,
+  TextEditingController referenceController,
+  TextEditingController displayController,
+  QuestionnaireResponseItem? selectedResponse,
+  QuestionnaireItem questionnaireItem,
+  Function(String referenceString, String displayName) onReferenceChanged,
+);
+
+/// A typedef for building an attachment widget for a questionnaire.
+///
+/// [index]: The index of the item in the questionnaire.
+/// [isLastItem]: Determines if this is the last item in the questionnaire.
+/// [selectedResponse]: The current attachment response item selected, if any.
+///   Access the attachment via `selectedResponse?.answer?.firstOrNull?.valueAttachment`.
+/// [questionnaireItem]: The questionnaire item to be processed.
+/// [onAttachmentChanged]: Callback when attachment is added or removed.
+///   Pass an Attachment object to set, or null to clear.
+typedef QuestionnaireAttachmentWidgetBuilder = Widget Function(
+  int index,
+  bool isLastItem,
+  QuestionnaireResponseItem? selectedResponse,
+  QuestionnaireItem questionnaireItem,
+  Function(Attachment? attachment) onAttachmentChanged,
+);

@@ -78,6 +78,26 @@ abstract class QuestionnaireBaseItem extends StatelessWidget {
     return controller;
   }
 
+  /// Gets or creates a secondary text controller for items needing multiple text inputs.
+  ///
+  /// Uses a suffixed key (e.g., "linkId_display") to store additional controllers
+  /// in the auxiliary controllers map. The controller is persisted across rebuilds
+  /// to prevent cursor jumping issues.
+  TextEditingController getSecondaryTextController(
+      InheritedQuestionnaireRenderer questionnaireRendererData,
+      String suffix,
+      String initialValue) {
+    final key = '${itemLinkId}_$suffix';
+    final auxiliaryControllers =
+        questionnaireRendererData.rendererController.auxiliaryTextControllers;
+
+    if (!auxiliaryControllers.containsKey(key)) {
+      auxiliaryControllers[key] = TextEditingController(text: initialValue);
+    }
+
+    return auxiliaryControllers[key]!;
+  }
+
   void assignDependents(
       InheritedQuestionnaireRenderer inheritedQuestionnaireRenderer) {
     // Only assign if not already present to avoid recreating FocusNode on every build

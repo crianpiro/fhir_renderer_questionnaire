@@ -35,6 +35,8 @@ final class QuestionnaireListViewRenderer extends BaseQuestionnaireRenderer {
     super.groupItemBuilder,
     super.boolItemBuilder,
     super.displayItemBuilder,
+    super.referenceItemBuilder,
+    super.attachmentItemBuilder,
     super.key,
   });
 
@@ -78,6 +80,8 @@ final class _QuestionnaireListViewRendererState extends BaseQuestionnaireState {
       dateTimeItemBuilder: widget.dateTimeItemBuilder,
       boolItemBuilder: widget.boolItemBuilder,
       displayItemBuilder: widget.displayItemBuilder,
+      referenceItemBuilder: widget.referenceItemBuilder,
+      attachmentItemBuilder: widget.attachmentItemBuilder,
       rendererController: widget.rendererController,
       readOnly: readOnly,
       onResponseChanged: onResponseChanged,
