@@ -131,10 +131,9 @@ class ListViewExamplePage extends StatelessWidget {
         ],
       ),
       body: QuestionnaireListViewRenderer(
-        questionnaire: questionnaire,
-        getRendererControllerInstance:
-            (QuestionnaireRendererController controller) =>
-                this.controller.rendererController = controller,
+        rendererController: RendererQuestionnaireController(
+          questionnaire: questionnaire,
+        ),
         choiceItemBuilder: (
           index,
           isLastItem,
@@ -211,7 +210,7 @@ class ListViewExamplePage extends StatelessWidget {
 - `attachment` - File upload (images, PDFs, documents) ✨ **NEW**
 - `reference` - Reference to FHIR resources (Practitioner, Patient, etc.) ✨ **NEW**
 
-**16 of 17 FHIR R4 types implemented** (94% coverage)
+**16 of 17 FHIR R4 types implemented**
 
 Missing: `question` (deprecated generic type, rarely used)
 
@@ -220,7 +219,5 @@ Missing: `question` (deprecated generic type, rarely used)
 ## 🔆 📣 🔜 Roadmap
 
 🔳 Support for localization extensions
-🔳 Complete unit tests
-🔳 Widget tests
 
 ❗❗ The roadmap above was created out of specific needs. If you have ideas for features or important functionality to support, please create an issue with your suggestion.
