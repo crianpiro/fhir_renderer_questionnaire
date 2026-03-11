@@ -152,6 +152,7 @@ abstract class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer>
         onGenerateQuestionnaireResponse;
     widget.rendererController.onReadOnlyModeChanged = onReadOnlyModeChanged;
     WidgetsBinding.instance.addPostFrameCallback(onCreated);
+    widget.rendererController.onExternalResponseUpdate = onResponseChanged;
     super.initState();
   }
 
@@ -159,6 +160,7 @@ abstract class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer>
   void dispose() {
     widget.rendererController.initialQuestionnaireResponse =
         questionnaireResponse;
+    widget.rendererController.onExternalResponseUpdate = null;
     // Note: Controller disposal is the responsibility of the owner, not the renderer
     super.dispose();
   }
