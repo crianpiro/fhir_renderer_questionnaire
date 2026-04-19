@@ -67,9 +67,7 @@ class QuestionnaireFieldItem extends QuestionnaireBaseItem
                 .floor(),
         minLines: questionnaireItem.type == QuestionnaireItemType.text ? 5 : 1,
         maxLength: questionnaireItem.maxLength?.valueInt,
-        decoration: const InputDecoration(
-          errorMaxLines: 2,
-        ),
+        decoration: getOutlineInputDecoration,
       ),
     );
   }

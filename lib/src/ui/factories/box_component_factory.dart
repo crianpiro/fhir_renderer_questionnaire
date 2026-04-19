@@ -1,4 +1,5 @@
 import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/questionnaire_expansible_group_item.dart';
 import 'package:flutter/material.dart';
 
 import 'questionnaire_component_factory.dart';
@@ -19,7 +20,16 @@ import '../components/boxes/base_decorator.dart';
 /// This factory creates standard Flutter widgets using Containers and Columns
 /// for questionnaire items, suitable for use in ListView and PageView renderers.
 final class BoxComponentFactory implements QuestionnaireComponentFactory {
-  const BoxComponentFactory();
+  /// Creates a [BoxComponentFactory].
+  ///
+  /// When [useExpansibleGroups] is `true`, group items are rendered with
+  /// [QuestionnaireExpansibleGroupItem]; otherwise the default
+  /// [QuestionnaireGroupItem] is used.
+  const BoxComponentFactory({this.useExpansibleGroups = false});
+
+  /// Whether [createGroupItem] returns a collapsible group widget instead of
+  /// the standard [QuestionnaireGroupItem].
+  final bool useExpansibleGroups;
 
   @override
   Widget createDisplayItem(
@@ -105,6 +115,14 @@ final class BoxComponentFactory implements QuestionnaireComponentFactory {
     bool isLastItem,
     QuestionnaireItem item,
   ) {
+    if (useExpansibleGroups) {
+      return QuestionnaireExpansibleGroupItem(
+        index: index,
+        questionnaireItem: item,
+        isLastItem: isLastItem,
+      );
+    }
+
     return QuestionnaireGroupItem(
       index: index,
       questionnaireItem: item,

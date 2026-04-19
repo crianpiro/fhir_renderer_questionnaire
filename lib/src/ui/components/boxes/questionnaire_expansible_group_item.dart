@@ -6,9 +6,17 @@ import '../questionnaire_base_item.dart';
 import '../../../core/mixins/group_filtering_mixin.dart';
 import 'questionnaire_item_wrapper.dart';
 
-class QuestionnaireGroupItem extends QuestionnaireBaseItem
+/// Collapsible group item rendered as a Material [ExpansionTile].
+///
+/// Alternative to [QuestionnaireGroupItem] for scenarios where users benefit
+/// from collapsing long sections of a questionnaire. Enabled via the
+/// `useExpansibleGroups` flag on [BoxComponentFactory] or supported renderers
+/// (e.g. [QuestionnaireListViewRenderer]). The tile starts expanded and
+/// filters nested items through [GroupFilteringMixin] so `enableWhen` rules
+/// are honored.
+class QuestionnaireExpansibleGroupItem extends QuestionnaireBaseItem
     with GroupFilteringMixin {
-  const QuestionnaireGroupItem({
+  const QuestionnaireExpansibleGroupItem({
     super.key,
     required super.index,
     required super.questionnaireItem,
@@ -19,9 +27,9 @@ class QuestionnaireGroupItem extends QuestionnaireBaseItem
   Widget buildQuestionnaireItem(BuildContext context) {
     List<QuestionnaireItem>? items = getFilteredGroupItems(
         questionnaireItem, InheritedQuestionnaireRenderer.of(context));
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-      padding: const EdgeInsets.only(bottom: 10.0),
       decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(8)),
           color: Theme.of(context).colorScheme.surface,
@@ -33,25 +41,19 @@ class QuestionnaireGroupItem extends QuestionnaireBaseItem
                 color:
                     Theme.of(context).colorScheme.shadow.withValues(alpha: 0.3))
           ]),
-      child: Column(
+      child: ExpansionTile(
+        shape: const Border(),
+        childrenPadding: const EdgeInsets.only(bottom: 10),
+        initiallyExpanded: true,
+        title: Text(
+          itemTextTitle ??
+              questionnaireItem.code?.firstOrNull?.code?.valueString ??
+              "",
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+              fontWeight: FontWeight.bold),
+        ),
         children: [
-          Container(
-            alignment: Alignment.centerLeft,
-            decoration: BoxDecoration(
-                border: Border(
-                    bottom: BorderSide(
-                        color: Theme.of(context).colorScheme.primary,
-                        width: 2))),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-            child: Text(
-              itemTextTitle ??
-                  questionnaireItem.code?.firstOrNull?.code?.valueString ??
-                  "",
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.primary,
-                  fontWeight: FontWeight.bold),
-            ),
-          ),
           if (items != null)
             ...List.generate(
                 items.length,

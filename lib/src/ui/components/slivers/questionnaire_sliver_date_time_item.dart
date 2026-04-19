@@ -57,7 +57,10 @@ final class QuestionnaireSliverDateTimeItem extends QuestionnaireDateTimeItem {
             children: [
               Padding(
                 padding: const EdgeInsets.only(right: 5),
-                child: getItemIcon(questionnaireItem.type),
+                child: getItemIcon(
+                  questionnaireItem.type,
+                  Theme.of(context).colorScheme.onPrimary,
+                ),
               ),
               Text(displayText),
             ],

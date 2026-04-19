@@ -78,33 +78,34 @@ class _QuestionnaireExamplePageState extends State<QuestionnaireExamplePage> {
     // Show dialog with response summary
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('QuestionnaireResponse Generated'),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Status: ${response.status}'),
-              const SizedBox(height: 8),
-              Text('Items: ${response.item?.length ?? 0}'),
-              const SizedBox(height: 8),
-              Text('Authored: ${response.authored?.valueString ?? "N/A"}'),
-              const Divider(),
-              const Text(
-                'Full response logged to console.',
-                style: TextStyle(fontStyle: FontStyle.italic),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('QuestionnaireResponse Generated'),
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Status: ${response.status}'),
+                  const SizedBox(height: 8),
+                  Text('Items: ${response.item?.length ?? 0}'),
+                  const SizedBox(height: 8),
+                  Text('Authored: ${response.authored?.valueString ?? "N/A"}'),
+                  const Divider(),
+                  const Text(
+                    'Full response logged to console.',
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Close'),
               ),
             ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
-          ),
-        ],
-      ),
     );
   }
 
@@ -129,9 +130,7 @@ class _QuestionnaireExamplePageState extends State<QuestionnaireExamplePage> {
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surfaceContainerHighest,
               border: Border(
-                bottom: BorderSide(
-                  color: Theme.of(context).dividerColor,
-                ),
+                bottom: BorderSide(color: Theme.of(context).dividerColor),
               ),
             ),
             child: Row(
@@ -166,9 +165,7 @@ class _QuestionnaireExamplePageState extends State<QuestionnaireExamplePage> {
             ),
           ),
           // Renderer content
-          Expanded(
-            child: _buildRenderer(),
-          ),
+          Expanded(child: _buildRenderer()),
         ],
       ),
     );
@@ -178,12 +175,11 @@ class _QuestionnaireExamplePageState extends State<QuestionnaireExamplePage> {
     switch (_selectedRenderer) {
       case RendererType.listView:
         return QuestionnaireListViewRenderer(
+          useExpansibleGroups: true,
           rendererController: _controller,
         );
       case RendererType.pageView:
-        return QuestionnairePageViewRenderer(
-          rendererController: _controller,
-        );
+        return QuestionnairePageViewRenderer(rendererController: _controller);
       case RendererType.slivers:
         return QuestionnaireSliversViewRenderer(
           rendererController: _controller,
@@ -197,7 +193,7 @@ class _QuestionnaireExamplePageState extends State<QuestionnaireExamplePage> {
     bool isLastItem,
     QuestionnaireItem questionnaireItem,
     Widget Function(QuestionnaireItem questionnaireItem, int index)
-        childrenAssigner,
+    childrenAssigner,
   ) {
     return SliverMainAxisGroup(
       slivers: [

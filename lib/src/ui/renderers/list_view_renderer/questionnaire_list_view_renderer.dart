@@ -25,20 +25,24 @@ final class QuestionnaireListViewRenderer extends BaseQuestionnaireRenderer {
   ///   * [groupItemBuilder] - Optional custom builder for group items
   ///   * [boolItemBuilder] - Optional custom builder for boolean items
   ///   * [displayItemBuilder] - Optional custom builder for display items
+  ///   * [referenceItemBuilder] - Optional custom builder for reference items
+  ///   * [attachmentItemBuilder] - Optional custom builder for attachment items
+  ///   * [useExpansibleGroups] - When `true`, renders group items as
+  ///     collapsible `ExpansionTile`-based widgets. Defaults to `false`.
   ///   * [key] - Optional widget key
-  const QuestionnaireListViewRenderer({
-    required super.rendererController,
-    super.choiceItemBuilder,
-    super.openChoiceItemBuilder,
-    super.fieldItemBuilder,
-    super.dateTimeItemBuilder,
-    super.groupItemBuilder,
-    super.boolItemBuilder,
-    super.displayItemBuilder,
-    super.referenceItemBuilder,
-    super.attachmentItemBuilder,
-    super.key,
-  });
+  const QuestionnaireListViewRenderer(
+      {required super.rendererController,
+      super.choiceItemBuilder,
+      super.openChoiceItemBuilder,
+      super.fieldItemBuilder,
+      super.dateTimeItemBuilder,
+      super.groupItemBuilder,
+      super.boolItemBuilder,
+      super.displayItemBuilder,
+      super.referenceItemBuilder,
+      super.attachmentItemBuilder,
+      super.key,
+      super.useExpansibleGroups});
 
   /// Creates the mutable state for this widget.
   ///
@@ -85,7 +89,8 @@ final class _QuestionnaireListViewRendererState extends BaseQuestionnaireState {
       rendererController: widget.rendererController,
       readOnly: readOnly,
       onResponseChanged: onResponseChanged,
-      child: const QuestionnaireListView(),
+      child: QuestionnaireListView(
+          useExpansibleGroups: widget.useExpansibleGroups),
     );
   }
 }

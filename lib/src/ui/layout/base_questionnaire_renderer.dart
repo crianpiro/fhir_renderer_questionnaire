@@ -26,7 +26,17 @@ abstract class BaseQuestionnaireRenderer extends StatefulWidget {
     this.displayItemBuilder,
     this.referenceItemBuilder,
     this.attachmentItemBuilder,
+    this.useExpansibleGroups = false,
   });
+
+  /// Whether to render group items as collapsible [ExpansionTile]-based widgets.
+  ///
+  /// When `true`, the default group item is replaced with
+  /// [QuestionnaireExpansibleGroupItem]. Defaults to `false`, preserving the
+  /// standard [QuestionnaireGroupItem] look.
+  ///
+  /// Currently only honored by [QuestionnaireListViewRenderer].
+  final bool useExpansibleGroups;
 
   /// Controller to manage the state and actions of the questionnaire renderer.
   final RendererQuestionnaireController rendererController;
