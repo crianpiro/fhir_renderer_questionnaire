@@ -24,8 +24,7 @@ final class QuestionnaireSliverFieldItem extends QuestionnaireFieldItem {
   Widget buildQuestionnaireItem(BuildContext context) {
     final inheritedData = InheritedQuestionnaireRenderer.of(context);
     TextEditingController localController = getAssignedTextController(
-        inheritedData,
-        getInitialValue(questionnaireItem));
+        inheritedData, getInitialValue(questionnaireItem));
 
     // Get regex validation pattern from ItemBehavioralData
     final itemData = inheritedData.rendererController.indexedItems[itemLinkId];
@@ -56,9 +55,12 @@ final class QuestionnaireSliverFieldItem extends QuestionnaireFieldItem {
             itemType: questionnaireItem.type,
           ),
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          keyboardType: KeyboardTypeHelper.getKeyboardType(questionnaireItem.type),
-          textInputAction: KeyboardTypeHelper.getTextInputAction(questionnaireItem.type),
-          inputFormatters: KeyboardTypeHelper.getInputFormatters(questionnaireItem.type),
+          keyboardType:
+              KeyboardTypeHelper.getKeyboardType(questionnaireItem.type),
+          textInputAction:
+              KeyboardTypeHelper.getTextInputAction(questionnaireItem.type),
+          inputFormatters:
+              KeyboardTypeHelper.getInputFormatters(questionnaireItem.type),
           maxLines: questionnaireItem.type == QuestionnaireItemType.text
               ? 5
               : ((questionnaireItem.maxLength?.valueInt ?? 50) /
@@ -67,9 +69,7 @@ final class QuestionnaireSliverFieldItem extends QuestionnaireFieldItem {
           minLines:
               questionnaireItem.type == QuestionnaireItemType.text ? 5 : 1,
           maxLength: questionnaireItem.maxLength?.valueInt,
-          decoration: const InputDecoration(
-            errorMaxLines: 2,
-          ),
+          decoration: getOutlineInputDecoration,
         ),
       ),
     );

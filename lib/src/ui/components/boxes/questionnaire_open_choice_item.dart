@@ -1,6 +1,7 @@
 import 'package:fhir_r4/fhir_r4.dart';
 import 'package:flutter/material.dart';
 
+import '../../../core/mixins/text_field_value_mixin.dart';
 import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
 import 'base_decorator.dart';
@@ -10,7 +11,11 @@ import '../../../core/mixins/open_choice_value_mixin.dart';
 import '../../../core/mixins/choice_widget_builder_mixin.dart';
 
 class QuestionnaireOpenChoiceItem extends QuestionnaireBaseItem
-    with ChoiceBaseMixin, OpenChoiceValueMixin, ChoiceWidgetBuilderMixin {
+    with
+        ChoiceBaseMixin,
+        OpenChoiceValueMixin,
+        ChoiceWidgetBuilderMixin,
+        TextFieldValueMixin {
   const QuestionnaireOpenChoiceItem({
     required super.questionnaireItem,
     required super.index,
@@ -47,10 +52,9 @@ class QuestionnaireOpenChoiceItem extends QuestionnaireBaseItem
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         child: TextFormField(
           initialValue: customTextValue,
-          decoration: InputDecoration(
+          decoration: getOutlineInputDecoration.copyWith(
             labelText: repeats ? 'Other (additional answer)' : 'Other',
             hintText: 'Enter custom answer',
-            border: const OutlineInputBorder(),
           ),
           onChanged: (value) => _updateCustomText(
             questionnaireRendererData,
@@ -75,8 +79,7 @@ class QuestionnaireOpenChoiceItem extends QuestionnaireBaseItem
   ) {
     if (value.trim().isEmpty) {
       // Clear custom text answer
-      final resp =
-          _removeCustomTextAnswer(inheritedData.questionnaireResponse);
+      final resp = _removeCustomTextAnswer(inheritedData.questionnaireResponse);
       inheritedData.onResponseChanged(resp);
     } else {
       // Add/update custom text answer
@@ -140,8 +143,7 @@ class QuestionnaireOpenChoiceItem extends QuestionnaireBaseItem
 
   QuestionnaireResponse _removeCustomTextAnswer(
       QuestionnaireResponse response) {
-    final responseItem =
-        findQuestionnaireResponseItem(response, itemLinkId);
+    final responseItem = findQuestionnaireResponseItem(response, itemLinkId);
 
     if (responseItem == null) return response;
 

@@ -19,6 +19,8 @@ class RendererQuestionnaireController {
 
   void Function()? onReadOnlyModeChanged;
 
+  void Function(QuestionnaireResponse)? onExternalResponseUpdate;
+
   bool forceReadOnlyView;
 
   /// The FHIR Questionnaire to be rendered.
@@ -85,6 +87,11 @@ class RendererQuestionnaireController {
         .generateInitialQuestionnaireResponse(
       questionnaire,
     );
+  }
+
+  void updateQuestionnaireResponse(QuestionnaireResponse response) {
+    initialQuestionnaireResponse = response;
+    onExternalResponseUpdate?.call(response);
   }
 
   void updateReadOnlyMode(bool enableReadOnly) {

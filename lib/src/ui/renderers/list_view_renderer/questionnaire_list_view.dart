@@ -2,11 +2,13 @@ import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_renderer_questionnaire/src/core/utils/fhir_renderer_questionnaire_utils.dart';
 import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/base_decorator.dart';
 import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/questionnaire_item_wrapper.dart';
+import 'package:fhir_renderer_questionnaire/src/ui/factories/box_component_factory.dart';
 import 'package:fhir_renderer_questionnaire/src/ui/layout/inherited_questionnaire_renderer.dart';
 import 'package:flutter/material.dart';
 
 class QuestionnaireListView extends StatelessWidget {
-  const QuestionnaireListView({super.key});
+  final bool useExpansibleGroups;
+  const QuestionnaireListView({super.key, this.useExpansibleGroups = false});
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +38,8 @@ class QuestionnaireListView extends StatelessWidget {
             final item = items[index];
             return QuestionnaireItemWrapper(
               key: ValueKey(item.linkId.valueString),
+              factory:
+                  BoxComponentFactory(useExpansibleGroups: useExpansibleGroups),
               questionnaireItem: item,
               index: index,
               isLastItem: items.length - 1 == index,

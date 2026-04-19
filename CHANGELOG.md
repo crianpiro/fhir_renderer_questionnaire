@@ -9,6 +9,24 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+### 1.1.1
+
+#### Added
+* **`QuestionnaireExpansibleGroupItem`** - new collapsible group variant built on `ExpansionTile`.
+* **`useExpansibleGroups` flag** exposed on `QuestionnaireListViewRenderer` (via `BaseQuestionnaireRenderer`) and `BoxComponentFactory` to opt into rendering group items as collapsible tiles. Defaults to `false`, preserving existing behavior.
+* **`getOutlineInputDecoration`** getter in `TextFieldValueMixin` for consistent outlined input styling across field items.
+
+#### Changed
+* UI improvements for `QuestionnaireListViewRenderer` and `QuestionnairePageViewRenderer`.
+* UI improvements for default `QuestionnaireFieldItem` and `QuestionnaireSliverFieldItem` (shared outlined input decoration).
+* `QuestionnaireGroupItem` restyled as a card with shadow and primary-color title underline instead of a filled header.
+* `BaseDecorator` title now uses the theme's `titleMedium` with primary color; horizontal padding increased.
+* `QuestionnaireDateTimeItem` and its sliver variant now render themed icons.
+* `QuestionnaireOpenChoiceItem` custom-text field adopts the shared outlined input decoration.
+
+#### Breaking Changes
+* `DateTimeValueMixin.getItemIcon` now requires a `Color` parameter. Custom overrides or direct callers must pass the desired icon color.
+
 ### 1.1.0
 
 #### Added

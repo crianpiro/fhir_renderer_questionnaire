@@ -26,7 +26,17 @@ abstract class BaseQuestionnaireRenderer extends StatefulWidget {
     this.displayItemBuilder,
     this.referenceItemBuilder,
     this.attachmentItemBuilder,
+    this.useExpansibleGroups = false,
   });
+
+  /// Whether to render group items as collapsible [ExpansionTile]-based widgets.
+  ///
+  /// When `true`, the default group item is replaced with
+  /// [QuestionnaireExpansibleGroupItem]. Defaults to `false`, preserving the
+  /// standard [QuestionnaireGroupItem] look.
+  ///
+  /// Currently only honored by [QuestionnaireListViewRenderer].
+  final bool useExpansibleGroups;
 
   /// Controller to manage the state and actions of the questionnaire renderer.
   final RendererQuestionnaireController rendererController;
@@ -152,6 +162,7 @@ abstract class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer>
         onGenerateQuestionnaireResponse;
     widget.rendererController.onReadOnlyModeChanged = onReadOnlyModeChanged;
     WidgetsBinding.instance.addPostFrameCallback(onCreated);
+    widget.rendererController.onExternalResponseUpdate = onResponseChanged;
     super.initState();
   }
 
@@ -159,6 +170,7 @@ abstract class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer>
   void dispose() {
     widget.rendererController.initialQuestionnaireResponse =
         questionnaireResponse;
+    widget.rendererController.onExternalResponseUpdate = null;
     // Note: Controller disposal is the responsibility of the owner, not the renderer
     super.dispose();
   }

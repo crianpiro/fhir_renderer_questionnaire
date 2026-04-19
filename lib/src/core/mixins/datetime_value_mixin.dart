@@ -90,13 +90,22 @@ mixin DateTimeValueMixin {
   }
 
   /// Returns the appropriate icon for the date/time item type.
-  Widget getItemIcon(QuestionnaireItemType type) {
+  ///
+  /// [type] selects the icon (clock for [QuestionnaireItemType.time], calendar
+  /// otherwise). [color] is applied to the resulting [Icon].
+  Widget getItemIcon(QuestionnaireItemType type, Color color) {
     switch (type) {
       case QuestionnaireItemType.time:
-        return const Icon(Icons.av_timer);
+        return Icon(
+          Icons.av_timer,
+          color: color,
+        );
       case QuestionnaireItemType.dateTime:
       default:
-        return const Icon(Icons.calendar_month);
+        return Icon(
+          Icons.calendar_month,
+          color: color,
+        );
     }
   }
 

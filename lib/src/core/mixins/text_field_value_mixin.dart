@@ -1,9 +1,19 @@
 import 'package:fhir_r4/fhir_r4.dart';
+import 'package:flutter/material.dart';
 
 /// Mixin providing text field value extraction logic for FHIR questionnaire items.
 ///
 /// Handles initial value retrieval for string, text, integer, decimal, quantity, and URL types.
 mixin TextFieldValueMixin {
+  /// Shared outlined [InputDecoration] used by default field widgets.
+  ///
+  /// Provides a rounded [OutlineInputBorder] and allows error text to wrap
+  /// across two lines. Use with [InputDecoration.copyWith] to layer labels,
+  /// hints, or prefix/suffix widgets on top.
+  InputDecoration get getOutlineInputDecoration => InputDecoration(
+      errorMaxLines: 2,
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)));
+
   /// Extracts the initial value from a questionnaire item.
   ///
   /// Returns a string representation of the initial value based on the valueX type:
