@@ -67,6 +67,7 @@
 ///
 /// The package supports the following FHIR SDC extensions:
 /// * `questionnaire-itemControl` - For dropdown rendering (`drop-down`, `radio-button`, `check-box`)
+/// * `questionnaire-optionExclusive` - For a mutually exclusive "all"/"none" option in multi-select items
 /// * `regex` - For custom input validation patterns
 /// * `entryFormat` - For custom validation error messages
 /// For more information, see the individual class documentation.
@@ -149,7 +150,8 @@ export 'src/core/mixins/choice_widget_builder_mixin.dart'
 export 'src/core/extensions/fhir_extensions.dart'
     show
         FhirRendererQuestionnaireExtensions,
-        QuestionnaireItemValidationExtensions;
+        QuestionnaireItemValidationExtensions,
+        QuestionnaireAnswerOptionExtensions;
 
 // ============================================================================
 // FACTORIES

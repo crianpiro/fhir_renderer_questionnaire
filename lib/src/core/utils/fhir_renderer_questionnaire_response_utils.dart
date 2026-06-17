@@ -53,6 +53,12 @@ final class FhirRendererQuestionnaireResponseUtils {
   /// Handles toggling of multiple choice answers by either adding the answer option
   /// if not already present or removing it if already present (toggle behavior).
   ///
+  /// Honors the FHIR SDC `questionnaire-optionExclusive` extension to support a
+  /// master "all"/"none" option within a multi-select item:
+  ///   * Selecting an exclusive option clears every other selection.
+  ///   * Selecting a non-exclusive option clears any currently selected
+  ///     exclusive options.
+  ///
   /// Parameters:
   ///   * [questionnaireResponse] - The questionnaire response to modify
   ///   * [questionnaireItem] - The questionnaire item to update
@@ -67,6 +73,15 @@ final class FhirRendererQuestionnaireResponseUtils {
   ) {
     List<QuestionnaireResponseItem> modifiedItems = [];
 
+    final bool toggledIsExclusive =
+        questionnaireAnswerOption.isOptionExclusive;
+    final Set<String> exclusiveCodes = {
+      for (final option in questionnaireItem.answerOption ?? <QuestionnaireAnswerOption>[])
+        if (option.isOptionExclusive)
+          if (option.valueCoding?.code?.valueString != null)
+            option.valueCoding!.code!.valueString!,
+    };
+
     if (questionnaireResponse.item != null) {
       for (QuestionnaireResponseItem responseItem
           in questionnaireResponse.item!) {
@@ -77,6 +92,8 @@ final class FhirRendererQuestionnaireResponseUtils {
             questionnaireItem.type,
             questionnaireAnswerOption,
           ),
+          toggledIsExclusive,
+          exclusiveCodes,
         );
 
         if (foundItem != null) {
@@ -183,6 +200,8 @@ final class FhirRendererQuestionnaireResponseUtils {
   ///   * [responseItem] - The response item to search and modify
   ///   * [questionnaireItemLinkId] - The linkId of the item to find
   ///   * [answer] - The answer to add
+  ///   * [toggledIsExclusive] - Whether the toggled option is mutually exclusive
+  ///   * [exclusiveCodes] - Codes of all exclusive options on the item
   ///
   /// Returns:
   ///   The modified response item if found, null otherwise.
@@ -190,9 +209,16 @@ final class FhirRendererQuestionnaireResponseUtils {
     QuestionnaireResponseItem responseItem,
     String? questionnaireItemLinkId,
     QuestionnaireResponseAnswer answer,
+    bool toggledIsExclusive,
+    Set<String> exclusiveCodes,
   ) {
     if (responseItem.linkId.valueString == questionnaireItemLinkId) {
-      return _setMultipleResponseAnswers(responseItem, answer);
+      return _setMultipleResponseAnswers(
+        responseItem,
+        answer,
+        toggledIsExclusive,
+        exclusiveCodes,
+      );
     } else if (responseItem.item != null) {
       List<QuestionnaireResponseItem>? items = [];
 
@@ -201,6 +227,8 @@ final class FhirRendererQuestionnaireResponseUtils {
           subItem,
           questionnaireItemLinkId,
           answer,
+          toggledIsExclusive,
+          exclusiveCodes,
         );
 
         if (found != null) {
@@ -235,36 +263,51 @@ final class FhirRendererQuestionnaireResponseUtils {
   /// Adds or removes an answer from a response item's answers list (toggle behavior).
   ///
   /// Checks if an answer with the same coding already exists. If it does, removes it.
-  /// If not, adds the new answer to the list.
+  /// If not, adds the new answer to the list while enforcing exclusivity:
+  ///   * If the toggled option is exclusive, it becomes the sole answer.
+  ///   * Otherwise, any currently selected exclusive options are removed before
+  ///     the new answer is added.
   ///
   /// Parameters:
   ///   * [responseItem] - The response item to update
   ///   * [responseAnswer] - The answer to toggle
+  ///   * [toggledIsExclusive] - Whether the toggled option is mutually exclusive
+  ///   * [exclusiveCodes] - Codes of all exclusive options on the item
   ///
   /// Returns:
   ///   A copy of the response item with the toggled answer.
   static QuestionnaireResponseItem _setMultipleResponseAnswers(
     QuestionnaireResponseItem responseItem,
     QuestionnaireResponseAnswer responseAnswer,
+    bool toggledIsExclusive,
+    Set<String> exclusiveCodes,
   ) {
+    final toggledCode = responseAnswer.valueCoding?.code?.valueString;
     bool addedAnswer = responseItem.answer?.any(
-          (i) =>
-              i.valueCoding?.code?.valueString ==
-              responseAnswer.valueCoding?.code?.valueString,
+          (i) => i.valueCoding?.code?.valueString == toggledCode,
         ) ??
         false;
     List<QuestionnaireResponseAnswer> answers;
     if (addedAnswer) {
+      // Toggle off: remove the selected option.
       answers = responseItem.answer
               ?.where(
-                (i) =>
-                    i.valueCoding?.code?.valueString !=
-                    responseAnswer.valueCoding?.code?.valueString,
+                (i) => i.valueCoding?.code?.valueString != toggledCode,
               )
               .toList() ??
           [];
+    } else if (toggledIsExclusive) {
+      // Selecting an exclusive ("all"/"none") option clears every other choice.
+      answers = [responseAnswer];
     } else {
-      answers = responseItem.answer?.toList() ?? [];
+      // Selecting a normal option drops any exclusive options first.
+      answers = responseItem.answer
+              ?.where(
+                (i) => !exclusiveCodes
+                    .contains(i.valueCoding?.code?.valueString),
+              )
+              .toList() ??
+          [];
       answers.add(responseAnswer);
     }
 
