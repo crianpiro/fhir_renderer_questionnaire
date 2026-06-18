@@ -73,6 +73,7 @@ Each item type has two implementations:
 - `http://hl7.org/fhir/StructureDefinition/regex` - Custom validation pattern
 - `http://hl7.org/fhir/StructureDefinition/entryFormat` - Custom error message
 - `http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl` - Widget type (drop-down, radio-button, check-box)
+- `http://hl7.org/fhir/StructureDefinition/questionnaire-optionExclusive` - Mutually exclusive "all"/"none" option in multi-select items (UI-flagged with a `**` marker + legend)
 
 ## Test Structure
 
