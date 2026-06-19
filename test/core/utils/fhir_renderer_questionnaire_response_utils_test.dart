@@ -332,6 +332,139 @@ void main() {
         expect(item?.answer?.length, equals(1));
         expect(item?.answer?.first.valueCoding?.code?.valueString, equals('reading'));
       });
+
+      // An "all"/"none" master option carries the FHIR SDC
+      // questionnaire-optionExclusive extension. Selecting it must clear every
+      // other choice, and selecting a normal option must clear it.
+      QuestionnaireItem buildExclusiveItem() => QuestionnaireItem.fromJson({
+            'linkId': 'symptoms',
+            'type': 'choice',
+            'repeats': true,
+            'answerOption': [
+              {
+                'valueCoding': {'code': 'cough'},
+              },
+              {
+                'valueCoding': {'code': 'fever'},
+              },
+              {
+                'extension': [
+                  {
+                    'url':
+                        'http://hl7.org/fhir/StructureDefinition/questionnaire-optionExclusive',
+                    'valueBoolean': true,
+                  },
+                ],
+                'valueCoding': {'code': 'none'},
+              },
+            ],
+          });
+
+      QuestionnaireAnswerOption optionFor(
+        QuestionnaireItem item,
+        String code,
+      ) =>
+          item.answerOption!.firstWhere(
+            (o) => o.valueCoding?.code?.valueString == code,
+          );
+
+      test('selecting an exclusive option clears all other selections', () {
+        final questionnaireItem = buildExclusiveItem();
+        final response = QuestionnaireResponse(
+          status: QuestionnaireResponseStatus.inProgress,
+          item: [
+            QuestionnaireResponseItem(
+              linkId: FhirString('symptoms'),
+              answer: [
+                QuestionnaireResponseAnswer(
+                  valueX: Coding(code: FhirCode('cough')),
+                ),
+                QuestionnaireResponseAnswer(
+                  valueX: Coding(code: FhirCode('fever')),
+                ),
+              ],
+            ),
+          ],
+        );
+
+        final result = FhirRendererQuestionnaireResponseUtils
+            .setMultipleAnswerOptionsInQuestionnaireResponse(
+          response,
+          questionnaireItem,
+          optionFor(questionnaireItem, 'none'),
+        );
+
+        final item = result.item?.firstWhere(
+          (i) => i.linkId.valueString == 'symptoms',
+        );
+        expect(item?.answer?.length, equals(1));
+        expect(
+          item?.answer?.first.valueCoding?.code?.valueString,
+          equals('none'),
+        );
+      });
+
+      test('selecting a normal option clears any exclusive selection', () {
+        final questionnaireItem = buildExclusiveItem();
+        final response = QuestionnaireResponse(
+          status: QuestionnaireResponseStatus.inProgress,
+          item: [
+            QuestionnaireResponseItem(
+              linkId: FhirString('symptoms'),
+              answer: [
+                QuestionnaireResponseAnswer(
+                  valueX: Coding(code: FhirCode('none')),
+                ),
+              ],
+            ),
+          ],
+        );
+
+        final result = FhirRendererQuestionnaireResponseUtils
+            .setMultipleAnswerOptionsInQuestionnaireResponse(
+          response,
+          questionnaireItem,
+          optionFor(questionnaireItem, 'cough'),
+        );
+
+        final item = result.item?.firstWhere(
+          (i) => i.linkId.valueString == 'symptoms',
+        );
+        expect(item?.answer?.length, equals(1));
+        expect(
+          item?.answer?.first.valueCoding?.code?.valueString,
+          equals('cough'),
+        );
+      });
+
+      test('exclusive option still toggles off when reselected', () {
+        final questionnaireItem = buildExclusiveItem();
+        final response = QuestionnaireResponse(
+          status: QuestionnaireResponseStatus.inProgress,
+          item: [
+            QuestionnaireResponseItem(
+              linkId: FhirString('symptoms'),
+              answer: [
+                QuestionnaireResponseAnswer(
+                  valueX: Coding(code: FhirCode('none')),
+                ),
+              ],
+            ),
+          ],
+        );
+
+        final result = FhirRendererQuestionnaireResponseUtils
+            .setMultipleAnswerOptionsInQuestionnaireResponse(
+          response,
+          questionnaireItem,
+          optionFor(questionnaireItem, 'none'),
+        );
+
+        final item = result.item?.firstWhere(
+          (i) => i.linkId.valueString == 'symptoms',
+        );
+        expect(item?.answer?.isEmpty, isTrue);
+      });
     });
 
     group('generateInitialQuestionnaireResponse', () {

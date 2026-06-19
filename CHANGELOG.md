@@ -9,6 +9,13 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+### 1.1.2
+
+#### Added
+* **`questionnaire-optionExclusive` extension support** - honors the FHIR SDC `questionnaire-optionExclusive` extension in multi-select choice items (checkbox lists and the multi-select dropdown). Selecting a master "all"/"none" option clears every other selection, and selecting any normal option clears the exclusive one.
+* **`QuestionnaireAnswerOptionExtensions.isOptionExclusive`** - getter exposing whether an answer option carries the `questionnaire-optionExclusive` extension.
+* **Exclusive-option UI indicator** - exclusive options are suffixed with a `**` marker and a "Options marked with ** are exclusive." legend is shown above multi-select items, making the behavior discoverable to users.
+
 ### 1.1.1
 
 #### Added

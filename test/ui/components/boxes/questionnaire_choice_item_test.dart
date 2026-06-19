@@ -332,5 +332,178 @@ void main() {
       expect(find.text('Option 1'), findsOneWidget);
       expect(find.text('Option 2'), findsOneWidget);
     });
+
+    group('exclusive option indicator', () {
+      QuestionnaireItem buildGenderItem() {
+        return WidgetTestHelpers.createChoiceItem(
+          linkId: 'gender',
+          text: 'Select a gender',
+          repeats: true,
+          answerOptions: [
+            QuestionnaireAnswerOption.fromJson({
+              'valueCoding': {'code': 'male', 'display': 'Male'},
+              'extension': [
+                {
+                  'url':
+                      'http://hl7.org/fhir/StructureDefinition/questionnaire-optionExclusive',
+                  'valueBoolean': true,
+                },
+              ],
+            }),
+            QuestionnaireAnswerOption.fromJson({
+              'valueCoding': {'code': 'female', 'display': 'Female'},
+              'extension': [
+                {
+                  'url':
+                      'http://hl7.org/fhir/StructureDefinition/questionnaire-optionExclusive',
+                  'valueBoolean': true,
+                },
+              ],
+            }),
+            QuestionnaireAnswerOption.fromJson({
+              'valueCoding': {'code': 'other', 'display': 'Other'},
+              'extension': [
+                {
+                  'url':
+                      'http://hl7.org/fhir/StructureDefinition/questionnaire-optionExclusive',
+                  'valueBoolean': true,
+                },
+              ],
+            }),
+          ],
+        );
+      }
+
+      testWidgets('marks exclusive options with ** and shows the legend',
+          (WidgetTester tester) async {
+        final item = buildGenderItem();
+        final questionnaire =
+            WidgetTestHelpers.createQuestionnaire(items: [item]);
+
+        await tester.pumpWidget(
+          TestQuestionnaireWrapper(
+            questionnaire: questionnaire,
+            child: QuestionnaireChoiceItem(
+              questionnaireItem: item,
+              index: 0,
+              isLastItem: true,
+            ),
+          ),
+        );
+
+        expect(
+          find.text('Options marked with ** are exclusive.'),
+          findsOneWidget,
+        );
+        expect(find.text('Male **'), findsOneWidget);
+        expect(find.text('Female **'), findsOneWidget);
+        expect(find.text('Other **'), findsOneWidget);
+      });
+
+      testWidgets('omits marker and legend when no option is exclusive',
+          (WidgetTester tester) async {
+        final item = WidgetTestHelpers.createChoiceItem(
+          linkId: 'gender',
+          text: 'Select a gender',
+          repeats: true,
+          answerOptions: [
+            QuestionnaireAnswerOption(
+              valueX: Coding(
+                code: FhirCode('male'),
+                display: FhirString('Male'),
+              ),
+            ),
+            QuestionnaireAnswerOption(
+              valueX: Coding(
+                code: FhirCode('female'),
+                display: FhirString('Female'),
+              ),
+            ),
+          ],
+        );
+        final questionnaire =
+            WidgetTestHelpers.createQuestionnaire(items: [item]);
+
+        await tester.pumpWidget(
+          TestQuestionnaireWrapper(
+            questionnaire: questionnaire,
+            child: QuestionnaireChoiceItem(
+              questionnaireItem: item,
+              index: 0,
+              isLastItem: true,
+            ),
+          ),
+        );
+
+        expect(
+          find.text('Options marked with ** are exclusive.'),
+          findsNothing,
+        );
+        expect(find.text('Male'), findsOneWidget);
+        expect(find.text('Male **'), findsNothing);
+      });
+
+      testWidgets(
+          'shows marker and legend together for a check-box control without '
+          'repeats', (WidgetTester tester) async {
+        // A check-box itemControl forces checkboxes even when repeats is false.
+        // The marker and legend must still appear together in that case.
+        final item = QuestionnaireItem.fromJson({
+          'linkId': 'gender',
+          'type': 'choice',
+          'text': 'Select a gender',
+          'extension': [
+            {
+              'url':
+                  'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+              'valueCodeableConcept': {
+                'coding': [
+                  {
+                    'system': 'http://hl7.org/fhir/questionnaire-item-control',
+                    'code': 'check-box',
+                  },
+                ],
+              },
+            },
+          ],
+          'answerOption': [
+            {
+              'valueCoding': {'code': 'male', 'display': 'Male'},
+            },
+            {
+              'valueCoding': {'code': 'none', 'display': 'Prefer not to say'},
+              'extension': [
+                {
+                  'url':
+                      'http://hl7.org/fhir/StructureDefinition/questionnaire-optionExclusive',
+                  'valueBoolean': true,
+                },
+              ],
+            },
+          ],
+        });
+        final questionnaire =
+            WidgetTestHelpers.createQuestionnaire(items: [item]);
+
+        await tester.pumpWidget(
+          TestQuestionnaireWrapper(
+            questionnaire: questionnaire,
+            child: QuestionnaireChoiceItem(
+              questionnaireItem: item,
+              index: 0,
+              isLastItem: true,
+            ),
+          ),
+        );
+
+        expect(
+          find.text('Options marked with ** are exclusive.'),
+          findsOneWidget,
+        );
+        expect(find.text('Prefer not to say **'), findsOneWidget);
+        expect(find.text('Male'), findsOneWidget);
+        expect(find.text('Male **'), findsNothing);
+      });
+    });
   });
 }
