@@ -1,14 +1,16 @@
-name: Release website (fhir_renderer_questionnaire)
+name: Release website
 
-# This repository is a monorepo. The published website is the example app of the
-# fhir_renderer_questionnaire package, so this workflow only reacts to changes
-# under that package - pushes touching sibling packages are ignored.
+# This repository is a monorepo. The published website is the top-level
+# `example/` showcase app, which depends on each package's own example app and
+# presents them together. Because the showcase pulls those examples in as path
+# dependencies, a change to any package can change the deployed site.
 
 on:
   push:
     branches: [ main ]
     paths:
-      - 'fhir_renderer_questionnaire/**'
+      - 'example/**'
+      - 'fhir_renderer_*/**'
       - '.github/workflows/release_website.yaml'
 
   # Allows you to run this workflow manually from the Actions tab
@@ -31,10 +33,9 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        # All flutter commands run from the package's example app. Its pubspec
-        # depends on the package via `path: ../`, which resolves inside the
-        # package folder and is unaffected by the monorepo layout.
-        working-directory: fhir_renderer_questionnaire/example
+        # The showcase app at the repository root. `flutter pub get` here also
+        # resolves the per-package example apps it depends on by path.
+        working-directory: example
     steps:
       - uses: actions/checkout@v2 # Only works with v2
       - uses: subosito/flutter-action@v1
@@ -53,7 +54,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: fhir_renderer_questionnaire/example/build/web
+          path: example/build/web
   
   deploy:
     environment:

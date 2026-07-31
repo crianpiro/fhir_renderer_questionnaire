@@ -1,5 +1,5 @@
-name: fhir_renderer_questionnaire_example
-description: "A new Flutter project."
+name: fhir_renderer_showcase
+description: "Showcase app hosting the examples of every FHIR renderer package in this monorepo."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -33,10 +33,13 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  fhir_r4: ^0.4.2
   cupertino_icons: ^1.0.8
-  fhir_renderer_questionnaire:
-    path: ../
+
+  # Each package's own example app is pulled in as a dependency, so this
+  # showcase presents the real examples rather than a reimplementation of them.
+  # Add a line here as each remaining package gains an example.
+  fhir_renderer_questionnaire_example:
+    path: ../fhir_renderer_questionnaire/example
 
 dev_dependencies:
   flutter_test:

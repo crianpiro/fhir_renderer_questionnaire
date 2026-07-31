@@ -8,12 +8,24 @@ This is a monorepo hosting multiple FHIR renderer packages. Each package is self
 
 ```
 .
+├── example/                       # Showcase app - the deployed website
 ├── fhir_renderer_questionnaire/   # The only implemented package
 ├── fhir_renderer_care_plan/       # Placeholder, not implemented yet
 └── fhir_renderer_xxxx/            # Placeholder, not implemented yet
 ```
 
-There is no root `pubspec.yaml` — all Flutter/Dart commands run from inside a package directory. Paths below are relative to `fhir_renderer_questionnaire/`.
+There is no root `pubspec.yaml` — all Flutter/Dart commands run from inside a package directory (or `example/`). Paths below are relative to `fhir_renderer_questionnaire/`.
+
+### Showcase app (`example/`)
+
+The root `example/` app (`fhir_renderer_showcase`) is what CI deploys to GitHub Pages. It has no example content of its own: `lib/showcase_catalog.dart` lists every package, and each entry's `builder` returns that package's own example widget, pulled in as a path dependency.
+
+Two conventions make this work, and both matter when adding a package:
+
+1. Each package's example is named `<package_name>_example`, not the `flutter create` default of `example` — pub cannot resolve two dependencies sharing a name.
+2. Each example exposes its landing page as a widget outside `main.dart` (e.g. `example/lib/views/home_page.dart`), so the showcase can embed it without its `MaterialApp`. `main.dart` stays a thin standalone entry point.
+
+A catalog entry with a null `builder` renders as a "coming soon" placeholder, so wiring up a new package is a one-line change plus the path dependency.
 
 ## Project Overview
 

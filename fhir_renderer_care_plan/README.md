@@ -30,3 +30,8 @@ flutter create --template=package fhir_renderer_care_plan
 ```
 
 and mirror the structure and conventions documented in the [repository README](../README.md).
+
+Name the example app `fhir_renderer_care_plan_example` rather than the default
+`example`, then register it in the [showcase app](../example/README.md) so it
+appears on the published website. It currently renders there as a "coming soon"
+placeholder.

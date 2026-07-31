@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:example/data/questionnaires_mock.dart';
-import 'package:example/widgets/segmented_choice.dart';
+import 'package:fhir_renderer_questionnaire_example/data/questionnaires_mock.dart';
+import 'package:fhir_renderer_questionnaire_example/widgets/segmented_choice.dart';
 import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 import 'package:flutter/material.dart';
