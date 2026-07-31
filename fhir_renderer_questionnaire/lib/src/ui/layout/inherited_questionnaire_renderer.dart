@@ -61,6 +61,36 @@ final class InheritedQuestionnaireRenderer extends InheritedWidget {
     return questionnaireResponse;
   }
 
+  /// Whether a custom builder is registered for [type].
+  ///
+  /// Renderers use this to tell when they may substitute their own layout for
+  /// an item — a custom builder owns the widget it returns, including which
+  /// protocol (box or sliver) that widget speaks.
+  bool hasCustomBuilderFor(QuestionnaireItemType? type) {
+    switch (type) {
+      case QuestionnaireItemType.display_:
+        return displayItemBuilder != null;
+      case QuestionnaireItemType.boolean:
+        return boolItemBuilder != null;
+      case QuestionnaireItemType.time:
+      case QuestionnaireItemType.date:
+      case QuestionnaireItemType.dateTime:
+        return dateTimeItemBuilder != null;
+      case QuestionnaireItemType.group:
+        return groupItemBuilder != null;
+      case QuestionnaireItemType.choice:
+        return choiceItemBuilder != null;
+      case QuestionnaireItemType.openChoice:
+        return openChoiceItemBuilder != null;
+      case QuestionnaireItemType.reference:
+        return referenceItemBuilder != null;
+      case QuestionnaireItemType.attachment:
+        return attachmentItemBuilder != null;
+      default:
+        return fieldItemBuilder != null;
+    }
+  }
+
   static InheritedQuestionnaireRenderer? maybeOf(BuildContext context) {
     return context
         .dependOnInheritedWidgetOfExactType<InheritedQuestionnaireRenderer>();

@@ -96,19 +96,20 @@ void main() {
         ),
       );
 
-      // Group items should have a Container with BoxDecoration for border
+      // Group items should render as a rounded, elevated card
       final containers = tester.widgetList<Container>(find.byType(Container));
-      bool foundBorderedContainer = false;
+      bool foundCardContainer = false;
       for (final container in containers) {
         if (container.decoration is BoxDecoration) {
           final decoration = container.decoration as BoxDecoration;
-          if (decoration.border != null) {
-            foundBorderedContainer = true;
+          if (decoration.borderRadius != null &&
+              (decoration.boxShadow?.isNotEmpty ?? false)) {
+            foundCardContainer = true;
             break;
           }
         }
       }
-      expect(foundBorderedContainer, isTrue);
+      expect(foundCardContainer, isTrue);
     });
 
     testWidgets('should render empty group with no items',

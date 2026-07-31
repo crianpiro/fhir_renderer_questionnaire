@@ -5,6 +5,7 @@ import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
 import 'base_decorator.dart';
 import '../questionnaire_base_item.dart';
+import '../questionnaire_styles.dart';
 import '../../../core/mixins/boolean_value_mixin.dart';
 
 class QuestionnaireBooleanItem extends QuestionnaireBaseItem
@@ -45,12 +46,20 @@ class QuestionnaireBooleanItem extends QuestionnaireBaseItem
           value: true,
           title: const Text("Yes"),
           groupValue: selectedValue,
+          dense: true,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+          shape: const RoundedRectangleBorder(
+              borderRadius: QuestionnaireStyles.cardRadius),
           onChanged: (v) => onOptionChanged(context, v ?? false),
         ),
         RadioListTile(
           value: false,
           title: const Text("No"),
           groupValue: selectedValue,
+          dense: true,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+          shape: const RoundedRectangleBorder(
+              borderRadius: QuestionnaireStyles.cardRadius),
           onChanged: (v) => onOptionChanged(context, v ?? false),
         ),
       ],

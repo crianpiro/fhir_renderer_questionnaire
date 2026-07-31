@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../questionnaire_styles.dart';
+
 class BaseDecorator extends StatelessWidget {
   final bool roundBottomBorder;
   final bool useNotImplementedStyle;
@@ -17,15 +19,17 @@ class BaseDecorator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasContent = child != null || (children?.isNotEmpty ?? false);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       alignment: Alignment.centerLeft,
       decoration: BoxDecoration(
         color: useNotImplementedStyle
             ? Theme.of(context).colorScheme.errorContainer
             : null,
         borderRadius: BorderRadius.vertical(
-          bottom: Radius.circular(roundBottomBorder ? 7 : 0),
+          bottom: Radius.circular(
+              roundBottomBorder ? QuestionnaireStyles.cornerRadius : 0),
         ),
       ),
       child: Column(
@@ -33,10 +37,12 @@ class BaseDecorator extends StatelessWidget {
         children: [
           Text(
             title ?? "",
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Theme.of(context).colorScheme.primary,
-                fontWeight: FontWeight.bold),
+            style: useNotImplementedStyle
+                ? QuestionnaireStyles.itemTitleStyle(context)?.copyWith(
+                    color: Theme.of(context).colorScheme.onErrorContainer)
+                : QuestionnaireStyles.itemTitleStyle(context),
           ),
+          if (hasContent) const SizedBox(height: 6),
           if (child != null) child!,
           if (children != null) ...children!,
         ],

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../../layout/inherited_questionnaire_renderer.dart';
 import '../questionnaire_base_item.dart';
+import '../questionnaire_styles.dart';
+import '../../../core/extensions/fhir_extensions.dart';
 import '../../../core/mixins/group_filtering_mixin.dart';
 import 'questionnaire_item_wrapper.dart';
 
@@ -31,37 +33,26 @@ class QuestionnaireExpansibleGroupItem extends QuestionnaireBaseItem
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
       decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(8)),
+          borderRadius: QuestionnaireStyles.cardRadius,
           color: Theme.of(context).colorScheme.surface,
-          boxShadow: [
-            BoxShadow(
-                spreadRadius: 1,
-                blurRadius: 5,
-                offset: const Offset(2, 2),
-                color:
-                    Theme.of(context).colorScheme.shadow.withValues(alpha: 0.3))
-          ]),
+          boxShadow: QuestionnaireStyles.cardShadow(context)),
       child: ExpansionTile(
         shape: const Border(),
         childrenPadding: const EdgeInsets.only(bottom: 10),
         initiallyExpanded: true,
-        title: Text(
-          itemTextTitle ??
-              questionnaireItem.code?.firstOrNull?.code?.valueString ??
-              "",
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.bold),
-        ),
+        title: QuestionnaireStyles.groupTitleRow(context,
+            title: questionnaireItem.displayTitle),
         children: [
+          QuestionnaireStyles.groupHeaderDivider(context),
           if (items != null)
-            ...List.generate(
-                items.length,
-                (i) => QuestionnaireItemWrapper(
-                      questionnaireItem: items[i],
-                      index: i,
-                      isLastItem: items.length - 1 == i,
-                    )),
+            for (var i = 0; i < items.length; i++) ...[
+              if (i > 0) QuestionnaireStyles.childDivider(context),
+              QuestionnaireItemWrapper(
+                questionnaireItem: items[i],
+                index: i,
+                isLastItem: items.length - 1 == i,
+              ),
+            ],
         ],
       ),
     );

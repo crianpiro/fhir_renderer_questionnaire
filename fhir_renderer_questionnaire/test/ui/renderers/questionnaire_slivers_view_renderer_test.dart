@@ -447,12 +447,11 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Do you agree?'), findsOneWidget);
-      // Sliver boolean item uses German labels "Ja"/"Nein"
-      expect(find.text('Ja'), findsOneWidget);
-      expect(find.text('Nein'), findsOneWidget);
+      expect(find.text('Yes'), findsOneWidget);
+      expect(find.text('No'), findsOneWidget);
 
-      // Select Ja (Yes)
-      await tester.tap(find.text('Ja'));
+      // Select Yes
+      await tester.tap(find.text('Yes'));
       await tester.pumpAndSettle();
 
       final response = controller.generateQuestionnaireResponse();

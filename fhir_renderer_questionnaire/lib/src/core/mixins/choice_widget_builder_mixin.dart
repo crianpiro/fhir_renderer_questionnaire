@@ -2,6 +2,7 @@ import 'package:fhir_r4/fhir_r4.dart';
 import 'package:flutter/material.dart';
 
 import '../../ui/layout/inherited_questionnaire_renderer.dart';
+import '../../ui/components/questionnaire_styles.dart';
 import '../utils/fhir_renderer_questionnaire_response_utils.dart';
 import '../extensions/fhir_extensions.dart';
 
@@ -148,6 +149,11 @@ mixin ChoiceWidgetBuilderMixin {
 
     return CheckboxListTile(
       value: isSelected,
+      dense: true,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+      controlAffinity: ListTileControlAffinity.leading,
+      shape: const RoundedRectangleBorder(
+          borderRadius: QuestionnaireStyles.cardRadius),
       onChanged: (v) => questionnaireRendererData.onResponseChanged(
         FhirRendererQuestionnaireResponseUtils
             .setMultipleAnswerOptionsInQuestionnaireResponse(
@@ -175,6 +181,10 @@ mixin ChoiceWidgetBuilderMixin {
     return RadioListTile<String>(
       value: optionCode ?? '',
       groupValue: selectedCode,
+      dense: true,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+      shape: const RoundedRectangleBorder(
+          borderRadius: QuestionnaireStyles.cardRadius),
       onChanged: (v) => questionnaireRendererData.onResponseChanged(
         FhirRendererQuestionnaireResponseUtils
             .setAnswerOptionInQuestionnaireResponse(
@@ -229,9 +239,12 @@ mixin ChoiceWidgetBuilderMixin {
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: DropdownButtonFormField<String>(
         value: selectedCode,
+        borderRadius: QuestionnaireStyles.cardRadius,
         decoration: InputDecoration(
           labelText: questionnaireItem.text?.valueString,
-          border: const OutlineInputBorder(),
+          isDense: true,
+          border: const OutlineInputBorder(
+              borderRadius: QuestionnaireStyles.cardRadius),
         ),
         items: options.map((answerOption) {
           final code = answerOption.valueCoding?.code?.valueString ?? '';
@@ -285,7 +298,9 @@ mixin ChoiceWidgetBuilderMixin {
       child: InputDecorator(
         decoration: InputDecoration(
           labelText: questionnaireItem.text?.valueString,
-          border: const OutlineInputBorder(),
+          isDense: true,
+          border: const OutlineInputBorder(
+              borderRadius: QuestionnaireStyles.cardRadius),
         ),
         child: InkWell(
           onTap: () => _showMultiSelectDialog(

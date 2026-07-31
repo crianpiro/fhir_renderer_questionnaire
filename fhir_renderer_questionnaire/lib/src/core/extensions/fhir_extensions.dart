@@ -11,6 +11,14 @@ extension FhirRendererQuestionnaireExtensions on Resource {
       FhirCanonical('${resourceType.name}/$id');
 }
 
+/// Extensions for FHIR [QuestionnaireItem] to resolve display text.
+extension QuestionnaireItemDisplayExtensions on QuestionnaireItem {
+  /// Title shown for the item, falling back to its first code when `text` is
+  /// absent and to an empty string when neither is present.
+  String get displayTitle =>
+      text?.valueString ?? code?.firstOrNull?.code?.valueString ?? "";
+}
+
 /// Extensions for FHIR [QuestionnaireItem] to extract validation-related extensions.
 extension QuestionnaireItemValidationExtensions on QuestionnaireItem {
   /// Extracts the regex validation pattern from the FHIR extension.

@@ -127,6 +127,59 @@ void main() {
       controller.dispose();
     });
 
+    testWidgets('should build group children lazily while scrolling',
+        (WidgetTester tester) async {
+      final questionnaire = Questionnaire(
+        status: PublicationStatus.active,
+        item: [
+          QuestionnaireItem(
+            linkId: FhirString('bigGroup'),
+            type: QuestionnaireItemType.group,
+            text: FhirString('Big Group'),
+            item: List.generate(
+              60,
+              (i) => QuestionnaireItem(
+                linkId: FhirString('q$i'),
+                type: QuestionnaireItemType.string,
+                text: FhirString('Question $i'),
+              ),
+            ),
+          ),
+        ],
+      );
+
+      final controller = RendererQuestionnaireController(
+        questionnaire: questionnaire,
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: QuestionnaireListViewRenderer(
+              rendererController: controller,
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // The group is flattened into one list entry per question, so items far
+      // below the viewport must not be built yet.
+      expect(find.text('Question 0'), findsOneWidget);
+      expect(find.text('Question 59'), findsNothing);
+
+      // After scrolling to the bottom the last question is built and visible.
+      await tester.scrollUntilVisible(
+        find.text('Question 59'),
+        500,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.text('Question 59'), findsOneWidget);
+
+      controller.dispose();
+    });
+
     testWidgets('should update response when answering questions',
         (WidgetTester tester) async {
       final questionnaire = Questionnaire(

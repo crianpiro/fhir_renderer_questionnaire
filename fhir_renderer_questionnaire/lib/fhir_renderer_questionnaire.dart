@@ -127,6 +127,12 @@ export 'src/core/utils/keyboard_type_helper.dart' show KeyboardTypeHelper;
 export 'src/core/validation/default_validation_patterns.dart'
     show DefaultValidationPatterns;
 
+/// Response verification: what is missing or malformed, rendered or not
+export 'src/core/validation/questionnaire_finding.dart'
+    show QuestionnaireFinding, QuestionnaireFindingReason;
+export 'src/core/validation/questionnaire_validator.dart'
+    show QuestionnaireValidator;
+
 // ============================================================================
 // MIXINS - Value Handling
 // ============================================================================
@@ -150,6 +156,7 @@ export 'src/core/mixins/choice_widget_builder_mixin.dart'
 export 'src/core/extensions/fhir_extensions.dart'
     show
         FhirRendererQuestionnaireExtensions,
+        QuestionnaireItemDisplayExtensions,
         QuestionnaireItemValidationExtensions,
         QuestionnaireAnswerOptionExtensions;
 
