@@ -12,6 +12,8 @@ mixin TextFieldValueMixin {
   /// hints, or prefix/suffix widgets on top.
   InputDecoration get getOutlineInputDecoration => InputDecoration(
       errorMaxLines: 2,
+      isDense: true,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)));
 
   /// Extracts the initial value from a questionnaire item.

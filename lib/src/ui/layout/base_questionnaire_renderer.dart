@@ -91,6 +91,10 @@ abstract class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer>
   void onResponseChanged(QuestionnaireResponse updatedQuestionnaireResponse) {
     // Clear the enableWhen cache when response changes to avoid stale state
     widget.rendererController.clearEnableWhenCache();
+    // Keep the controller's view of the response current so validate() can run
+    // at any time without going through response generation.
+    widget.rendererController
+        .attachRenderer(response: updatedQuestionnaireResponse);
     if (context.mounted) {
       setState(() {
         questionnaireResponse = updatedQuestionnaireResponse;
@@ -100,8 +104,12 @@ abstract class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer>
 
   /// Triggered when the controller requests to generate/validate the response.
   ///
-  /// This sets [checkRequiredItems] to true, forcing validation UI updates,
-  /// and focuses the first missing required field if any.
+  /// Sets [checkRequiredItems] to true so built items highlight, verifies the
+  /// response against the questionnaire model, and reveals the first problem.
+  ///
+  /// Verification deliberately does not consult the widget tree: renderers
+  /// build items lazily, so an unanswered required item further down the
+  /// questionnaire may have no widget — and no [FocusNode] — at this point.
   QuestionnaireResponse onGenerateQuestionnaireResponse() {
     if (context.mounted) {
       setState(() {
@@ -109,17 +117,76 @@ abstract class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer>
       });
     }
 
-    //Add the markAsRequired here instead of in building time.
-    if (widget.rendererController.indexedItems.isNotEmpty) {
-      for (var entry in widget.rendererController.indexedItems.entries) {
-        if (entry.value.markAsRequired) {
-          entry.value.focusNode.requestFocus();
-          break;
-        }
-      }
+    final findings = widget.rendererController.validate();
+    widget.rendererController.lastFindings = findings;
+
+    if (findings.isNotEmpty) {
+      // After this frame, so the highlighting setState above has been applied
+      // and the scroll views report up-to-date extents.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) revealFinding(findings.first);
+      });
     }
 
     return questionnaireResponse;
+  }
+
+  /// Number of attempts [revealFinding] makes before giving up.
+  ///
+  /// Each attempt jumps to an estimated offset and lets a frame build; the
+  /// estimate improves as more of the list is laid out. A handful of passes is
+  /// enough to land on the item in practice.
+  static const int _revealAttempts = 6;
+
+  /// Brings the item behind [finding] into view, building it if necessary.
+  ///
+  /// Focusing the item is the goal: [QuestionnaireItemWrapper] calls
+  /// `Scrollable.ensureVisible` when an item takes focus, which lands the item
+  /// exactly. That only works once the item is built, so for an item that is
+  /// still unbuilt this jumps to an offset estimated from the item's position
+  /// in the questionnaire, then retries on the next frame.
+  void revealFinding(QuestionnaireFinding finding, {int attempt = 0}) {
+    if (!mounted) return;
+
+    final controller = widget.rendererController;
+    final focusNode = controller.indexedItems[finding.linkId]?.focusNode;
+
+    if (focusNode != null && focusNode.context != null) {
+      focusNode.requestFocus();
+      return;
+    }
+
+    if (attempt >= _revealAttempts) return;
+
+    _approachFinding(finding);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      revealFinding(finding, attempt: attempt + 1);
+    });
+  }
+
+  /// Moves the viewport closer to [finding] without needing its widget.
+  void _approachFinding(QuestionnaireFinding finding) {
+    final controller = widget.rendererController;
+
+    final pageController = controller.pageViewController;
+    if (pageController != null && pageController.hasClients) {
+      if (pageController.page?.round() != finding.topLevelIndex) {
+        pageController.jumpToPage(finding.topLevelIndex);
+      }
+      return;
+    }
+
+    // The views hand their ScrollController to the ListView/CustomScrollView;
+    // when the host supplied none, the scroll view attaches to the primary one.
+    final scrollController = controller.listViewScrollController ??
+        PrimaryScrollController.maybeOf(context);
+    if (scrollController == null || !scrollController.hasClients) return;
+
+    final position = scrollController.position;
+    final target = position.maxScrollExtent * finding.documentFraction;
+    scrollController.jumpTo(
+      target.clamp(position.minScrollExtent, position.maxScrollExtent),
+    );
   }
 
   void onReadOnlyModeChanged() {
@@ -158,6 +225,10 @@ abstract class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer>
     questionnaireResponse =
         widget.rendererController.initialQuestionnaireResponse!;
     readOnly = widget.rendererController.forceReadOnlyView;
+    widget.rendererController.attachRenderer(
+      response: questionnaireResponse,
+      revealFinding: revealFinding,
+    );
     widget.rendererController.onGenerateQuestionnaireResponse =
         onGenerateQuestionnaireResponse;
     widget.rendererController.onReadOnlyModeChanged = onReadOnlyModeChanged;
@@ -171,6 +242,7 @@ abstract class BaseQuestionnaireState extends State<BaseQuestionnaireRenderer>
     widget.rendererController.initialQuestionnaireResponse =
         questionnaireResponse;
     widget.rendererController.onExternalResponseUpdate = null;
+    widget.rendererController.detachRenderer();
     // Note: Controller disposal is the responsibility of the owner, not the renderer
     super.dispose();
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../layout/inherited_questionnaire_renderer.dart';
 import '../boxes/questionnaire_item_wrapper.dart';
+import '../questionnaire_styles.dart';
 import '../../factories/sliver_component_factory.dart';
 
 /// Sliver variant of QuestionnaireItemWrapper for use in CustomScrollView contexts.
@@ -19,42 +20,39 @@ final class QuestionnaireSliverItemWrapper extends QuestionnaireItemWrapper {
 
   @override
   Widget build(BuildContext context) {
-    assignDependents(InheritedQuestionnaireRenderer.of(context));
+    final inheritedData = InheritedQuestionnaireRenderer.of(context);
+    assignDependents(inheritedData);
 
     final isRequired = questionnaireItem.required_?.valueBoolean ?? false;
     final responseItem = findQuestionnaireResponseItem(
-      InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
+      inheritedData.questionnaireResponse,
       itemLinkId,
     );
 
     return SliverMainAxisGroup(slivers: [
       SliverToBoxAdapter(
         child: Focus(
-          focusNode:
-              assignFocusNode(InheritedQuestionnaireRenderer.of(context)),
-          child: SizedBox(
+          focusNode: assignFocusNode(inheritedData),
+          // width: double.infinity instead of MediaQuery sizing, so items
+          // don't subscribe to MediaQuery and rebuild on keyboard animations.
+          child: const SizedBox(
             height: 0,
-            width: MediaQuery.of(context).size.width,
+            width: double.infinity,
           ),
         ),
       ),
       DecoratedSliver(
-        decoration: BoxDecoration(
-          border: (isRequired &&
-                  InheritedQuestionnaireRenderer.of(
-                    context,
-                  ).checkRequiredItems &&
-                  (responseItem?.answer == null ||
-                      (responseItem?.answer?.isEmpty ?? false)))
-              ? Border.all(color: Colors.red)
-              : null,
-        ),
+        decoration: (isRequired &&
+                inheritedData.checkRequiredItems &&
+                (responseItem?.answer == null ||
+                    (responseItem?.answer?.isEmpty ?? false)))
+            ? QuestionnaireStyles.requiredItemDecoration(context)
+            : const BoxDecoration(),
         sliver: SliverIgnorePointer(
-          ignoring: InheritedQuestionnaireRenderer.of(context).readOnly
-              ? InheritedQuestionnaireRenderer.of(context).readOnly
+          ignoring: inheritedData.readOnly
+              ? inheritedData.readOnly
               : questionnaireItem.readOnly?.valueBoolean ?? false,
-          sliver: assignQuestionnaireWidget(
-              InheritedQuestionnaireRenderer.of(context)),
+          sliver: assignQuestionnaireWidget(inheritedData),
         ),
       )
     ]);

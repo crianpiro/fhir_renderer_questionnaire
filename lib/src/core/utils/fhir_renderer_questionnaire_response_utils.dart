@@ -503,6 +503,48 @@ final class FhirRendererQuestionnaireResponseUtils {
     return responseItem;
   }
 
+  /// Per-response index of response items by linkId.
+  ///
+  /// Keyed by response instance via an [Expando], so the index lives exactly as
+  /// long as the response object it was built from. Response objects are
+  /// immutable (every edit goes through copyWith and produces a new instance),
+  /// so an index never goes stale and needs no explicit invalidation.
+  static final Expando<Map<String, QuestionnaireResponseItem>>
+      _responseItemIndexes =
+      Expando<Map<String, QuestionnaireResponseItem>>('responseItemIndex');
+
+  /// Returns the linkId index for [questionnaireResponse], building it on
+  /// first access with a single pre-order traversal.
+  static Map<String, QuestionnaireResponseItem> _indexFor(
+    QuestionnaireResponse questionnaireResponse,
+  ) {
+    final cached = _responseItemIndexes[questionnaireResponse];
+    if (cached != null) {
+      return cached;
+    }
+
+    final index = <String, QuestionnaireResponseItem>{};
+    void visit(QuestionnaireResponseItem responseItem) {
+      final linkId = responseItem.linkId.valueString;
+      if (linkId != null) {
+        // putIfAbsent keeps the first pre-order match, mirroring the previous
+        // depth-first search behavior when linkIds are duplicated.
+        index.putIfAbsent(linkId, () => responseItem);
+      }
+      for (final subItem in responseItem.item ?? <QuestionnaireResponseItem>[]) {
+        visit(subItem);
+      }
+    }
+
+    for (final responseItem
+        in questionnaireResponse.item ?? <QuestionnaireResponseItem>[]) {
+      visit(responseItem);
+    }
+
+    _responseItemIndexes[questionnaireResponse] = index;
+    return index;
+  }
+
   /// Finds a questionnaire response item by its linkId.
   ///
   /// Searches through the response item hierarchy for an item with the matching linkId.
@@ -517,15 +559,7 @@ final class FhirRendererQuestionnaireResponseUtils {
     QuestionnaireResponse questionnaireResponse,
     String linkId,
   ) {
-    List<QuestionnaireResponseItem> items = questionnaireResponse.item ?? [];
-    for (QuestionnaireResponseItem responseItem in items) {
-      final found = _findItem(responseItem, linkId);
-      if (found != null) {
-        return found;
-      }
-    }
-
-    return null;
+    return _indexFor(questionnaireResponse)[linkId];
   }
 
   /// Finds a questionnaire response item by its linkId.
@@ -543,42 +577,9 @@ final class FhirRendererQuestionnaireResponseUtils {
     QuestionnaireResponse questionnaireResponse,
     String? linkId,
   ) {
-    List<QuestionnaireResponseItem> items = questionnaireResponse.item ?? [];
-    for (QuestionnaireResponseItem responseItem in items) {
-      final found = _findItem(responseItem, linkId);
-      if (found != null) {
-        return found;
-      }
+    if (linkId == null) {
+      return null;
     }
-
-    return null;
-  }
-
-  /// Recursively searches for a questionnaire response item by linkId.
-  ///
-  /// Checks if the current item's linkId matches the target, then recursively
-  /// searches child items if no match is found.
-  ///
-  /// Parameters:
-  ///   * [questionnaireResponseItem] - The response item to search from
-  ///   * [linkId] - The linkId to search for
-  ///
-  /// Returns:
-  ///   The [QuestionnaireResponseItem] with the matching linkId, or null if not found.
-  static QuestionnaireResponseItem? _findItem(
-    QuestionnaireResponseItem questionnaireResponseItem,
-    String? linkId,
-  ) {
-    if (questionnaireResponseItem.linkId.valueString == linkId) {
-      return questionnaireResponseItem;
-    } else if (questionnaireResponseItem.item != null) {
-      for (var element in questionnaireResponseItem.item!) {
-        final found = _findItem(element, linkId);
-        if (found != null) {
-          return found;
-        }
-      }
-    }
-    return null;
+    return _indexFor(questionnaireResponse)[linkId];
   }
 }

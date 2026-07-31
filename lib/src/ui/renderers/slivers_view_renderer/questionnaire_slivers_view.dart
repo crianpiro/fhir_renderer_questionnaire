@@ -28,11 +28,19 @@ class QuestionnaireSliversView extends StatelessWidget {
           inheritedData.rendererController.groupBundleKeys.length != items.length;
 
       if (needsKeyUpdate) {
+        // Reuse keys per linkId: fresh GlobalKeys would remount every item
+        // subtree, losing state and re-inflating the whole questionnaire.
+        final keyCache = inheritedData.rendererController.sliverItemKeys;
         inheritedData.rendererController.groupBundleKeys.clear();
         for (var item in items) {
           final linkId = item.linkId.valueString;
           inheritedData.rendererController.groupBundleKeys.add(
-            GlobalKey(debugLabel: 'sliver_item_$linkId'),
+            linkId == null
+                ? GlobalKey(debugLabel: 'sliver_item_null')
+                : keyCache.putIfAbsent(
+                    linkId,
+                    () => GlobalKey(debugLabel: 'sliver_item_$linkId'),
+                  ),
           );
         }
       }
