@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/fhir_renderer_questionnaire.iml" filepath="$PROJECT_DIR$/fhir_renderer_questionnaire.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fhir_renderer_questionnaire/fhir_renderer_questionnaire.iml" filepath="$PROJECT_DIR$/fhir_renderer_questionnaire/fhir_renderer_questionnaire.iml" />
     </modules>
   </component>
 </project>

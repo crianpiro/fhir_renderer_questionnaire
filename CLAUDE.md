@@ -2,13 +2,28 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Repository Layout
+
+This is a monorepo hosting multiple FHIR renderer packages. Each package is self-contained (own `pubspec.yaml`, `analysis_options.yaml`, `CHANGELOG.md`, `LICENSE`, tests and example app) and published independently.
+
+```
+.
+├── fhir_renderer_questionnaire/   # The only implemented package
+├── fhir_renderer_care_plan/       # Placeholder, not implemented yet
+└── fhir_renderer_xxxx/            # Placeholder, not implemented yet
+```
+
+There is no root `pubspec.yaml` — all Flutter/Dart commands run from inside a package directory. Paths below are relative to `fhir_renderer_questionnaire/`.
+
 ## Project Overview
 
-A Flutter package for rendering FHIR R4 Questionnaires. It generates UI from FHIR Questionnaire definitions and produces valid QuestionnaireResponse objects. Supports 16 of 17 FHIR item types (94% coverage).
+`fhir_renderer_questionnaire` is a Flutter package for rendering FHIR R4 Questionnaires. It generates UI from FHIR Questionnaire definitions and produces valid QuestionnaireResponse objects. Supports 16 of 17 FHIR item types (94% coverage).
 
 ## Commands
 
 ```bash
+cd fhir_renderer_questionnaire
+
 # Run all tests
 flutter test
 
