@@ -2,6 +2,7 @@ import 'package:fhir_r4/fhir_r4.dart';
 import 'package:flutter/material.dart';
 
 import '../../ui/layout/inherited_questionnaire_renderer.dart';
+import '../../ui/components/questionnaire_styles.dart';
 import '../utils/fhir_renderer_questionnaire_response_utils.dart';
 import '../extensions/fhir_extensions.dart';
 
@@ -44,7 +45,12 @@ mixin ChoiceWidgetBuilderMixin {
 
     // Handle dropdown control
     if (itemControl == 'drop-down') {
+      // The "**" marker only appears in the multi-select dropdown, so the
+      // legend is gated on the same condition to keep the two in sync.
+      final legend =
+          repeats ? buildExclusiveOptionsLegend(questionnaireItem) : null;
       return [
+        if (legend != null) legend,
         buildDropdownOption(
           context: context,
           questionnaireItem: questionnaireItem,
@@ -55,8 +61,15 @@ mixin ChoiceWidgetBuilderMixin {
       ];
     }
 
+    // The "**" marker is only rendered on checkboxes (multi-select), never on
+    // radio buttons, so show the legend exactly when checkboxes are used.
+    final usesCheckboxes =
+        itemControl == 'check-box' || (itemControl == null && repeats);
+    final legend =
+        usesCheckboxes ? buildExclusiveOptionsLegend(questionnaireItem) : null;
+
     // Default behavior: radio buttons or checkboxes
-    return questionnaireItem.answerOption!.map((answerOption) {
+    final optionWidgets = questionnaireItem.answerOption!.map((answerOption) {
       final displayValue = getDisplayValue(answerOption);
 
       // Respect explicit itemControl if provided
@@ -82,7 +95,42 @@ mixin ChoiceWidgetBuilderMixin {
         );
       }
     }).toList();
+
+    return [
+      if (legend != null) legend,
+      ...optionWidgets,
+    ];
   }
+
+  /// Builds a legend explaining the `**` marker used to flag mutually exclusive
+  /// options, or `null` when the item has no exclusive options.
+  ///
+  /// An option is exclusive when it carries the FHIR SDC
+  /// `questionnaire-optionExclusive` extension. Selecting it clears every other
+  /// selection (the "all"/"none" master option behavior).
+  Widget? buildExclusiveOptionsLegend(QuestionnaireItem questionnaireItem) {
+    final hasExclusiveOption = questionnaireItem.answerOption
+            ?.any((option) => option.isOptionExclusive) ??
+        false;
+
+    if (!hasExclusiveOption) return null;
+
+    return const Padding(
+      padding: EdgeInsets.fromLTRB(16.0, 4.0, 16.0, 8.0),
+      child: Text(
+        'Options marked with ** are exclusive.',
+        style: TextStyle(fontStyle: FontStyle.italic, fontSize: 12.0),
+      ),
+    );
+  }
+
+  /// Appends the `**` marker to an option label when the option is mutually
+  /// exclusive, leaving non-exclusive labels untouched.
+  String markExclusiveLabel(
+    String label,
+    QuestionnaireAnswerOption answerOption,
+  ) =>
+      answerOption.isOptionExclusive ? '$label **' : label;
 
   /// Builds a checkbox widget for multi-select options.
   Widget buildCheckboxOption({
@@ -101,6 +149,11 @@ mixin ChoiceWidgetBuilderMixin {
 
     return CheckboxListTile(
       value: isSelected,
+      dense: true,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+      controlAffinity: ListTileControlAffinity.leading,
+      shape: const RoundedRectangleBorder(
+          borderRadius: QuestionnaireStyles.cardRadius),
       onChanged: (v) => questionnaireRendererData.onResponseChanged(
         FhirRendererQuestionnaireResponseUtils
             .setMultipleAnswerOptionsInQuestionnaireResponse(
@@ -109,7 +162,7 @@ mixin ChoiceWidgetBuilderMixin {
           answerOption,
         ),
       ),
-      title: Text(displayValue),
+      title: Text(markExclusiveLabel(displayValue, answerOption)),
     );
   }
 
@@ -128,6 +181,10 @@ mixin ChoiceWidgetBuilderMixin {
     return RadioListTile<String>(
       value: optionCode ?? '',
       groupValue: selectedCode,
+      dense: true,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+      shape: const RoundedRectangleBorder(
+          borderRadius: QuestionnaireStyles.cardRadius),
       onChanged: (v) => questionnaireRendererData.onResponseChanged(
         FhirRendererQuestionnaireResponseUtils
             .setAnswerOptionInQuestionnaireResponse(
@@ -182,9 +239,12 @@ mixin ChoiceWidgetBuilderMixin {
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: DropdownButtonFormField<String>(
         value: selectedCode,
+        borderRadius: QuestionnaireStyles.cardRadius,
         decoration: InputDecoration(
           labelText: questionnaireItem.text?.valueString,
-          border: const OutlineInputBorder(),
+          isDense: true,
+          border: const OutlineInputBorder(
+              borderRadius: QuestionnaireStyles.cardRadius),
         ),
         items: options.map((answerOption) {
           final code = answerOption.valueCoding?.code?.valueString ?? '';
@@ -238,7 +298,9 @@ mixin ChoiceWidgetBuilderMixin {
       child: InputDecorator(
         decoration: InputDecoration(
           labelText: questionnaireItem.text?.valueString,
-          border: const OutlineInputBorder(),
+          isDense: true,
+          border: const OutlineInputBorder(
+              borderRadius: QuestionnaireStyles.cardRadius),
         ),
         child: InkWell(
           onTap: () => _showMultiSelectDialog(
@@ -255,7 +317,8 @@ mixin ChoiceWidgetBuilderMixin {
                   selectedOptions.isEmpty
                       ? 'Select options...'
                       : selectedOptions
-                          .map((opt) => getDisplayValue(opt))
+                          .map((opt) =>
+                              markExclusiveLabel(getDisplayValue(opt), opt))
                           .join(', '),
                   style: TextStyle(
                     color: selectedOptions.isEmpty
@@ -280,6 +343,7 @@ mixin ChoiceWidgetBuilderMixin {
     required InheritedQuestionnaireRenderer questionnaireRendererData,
   }) async {
     final options = questionnaireItem.answerOption ?? [];
+    final legend = buildExclusiveOptionsLegend(questionnaireItem);
 
     await showDialog(
       context: context,
@@ -291,7 +355,10 @@ mixin ChoiceWidgetBuilderMixin {
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: options.map((answerOption) {
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (legend != null) legend,
+                    ...options.map((answerOption) {
                     final isSelected = isOptionSelected(
                       selectedResponseItem,
                       questionnaireItem,
@@ -312,9 +379,12 @@ mixin ChoiceWidgetBuilderMixin {
                         );
                         setState(() {}); // Refresh dialog
                       },
-                      title: Text(displayValue),
+                      title: Text(
+                        markExclusiveLabel(displayValue, answerOption),
+                      ),
                     );
-                  }).toList(),
+                    }),
+                  ],
                 ),
               ),
               actions: [

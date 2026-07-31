@@ -340,4 +340,46 @@ void main() {
       });
     });
   });
+
+  group('QuestionnaireAnswerOptionExtensions', () {
+    group('isOptionExclusive', () {
+      test('should be true when optionExclusive extension is set', () {
+        final option = QuestionnaireAnswerOption.fromJson({
+          'extension': [
+            {
+              'url':
+                  'http://hl7.org/fhir/StructureDefinition/questionnaire-optionExclusive',
+              'valueBoolean': true,
+            },
+          ],
+          'valueCoding': {'code': 'none'},
+        });
+
+        expect(option.isOptionExclusive, isTrue);
+      });
+
+      test('should be false when optionExclusive extension is false', () {
+        final option = QuestionnaireAnswerOption.fromJson({
+          'extension': [
+            {
+              'url':
+                  'http://hl7.org/fhir/StructureDefinition/questionnaire-optionExclusive',
+              'valueBoolean': false,
+            },
+          ],
+          'valueCoding': {'code': 'cough'},
+        });
+
+        expect(option.isOptionExclusive, isFalse);
+      });
+
+      test('should be false when no extension exists', () {
+        final option = QuestionnaireAnswerOption.fromJson({
+          'valueCoding': {'code': 'cough'},
+        });
+
+        expect(option.isOptionExclusive, isFalse);
+      });
+    });
+  });
 }

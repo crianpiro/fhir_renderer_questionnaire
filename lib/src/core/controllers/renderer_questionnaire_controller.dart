@@ -3,6 +3,8 @@ import 'package:fhir_renderer_questionnaire/src/core/utils/fhir_renderer_questio
 import 'package:flutter/material.dart';
 
 import '../data/item_behavioral_data.dart';
+import '../validation/questionnaire_finding.dart';
+import '../validation/questionnaire_validator.dart';
 
 /// A controller for managing the state and behavior of a FHIR Questionnaire renderer.
 ///
@@ -41,6 +43,26 @@ class RendererQuestionnaireController {
 
   /// A list of global keys for group items, used for auto-scrolling to specific groups.
   final List<GlobalKey> groupBundleKeys = [];
+
+  /// Cache of sliver item keys by linkId, so keys are reused when the set of
+  /// enabled items changes. Recreating GlobalKeys would remount every item
+  /// subtree (losing state and causing a jank spike). Internal use.
+  final Map<String, GlobalKey> sliverItemKeys = {};
+
+  /// The response as it currently stands in the renderer.
+  ///
+  /// Kept in sync by the renderer so verification can run against live data
+  /// without going through [generateQuestionnaireResponse] and its side effects.
+  QuestionnaireResponse? _currentQuestionnaireResponse;
+
+  /// Reveals an item that verification flagged, scrolling or paging to it even
+  /// when the item has not been built yet. Set by the renderer.
+  void Function(QuestionnaireFinding finding)? _revealFinding;
+
+  /// Findings from the most recent [generateQuestionnaireResponse] call.
+  ///
+  /// Empty until the response is generated at least once.
+  List<QuestionnaireFinding> lastFindings = const [];
 
   /// A map of behavioral data for indexed items, keyed by the item's linkId.
   ///
@@ -119,9 +141,58 @@ class RendererQuestionnaireController {
   ///
   /// This method calls the [onGenerateQuestionnaireResponse] callback which collects
   /// the data from the widget tree and triggers validation of required fields.
+  ///
+  /// The renderer also refreshes [lastFindings] and reveals the first one, so
+  /// callers can inspect what failed:
+  ///
+  /// ```dart
+  /// final response = controller.generateQuestionnaireResponse();
+  /// if (controller.lastFindings.isNotEmpty) return; // not submittable yet
+  /// ```
   QuestionnaireResponse generateQuestionnaireResponse() {
     return onGenerateQuestionnaireResponse?.call() ??
         initialQuestionnaireResponse!;
+  }
+
+  /// The response currently held by the renderer.
+  ///
+  /// Falls back to [initialQuestionnaireResponse] before the renderer mounts.
+  QuestionnaireResponse get currentQuestionnaireResponse =>
+      _currentQuestionnaireResponse ?? initialQuestionnaireResponse!;
+
+  /// Verifies the current response and returns every problem in document order.
+  ///
+  /// Unlike the highlighting done while building, this covers items that have
+  /// never been rendered: it walks the questionnaire model, honoring
+  /// `enableWhen`, rather than inspecting built widgets. Has no side effects —
+  /// it neither triggers the required-item highlighting nor scrolls anywhere.
+  List<QuestionnaireFinding> validate() => const QuestionnaireValidator()
+      .validate(questionnaire, currentQuestionnaireResponse, controller: this);
+
+  /// Scrolls or pages the renderer to the item behind [finding].
+  ///
+  /// Works for items that are not currently built: the renderer approximates
+  /// the position from [QuestionnaireFinding.documentFraction] and homes in as
+  /// the target builds. Returns `false` when no renderer is attached.
+  bool revealFinding(QuestionnaireFinding finding) {
+    final reveal = _revealFinding;
+    if (reveal == null) return false;
+    reveal(finding);
+    return true;
+  }
+
+  /// Internal: lets the renderer publish its live response and reveal hook.
+  void attachRenderer({
+    required QuestionnaireResponse response,
+    void Function(QuestionnaireFinding finding)? revealFinding,
+  }) {
+    _currentQuestionnaireResponse = response;
+    if (revealFinding != null) _revealFinding = revealFinding;
+  }
+
+  /// Internal: detaches the renderer's reveal hook.
+  void detachRenderer() {
+    _revealFinding = null;
   }
 
   /// Disposes of all resources held by this controller.
@@ -133,6 +204,8 @@ class RendererQuestionnaireController {
   void dispose() {
     // Dispose all FocusNodes and TextEditingControllers
     onGenerateQuestionnaireResponse = null;
+    _revealFinding = null;
+    lastFindings = const [];
     for (final itemData in indexedItems.values) {
       itemData.focusNode.dispose();
       itemData.textController?.dispose();
@@ -144,5 +217,6 @@ class RendererQuestionnaireController {
     }
     auxiliaryTextControllers.clear();
     groupBundleKeys.clear();
+    sliverItemKeys.clear();
   }
 }

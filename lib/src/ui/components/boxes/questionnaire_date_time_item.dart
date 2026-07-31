@@ -4,6 +4,7 @@ import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
 import 'base_decorator.dart';
 import '../questionnaire_base_item.dart';
+import '../questionnaire_styles.dart';
 import '../../../core/mixins/datetime_value_mixin.dart';
 
 class QuestionnaireDateTimeItem extends QuestionnaireBaseItem
@@ -29,10 +30,14 @@ class QuestionnaireDateTimeItem extends QuestionnaireBaseItem
       title: itemTextTitle,
       roundBottomBorder: isLastItem,
       child: ElevatedButton(
-        style: ButtonStyle(
-          shape: WidgetStatePropertyAll(
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-          ),
+        style: ElevatedButton.styleFrom(
+          elevation: 0,
+          backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+          foregroundColor: Theme.of(context).colorScheme.onSurface,
+          minimumSize: const Size(double.infinity, 44),
+          alignment: Alignment.centerLeft,
+          shape: const RoundedRectangleBorder(
+              borderRadius: QuestionnaireStyles.cardRadius),
         ),
         onPressed: () async {
           final selectedValue = await onSelectValue(

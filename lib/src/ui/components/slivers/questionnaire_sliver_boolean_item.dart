@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../layout/inherited_questionnaire_renderer.dart';
 import '../boxes/questionnaire_boolean_item.dart';
+import '../questionnaire_styles.dart';
 import 'sliver_base_decorator.dart';
 
 final class QuestionnaireSliverBooleanItem extends QuestionnaireBooleanItem {
@@ -29,16 +30,24 @@ final class QuestionnaireSliverBooleanItem extends QuestionnaireBooleanItem {
         SliverToBoxAdapter(
           child: RadioListTile(
             value: true,
-            title: const Text("Ja"),
+            title: const Text("Yes"),
             groupValue: selectedValue,
+            dense: true,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+            shape: const RoundedRectangleBorder(
+                borderRadius: QuestionnaireStyles.cardRadius),
             onChanged: (v) => onOptionChanged(context, v ?? false),
           ),
         ),
         SliverToBoxAdapter(
           child: RadioListTile(
             value: false,
-            title: const Text("Nein"),
+            title: const Text("No"),
             groupValue: selectedValue,
+            dense: true,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+            shape: const RoundedRectangleBorder(
+                borderRadius: QuestionnaireStyles.cardRadius),
             onChanged: (v) => onOptionChanged(context, v ?? false),
           ),
         ),

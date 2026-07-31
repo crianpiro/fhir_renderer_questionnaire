@@ -75,6 +75,7 @@ QuestionnaireSliversViewRenderer(
 - **Read-Only Mode**: Force the entire questionnaire into read-only mode using `forceReadOnlyView`
 - **Initial Values**: Pre-populate questionnaires with existing data using `initialQuestionnaireResponse`
 - **Item Control Extensions**: Support for dropdown, radio-button, and checkbox rendering via FHIR `questionnaire-itemControl` extension
+- **Exclusive Options**: Support for mutually exclusive "all"/"none" options in multi-select items via the FHIR `questionnaire-optionExclusive` extension. Exclusive options are flagged in the UI with a `**` marker and an explanatory legend
 - **Custom Builders**: Replace any default widget with your own implementation for complete UI control
 - **Performance Optimized**: EnableWhen caching system and optimized rendering for large questionnaires
 - **Memory Management**: Proper cleanup of resources (FocusNode, TextEditingController) to prevent memory leaks

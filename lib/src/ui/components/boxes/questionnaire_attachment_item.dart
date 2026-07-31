@@ -11,6 +11,7 @@ import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
 import 'base_decorator.dart';
 import '../questionnaire_base_item.dart';
+import '../questionnaire_styles.dart';
 
 /// Widget for rendering attachment-type questionnaire items.
 ///
@@ -80,7 +81,10 @@ class QuestionnaireAttachmentItem extends QuestionnaireBaseItem {
                     : (allowMultiple ? 'Add Another File' : 'Replace File'),
               ),
               style: ElevatedButton.styleFrom(
+                elevation: 0,
                 minimumSize: const Size(double.infinity, 44),
+                shape: const RoundedRectangleBorder(
+                    borderRadius: QuestionnaireStyles.cardRadius),
               ),
             ),
 
@@ -91,7 +95,7 @@ class QuestionnaireAttachmentItem extends QuestionnaireBaseItem {
                   ? 'You can attach multiple files'
                   : 'Only one file can be attached',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
             ),
           ],

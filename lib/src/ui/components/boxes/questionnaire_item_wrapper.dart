@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../layout/inherited_questionnaire_renderer.dart';
 import '../../../core/utils/fhir_renderer_questionnaire_response_utils.dart';
 import '../questionnaire_base_item.dart';
+import '../questionnaire_styles.dart';
 import '../../factories/questionnaire_component_factory.dart';
 import '../../factories/box_component_factory.dart';
 import '../../../core/mixins/text_field_value_mixin.dart';
@@ -306,11 +307,9 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem
         }
       },
       child: Container(
-        decoration: BoxDecoration(
-          border: markAsRequired(inheritedData, responseItem, isRequired)
-              ? Border.all(color: Colors.red)
-              : null,
-        ),
+        decoration: markAsRequired(inheritedData, responseItem, isRequired)
+            ? QuestionnaireStyles.requiredItemDecoration(context)
+            : null,
         child: IgnorePointer(
           ignoring: inheritedData.readOnly
               ? inheritedData.readOnly

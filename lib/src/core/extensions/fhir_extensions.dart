@@ -11,6 +11,14 @@ extension FhirRendererQuestionnaireExtensions on Resource {
       FhirCanonical('${resourceType.name}/$id');
 }
 
+/// Extensions for FHIR [QuestionnaireItem] to resolve display text.
+extension QuestionnaireItemDisplayExtensions on QuestionnaireItem {
+  /// Title shown for the item, falling back to its first code when `text` is
+  /// absent and to an empty string when neither is present.
+  String get displayTitle =>
+      text?.valueString ?? code?.firstOrNull?.code?.valueString ?? "";
+}
+
 /// Extensions for FHIR [QuestionnaireItem] to extract validation-related extensions.
 extension QuestionnaireItemValidationExtensions on QuestionnaireItem {
   /// Extracts the regex validation pattern from the FHIR extension.
@@ -77,5 +85,31 @@ extension QuestionnaireItemValidationExtensions on QuestionnaireItem {
     }
 
     return null;
+  }
+}
+
+/// Extensions for FHIR [QuestionnaireAnswerOption] to extract SDC behavior flags.
+extension QuestionnaireAnswerOptionExtensions on QuestionnaireAnswerOption {
+  /// Whether this answer option is mutually exclusive with all others.
+  ///
+  /// Looks for the standard FHIR SDC extension:
+  /// http://hl7.org/fhir/StructureDefinition/questionnaire-optionExclusive
+  ///
+  /// In a multi-select (repeats) item, selecting an exclusive option clears
+  /// every other selection, and selecting any non-exclusive option clears the
+  /// exclusive ones. This implements the "all"/"none" master option behavior.
+  ///
+  /// Returns true when the extension is present and set to true, false otherwise.
+  bool get isOptionExclusive {
+    if (extension_?.isEmpty ?? true) return false;
+
+    for (final ext in extension_!) {
+      if (ext.url.toString() ==
+          'http://hl7.org/fhir/StructureDefinition/questionnaire-optionExclusive') {
+        return ext.valueBoolean?.valueBoolean ?? false;
+      }
+    }
+
+    return false;
   }
 }

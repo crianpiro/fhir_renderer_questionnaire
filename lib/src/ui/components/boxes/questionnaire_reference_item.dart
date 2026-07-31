@@ -63,7 +63,7 @@ class QuestionnaireReferenceItem extends QuestionnaireBaseItem {
                 child: Text(
                   'Allowed resource types: ${allowedTypes.join(", ")}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.blue.shade700,
+                        color: Theme.of(context).colorScheme.primary,
                         fontStyle: FontStyle.italic,
                       ),
                 ),
