@@ -1,8 +1,15 @@
-name: Release website
+name: Release website (fhir_renderer_questionnaire)
+
+# This repository is a monorepo. The published website is the example app of the
+# fhir_renderer_questionnaire package, so this workflow only reacts to changes
+# under that package - pushes touching sibling packages are ignored.
 
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'fhir_renderer_questionnaire/**'
+      - '.github/workflows/release_website.yaml'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -24,6 +31,9 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
+        # All flutter commands run from the package's example app. Its pubspec
+        # depends on the package via `path: ../`, which resolves inside the
+        # package folder and is unaffected by the monorepo layout.
         working-directory: fhir_renderer_questionnaire/example
     steps:
       - uses: actions/checkout@v2 # Only works with v2
