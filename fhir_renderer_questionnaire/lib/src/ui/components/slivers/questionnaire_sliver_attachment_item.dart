@@ -19,7 +19,7 @@ final class QuestionnaireSliverAttachmentItem extends QuestionnaireAttachmentIte
     final boxWidget = super.buildQuestionnaireItem(context);
 
     return SliverBaseDecorator(
-      title: questionnaireItem.text?.valueString,
+      title: questionnaireItem.text,
       roundBottomBorder: isLastItem,
       child: SliverToBoxAdapter(
         child: boxWidget,

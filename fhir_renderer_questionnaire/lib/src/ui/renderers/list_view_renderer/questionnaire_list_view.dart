@@ -1,4 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/models/models.dart';
 import 'package:fhir_renderer_questionnaire/src/core/utils/fhir_renderer_questionnaire_utils.dart';
 import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/base_decorator.dart';
 import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/questionnaire_group_segments.dart';
@@ -73,7 +73,7 @@ class QuestionnaireListView extends StatelessWidget {
 
       if (!_shouldFlatten(item, inheritedData)) {
         entries.add(QuestionnaireItemWrapper(
-          key: ValueKey(item.linkId.valueString),
+          key: ValueKey(item.linkId),
           factory: factory,
           questionnaireItem: item,
           index: index,
@@ -122,7 +122,7 @@ class QuestionnaireListView extends StatelessWidget {
 
     final entries = <Widget>[
       QuestionnaireGroupHeader(
-        key: ValueKey('${group.linkId.valueString}_header'),
+        key: ValueKey('${group.linkId}_header'),
         group: group,
         hasChildren: children.isNotEmpty,
       ),
@@ -134,7 +134,7 @@ class QuestionnaireListView extends StatelessWidget {
 
       if (!_shouldFlatten(child, inheritedData)) {
         entries.add(QuestionnaireGroupChild(
-          key: ValueKey(child.linkId.valueString),
+          key: ValueKey(child.linkId),
           questionnaireItem: child,
           index: i,
           isLastChild: isLastChild,
@@ -145,7 +145,7 @@ class QuestionnaireListView extends StatelessWidget {
       final nested = _groupEntries(child, inheritedData);
       for (var j = 0; j < nested.length; j++) {
         entries.add(QuestionnaireGroupSurface(
-          key: ValueKey('${child.linkId.valueString}_surface_$j'),
+          key: ValueKey('${child.linkId}_surface_$j'),
           closes: isLastChild && j == nested.length - 1,
           leadingDivider: i > 0 && j == 0,
           child: nested[j],

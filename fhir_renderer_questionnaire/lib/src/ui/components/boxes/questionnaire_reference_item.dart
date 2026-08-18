@@ -1,4 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/models/models.dart';
 import 'package:flutter/material.dart';
 
 import '../../layout/inherited_questionnaire_renderer.dart';
@@ -36,13 +36,13 @@ class QuestionnaireReferenceItem extends QuestionnaireBaseItem {
     // Get persistent controllers to prevent cursor jumping on rebuild
     final referenceController = getAssignedTextController(
       inheritedData,
-      existingReference?.reference?.valueString ?? '',
+      existingReference?.reference ?? '',
     );
 
     final displayController = getSecondaryTextController(
       inheritedData,
       'display',
-      existingReference?.display?.valueString ?? '',
+      existingReference?.display ?? '',
     );
 
     // Get allowed resource types from extension if available
@@ -125,13 +125,13 @@ class QuestionnaireReferenceItem extends QuestionnaireBaseItem {
 
     if (referenceString.trim().isNotEmpty) {
       final reference = Reference(
-        reference: FhirString(referenceString.trim()),
+        reference: referenceString.trim(),
         display: displayString.trim().isNotEmpty
-            ? FhirString(displayString.trim())
+            ? displayString.trim()
             : null,
       );
 
-      answer = QuestionnaireResponseAnswer(valueX: reference);
+      answer = QuestionnaireResponseAnswer(valueReference: reference);
     }
 
     final resp = FhirRendererQuestionnaireResponseUtils
@@ -152,16 +152,16 @@ class QuestionnaireReferenceItem extends QuestionnaireBaseItem {
       for (final ext in extensions) {
         if (ext.url.toString() ==
             'http://hl7.org/fhir/StructureDefinition/questionnaire-referenceResource') {
-          final code = ext.valueX;
-          if (code is FhirCode) {
-            return [code.valueString ?? ''];
+          final code = ext.valueCode ?? ext.valueString;
+          if (code != null) {
+            return [code];
           }
         }
       }
     }
 
     // Fallback: parse from text if format suggests specific types
-    final text = questionnaireItem.text?.valueString ?? '';
+    final text = questionnaireItem.text ?? '';
     if (text.toLowerCase().contains('practitioner')) {
       return ['Practitioner'];
     } else if (text.toLowerCase().contains('patient')) {
@@ -182,8 +182,8 @@ class _ReferenceDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ref = reference.reference?.valueString ?? '';
-    final display = reference.display?.valueString;
+    final ref = reference.reference ?? '';
+    final display = reference.display;
 
     // Parse resource type and ID from reference
     String resourceType = 'Resource';

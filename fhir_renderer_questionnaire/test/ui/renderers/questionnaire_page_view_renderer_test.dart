@@ -1,4 +1,3 @@
-import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -7,30 +6,30 @@ void main() {
   group('QuestionnairePageViewRenderer', () {
     testWidgets('should render first page on initial load',
         (WidgetTester tester) async {
-      final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+      const questionnaire = Questionnaire(
+        status: QuestionnairePublicationStatus.active,
         item: [
           QuestionnaireItem(
-            linkId: FhirString('page1'),
+            linkId: 'page1',
             type: QuestionnaireItemType.group,
-            text: FhirString('Page 1'),
+            text: 'Page 1',
             item: [
               QuestionnaireItem(
-                linkId: FhirString('name'),
+                linkId: 'name',
                 type: QuestionnaireItemType.string,
-                text: FhirString('Name'),
+                text: 'Name',
               ),
             ],
           ),
           QuestionnaireItem(
-            linkId: FhirString('page2'),
+            linkId: 'page2',
             type: QuestionnaireItemType.group,
-            text: FhirString('Page 2'),
+            text: 'Page 2',
             item: [
               QuestionnaireItem(
-                linkId: FhirString('age'),
+                linkId: 'age',
                 type: QuestionnaireItemType.integer,
-                text: FhirString('Age'),
+                text: 'Age',
               ),
             ],
           ),
@@ -62,18 +61,18 @@ void main() {
 
     testWidgets('should use PageView for navigation',
         (WidgetTester tester) async {
-      final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+      const questionnaire = Questionnaire(
+        status: QuestionnairePublicationStatus.active,
         item: [
           QuestionnaireItem(
-            linkId: FhirString('page1'),
+            linkId: 'page1',
             type: QuestionnaireItemType.group,
-            text: FhirString('Page 1'),
+            text: 'Page 1',
             item: [
               QuestionnaireItem(
-                linkId: FhirString('name'),
+                linkId: 'name',
                 type: QuestionnaireItemType.string,
-                text: FhirString('Name'),
+                text: 'Name',
               ),
             ],
           ),
@@ -103,30 +102,30 @@ void main() {
 
     testWidgets('should navigate between pages with swipe',
         (WidgetTester tester) async {
-      final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+      const questionnaire = Questionnaire(
+        status: QuestionnairePublicationStatus.active,
         item: [
           QuestionnaireItem(
-            linkId: FhirString('page1'),
+            linkId: 'page1',
             type: QuestionnaireItemType.group,
-            text: FhirString('First Page'),
+            text: 'First Page',
             item: [
               QuestionnaireItem(
-                linkId: FhirString('name'),
+                linkId: 'name',
                 type: QuestionnaireItemType.string,
-                text: FhirString('Name'),
+                text: 'Name',
               ),
             ],
           ),
           QuestionnaireItem(
-            linkId: FhirString('page2'),
+            linkId: 'page2',
             type: QuestionnaireItemType.group,
-            text: FhirString('Second Page'),
+            text: 'Second Page',
             item: [
               QuestionnaireItem(
-                linkId: FhirString('age'),
+                linkId: 'age',
                 type: QuestionnaireItemType.integer,
-                text: FhirString('Age'),
+                text: 'Age',
               ),
             ],
           ),
@@ -164,30 +163,30 @@ void main() {
 
     testWidgets('should allow PageController navigation',
         (WidgetTester tester) async {
-      final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+      const questionnaire = Questionnaire(
+        status: QuestionnairePublicationStatus.active,
         item: [
           QuestionnaireItem(
-            linkId: FhirString('page1'),
+            linkId: 'page1',
             type: QuestionnaireItemType.group,
-            text: FhirString('First Page'),
+            text: 'First Page',
             item: [
               QuestionnaireItem(
-                linkId: FhirString('name'),
+                linkId: 'name',
                 type: QuestionnaireItemType.string,
-                text: FhirString('Name'),
+                text: 'Name',
               ),
             ],
           ),
           QuestionnaireItem(
-            linkId: FhirString('page2'),
+            linkId: 'page2',
             type: QuestionnaireItemType.group,
-            text: FhirString('Second Page'),
+            text: 'Second Page',
             item: [
               QuestionnaireItem(
-                linkId: FhirString('age'),
+                linkId: 'age',
                 type: QuestionnaireItemType.integer,
-                text: FhirString('Age'),
+                text: 'Age',
               ),
             ],
           ),
@@ -228,18 +227,18 @@ void main() {
 
     testWidgets('should render non-group items as pages',
         (WidgetTester tester) async {
-      final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+      const questionnaire = Questionnaire(
+        status: QuestionnairePublicationStatus.active,
         item: [
           QuestionnaireItem(
-            linkId: FhirString('name'),
+            linkId: 'name',
             type: QuestionnaireItemType.string,
-            text: FhirString('Name'),
+            text: 'Name',
           ),
           QuestionnaireItem(
-            linkId: FhirString('age'),
+            linkId: 'age',
             type: QuestionnaireItemType.integer,
-            text: FhirString('Age'),
+            text: 'Age',
           ),
         ],
       );
@@ -267,30 +266,30 @@ void main() {
 
     testWidgets('should update response across pages',
         (WidgetTester tester) async {
-      final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+      const questionnaire = Questionnaire(
+        status: QuestionnairePublicationStatus.active,
         item: [
           QuestionnaireItem(
-            linkId: FhirString('page1'),
+            linkId: 'page1',
             type: QuestionnaireItemType.group,
-            text: FhirString('Page 1'),
+            text: 'Page 1',
             item: [
               QuestionnaireItem(
-                linkId: FhirString('name'),
+                linkId: 'name',
                 type: QuestionnaireItemType.string,
-                text: FhirString('Name'),
+                text: 'Name',
               ),
             ],
           ),
           QuestionnaireItem(
-            linkId: FhirString('page2'),
+            linkId: 'page2',
             type: QuestionnaireItemType.group,
-            text: FhirString('Page 2'),
+            text: 'Page 2',
             item: [
               QuestionnaireItem(
-                linkId: FhirString('age'),
+                linkId: 'age',
                 type: QuestionnaireItemType.integer,
-                text: FhirString('Age'),
+                text: 'Age',
               ),
             ],
           ),
@@ -323,25 +322,25 @@ void main() {
         response,
         'name',
       );
-      expect(nameItem?.answer?.first.valueString, equals(FhirString('John Doe')));
+      expect(nameItem?.answer?.first.valueString, equals('John Doe'));
 
       controller.dispose();
     });
 
     testWidgets('should use custom builder when provided',
         (WidgetTester tester) async {
-      final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+      const questionnaire = Questionnaire(
+        status: QuestionnairePublicationStatus.active,
         item: [
           QuestionnaireItem(
-            linkId: FhirString('page1'),
+            linkId: 'page1',
             type: QuestionnaireItemType.group,
-            text: FhirString('Page 1'),
+            text: 'Page 1',
             item: [
               QuestionnaireItem(
-                linkId: FhirString('info'),
+                linkId: 'info',
                 type: QuestionnaireItemType.display_,
-                text: FhirString('Info'),
+                text: 'Info',
               ),
             ],
           ),
@@ -360,7 +359,7 @@ void main() {
               displayItemBuilder: (index, isLastItem, item) {
                 return Container(
                   key: const Key('custom_display'),
-                  child: Text('Custom: ${item.text?.valueString}'),
+                  child: Text('Custom: ${item.text}'),
                 );
               },
             ),
@@ -378,13 +377,13 @@ void main() {
 
     testWidgets('should render in read-only mode',
         (WidgetTester tester) async {
-      final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+      const questionnaire = Questionnaire(
+        status: QuestionnairePublicationStatus.active,
         item: [
           QuestionnaireItem(
-            linkId: FhirString('name'),
+            linkId: 'name',
             type: QuestionnaireItemType.string,
-            text: FhirString('Name'),
+            text: 'Name',
           ),
         ],
       );

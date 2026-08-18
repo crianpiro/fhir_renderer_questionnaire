@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/models/models.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +34,7 @@ class QuestionnaireAttachmentItem extends QuestionnaireBaseItem {
       itemLinkId,
     );
 
-    final allowMultiple = questionnaireItem.repeats?.valueBoolean ?? false;
+    final allowMultiple = questionnaireItem.repeats ?? false;
     final existingAttachments = currentResponse?.answer
             ?.map((a) => a.valueAttachment)
             .whereType<Attachment>()
@@ -176,10 +176,10 @@ class QuestionnaireAttachmentItem extends QuestionnaireBaseItem {
     mimeType ??= 'application/octet-stream';
 
     return Attachment(
-      contentType: FhirCode(mimeType),
-      data: FhirBase64Binary(base64Data),
-      title: FhirString(fileName),
-      size: FhirUnsignedInt(bytes.length),
+      contentType: mimeType,
+      data: base64Data,
+      title: fileName,
+      size: bytes.length,
       creation: FhirDateTime.fromDateTime(DateTime.now()),
     );
   }
@@ -217,7 +217,7 @@ class QuestionnaireAttachmentItem extends QuestionnaireBaseItem {
           .setResponseAnswerInQuestionnaireResponse(
         inheritedData.questionnaireResponse,
         questionnaireItem,
-        QuestionnaireResponseAnswer(valueX: attachments.first),
+        QuestionnaireResponseAnswer(valueAttachment: attachments.first),
       );
     } else {
       // Multiple attachments - use the existing item and update answers directly
@@ -229,7 +229,7 @@ class QuestionnaireAttachmentItem extends QuestionnaireBaseItem {
 
       if (responseItem != null) {
         final answers = attachments
-            .map((a) => QuestionnaireResponseAnswer(valueX: a))
+            .map((a) => QuestionnaireResponseAnswer(valueAttachment: a))
             .toList();
 
         // Create updated response item with multiple answers
@@ -251,7 +251,7 @@ class QuestionnaireAttachmentItem extends QuestionnaireBaseItem {
 
     if (response.item != null) {
       for (final item in response.item!) {
-        if (item.linkId.valueString == updatedItem.linkId.valueString) {
+        if (item.linkId == updatedItem.linkId) {
           modifiedItems.add(updatedItem);
         } else if (item.item != null) {
           // Recursively search in nested items
@@ -269,7 +269,7 @@ class QuestionnaireAttachmentItem extends QuestionnaireBaseItem {
     QuestionnaireResponseItem parent,
     QuestionnaireResponseItem updatedItem,
   ) {
-    if (parent.linkId.valueString == updatedItem.linkId.valueString) {
+    if (parent.linkId == updatedItem.linkId) {
       return updatedItem;
     }
 
@@ -297,9 +297,9 @@ class _AttachmentPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fileName = attachment.title?.valueString ?? 'Attachment';
-    final fileSize = attachment.size?.valueInt;
-    final mimeType = attachment.contentType?.valueString;
+    final fileName = attachment.title ?? 'Attachment';
+    final fileSize = attachment.size;
+    final mimeType = attachment.contentType;
 
     // Determine icon based on MIME type
     IconData icon = Icons.insert_drive_file;

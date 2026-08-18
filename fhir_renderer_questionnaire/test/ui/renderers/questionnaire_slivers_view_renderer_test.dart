@@ -1,4 +1,3 @@
-import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -7,13 +6,13 @@ void main() {
   group('QuestionnaireSliversViewRenderer', () {
     testWidgets('should render a basic questionnaire',
         (WidgetTester tester) async {
-      final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+      const questionnaire = Questionnaire(
+        status: QuestionnairePublicationStatus.active,
         item: [
           QuestionnaireItem(
-            linkId: FhirString('name'),
+            linkId: 'name',
             type: QuestionnaireItemType.string,
-            text: FhirString('What is your name?'),
+            text: 'What is your name?',
           ),
         ],
       );
@@ -41,13 +40,13 @@ void main() {
     });
 
     testWidgets('should use CustomScrollView', (WidgetTester tester) async {
-      final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+      const questionnaire = Questionnaire(
+        status: QuestionnairePublicationStatus.active,
         item: [
           QuestionnaireItem(
-            linkId: FhirString('name'),
+            linkId: 'name',
             type: QuestionnaireItemType.string,
-            text: FhirString('Name'),
+            text: 'Name',
           ),
         ],
       );
@@ -74,23 +73,23 @@ void main() {
     });
 
     testWidgets('should render multiple items', (WidgetTester tester) async {
-      final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+      const questionnaire = Questionnaire(
+        status: QuestionnairePublicationStatus.active,
         item: [
           QuestionnaireItem(
-            linkId: FhirString('name'),
+            linkId: 'name',
             type: QuestionnaireItemType.string,
-            text: FhirString('Name'),
+            text: 'Name',
           ),
           QuestionnaireItem(
-            linkId: FhirString('age'),
+            linkId: 'age',
             type: QuestionnaireItemType.integer,
-            text: FhirString('Age'),
+            text: 'Age',
           ),
           QuestionnaireItem(
-            linkId: FhirString('consent'),
+            linkId: 'consent',
             type: QuestionnaireItemType.boolean,
-            text: FhirString('Do you consent?'),
+            text: 'Do you consent?',
           ),
         ],
       );
@@ -120,23 +119,23 @@ void main() {
 
     testWidgets('should render groups with nested items',
         (WidgetTester tester) async {
-      final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+      const questionnaire = Questionnaire(
+        status: QuestionnairePublicationStatus.active,
         item: [
           QuestionnaireItem(
-            linkId: FhirString('demographics'),
+            linkId: 'demographics',
             type: QuestionnaireItemType.group,
-            text: FhirString('Demographics'),
+            text: 'Demographics',
             item: [
               QuestionnaireItem(
-                linkId: FhirString('name'),
+                linkId: 'name',
                 type: QuestionnaireItemType.string,
-                text: FhirString('Full Name'),
+                text: 'Full Name',
               ),
               QuestionnaireItem(
-                linkId: FhirString('age'),
+                linkId: 'age',
                 type: QuestionnaireItemType.integer,
-                text: FhirString('Age'),
+                text: 'Age',
               ),
             ],
           ),
@@ -168,13 +167,13 @@ void main() {
 
     testWidgets('should update response when answering questions',
         (WidgetTester tester) async {
-      final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+      const questionnaire = Questionnaire(
+        status: QuestionnairePublicationStatus.active,
         item: [
           QuestionnaireItem(
-            linkId: FhirString('name'),
+            linkId: 'name',
             type: QuestionnaireItemType.string,
-            text: FhirString('What is your name?'),
+            text: 'What is your name?',
           ),
         ],
       );
@@ -202,24 +201,24 @@ void main() {
       // Generate response
       final response = controller.generateQuestionnaireResponse();
       final nameItem = response.item?.firstWhere(
-        (i) => i.linkId.valueString == 'name',
+        (i) => i.linkId == 'name',
       );
       expect(
         nameItem?.answer?.first.valueString,
-        equals(FhirString('John Doe')),
+        equals('John Doe'),
       );
 
       controller.dispose();
     });
 
     testWidgets('should render display items', (WidgetTester tester) async {
-      final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+      const questionnaire = Questionnaire(
+        status: QuestionnairePublicationStatus.active,
         item: [
           QuestionnaireItem(
-            linkId: FhirString('instructions'),
+            linkId: 'instructions',
             type: QuestionnaireItemType.display_,
-            text: FhirString('Please read carefully.'),
+            text: 'Please read carefully.',
           ),
         ],
       );
@@ -246,24 +245,24 @@ void main() {
     });
 
     testWidgets('should render choice items', (WidgetTester tester) async {
-      final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+      const questionnaire = Questionnaire(
+        status: QuestionnairePublicationStatus.active,
         item: [
           QuestionnaireItem(
-            linkId: FhirString('gender'),
+            linkId: 'gender',
             type: QuestionnaireItemType.choice,
-            text: FhirString('Gender'),
+            text: 'Gender',
             answerOption: [
               QuestionnaireAnswerOption(
-                valueX: Coding(
-                  code: FhirCode('male'),
-                  display: FhirString('Male'),
+                valueCoding: Coding(
+                  code: 'male',
+                  display: 'Male',
                 ),
               ),
               QuestionnaireAnswerOption(
-                valueX: Coding(
-                  code: FhirCode('female'),
-                  display: FhirString('Female'),
+                valueCoding: Coding(
+                  code: 'female',
+                  display: 'Female',
                 ),
               ),
             ],
@@ -296,13 +295,13 @@ void main() {
 
     testWidgets('should support ScrollController',
         (WidgetTester tester) async {
-      final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+      const questionnaire = Questionnaire(
+        status: QuestionnairePublicationStatus.active,
         item: [
           QuestionnaireItem(
-            linkId: FhirString('name'),
+            linkId: 'name',
             type: QuestionnaireItemType.string,
-            text: FhirString('Name'),
+            text: 'Name',
           ),
         ],
       );
@@ -333,13 +332,13 @@ void main() {
     });
 
     testWidgets('should render in read-only mode', (WidgetTester tester) async {
-      final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+      const questionnaire = Questionnaire(
+        status: QuestionnairePublicationStatus.active,
         item: [
           QuestionnaireItem(
-            linkId: FhirString('name'),
+            linkId: 'name',
             type: QuestionnaireItemType.string,
-            text: FhirString('Name'),
+            text: 'Name',
           ),
         ],
       );
@@ -368,13 +367,13 @@ void main() {
 
     testWidgets('should prefill with initial response',
         (WidgetTester tester) async {
-      final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+      const questionnaire = Questionnaire(
+        status: QuestionnairePublicationStatus.active,
         item: [
           QuestionnaireItem(
-            linkId: FhirString('name'),
+            linkId: 'name',
             type: QuestionnaireItemType.string,
-            text: FhirString('Name'),
+            text: 'Name',
           ),
         ],
       );
@@ -383,10 +382,10 @@ void main() {
         status: QuestionnaireResponseStatus.inProgress,
         item: [
           QuestionnaireResponseItem(
-            linkId: FhirString('name'),
+            linkId: 'name',
             answer: [
               QuestionnaireResponseAnswer(
-                valueX: FhirString('Jane Doe'),
+                valueString: 'Jane Doe',
               ),
             ],
           ),
@@ -419,13 +418,13 @@ void main() {
     });
 
     testWidgets('should handle boolean items', (WidgetTester tester) async {
-      final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+      const questionnaire = Questionnaire(
+        status: QuestionnairePublicationStatus.active,
         item: [
           QuestionnaireItem(
-            linkId: FhirString('consent'),
+            linkId: 'consent',
             type: QuestionnaireItemType.boolean,
-            text: FhirString('Do you agree?'),
+            text: 'Do you agree?',
           ),
         ],
       );
@@ -456,9 +455,9 @@ void main() {
 
       final response = controller.generateQuestionnaireResponse();
       final consentItem = response.item?.firstWhere(
-        (i) => i.linkId.valueString == 'consent',
+        (i) => i.linkId == 'consent',
       );
-      expect(consentItem?.answer?.first.valueBoolean, equals(FhirBoolean(true)));
+      expect(consentItem?.answer?.first.valueBoolean, equals(true));
 
       controller.dispose();
     });

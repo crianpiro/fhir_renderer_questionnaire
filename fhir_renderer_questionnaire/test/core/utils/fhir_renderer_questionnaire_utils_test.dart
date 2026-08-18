@@ -1,5 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
-import 'package:fhir_renderer_questionnaire/src/core/utils/fhir_renderer_questionnaire_utils.dart';
+import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -11,18 +10,18 @@ void main() {
           status: QuestionnaireResponseStatus.inProgress,
           item: [
             QuestionnaireResponseItem(
-              linkId: FhirString('q1'),
+              linkId: 'q1',
               answer: [
                 QuestionnaireResponseAnswer(
-                  valueX: FhirString('yes'),
+                  valueString: 'yes',
                 ),
               ],
             ),
             QuestionnaireResponseItem(
-              linkId: FhirString('q2'),
+              linkId: 'q2',
               answer: [
                 QuestionnaireResponseAnswer(
-                  valueX: FhirInteger(5),
+                  valueInteger: 5,
                 ),
               ],
             ),
@@ -31,19 +30,19 @@ void main() {
 
         // Create a questionnaire item with AND behavior (all conditions must be true)
         final item = QuestionnaireItem(
-          linkId: FhirString('dependent'),
+          linkId: 'dependent',
           type: QuestionnaireItemType.string,
-          enableBehavior: EnableWhenBehavior('all'),
+          enableBehavior: QuestionnaireEnableBehavior.all,
           enableWhen: [
             QuestionnaireEnableWhen(
-              question: FhirString('q1'),
+              question: 'q1',
               operator_: QuestionnaireItemOperator.eq,
-              answerX: FhirString('yes'),
+              answerString: 'yes',
             ),
             QuestionnaireEnableWhen(
-              question: FhirString('q2'),
+              question: 'q2',
               operator_: QuestionnaireItemOperator.eq,
-              answerX: FhirInteger(5),
+              answerInteger: 5,
             ),
           ],
         );
@@ -61,18 +60,18 @@ void main() {
           status: QuestionnaireResponseStatus.inProgress,
           item: [
             QuestionnaireResponseItem(
-              linkId: FhirString('q1'),
+              linkId: 'q1',
               answer: [
                 QuestionnaireResponseAnswer(
-                  valueX: FhirString('yes'),
+                  valueString: 'yes',
                 ),
               ],
             ),
             QuestionnaireResponseItem(
-              linkId: FhirString('q2'),
+              linkId: 'q2',
               answer: [
                 QuestionnaireResponseAnswer(
-                  valueX: FhirInteger(3), // Different from expected value
+                  valueInteger: 3, // Different from expected value
                 ),
               ],
             ),
@@ -80,19 +79,19 @@ void main() {
         );
 
         final item = QuestionnaireItem(
-          linkId: FhirString('dependent'),
+          linkId: 'dependent',
           type: QuestionnaireItemType.string,
-          enableBehavior: EnableWhenBehavior('all'),
+          enableBehavior: QuestionnaireEnableBehavior.all,
           enableWhen: [
             QuestionnaireEnableWhen(
-              question: FhirString('q1'),
+              question: 'q1',
               operator_: QuestionnaireItemOperator.eq,
-              answerX: FhirString('yes'),
+              answerString: 'yes',
             ),
             QuestionnaireEnableWhen(
-              question: FhirString('q2'),
+              question: 'q2',
               operator_: QuestionnaireItemOperator.eq,
-              answerX: FhirInteger(5),
+              answerInteger: 5,
             ),
           ],
         );
@@ -110,35 +109,35 @@ void main() {
           status: QuestionnaireResponseStatus.inProgress,
           item: [
             QuestionnaireResponseItem(
-              linkId: FhirString('q1'),
+              linkId: 'q1',
               answer: [
                 QuestionnaireResponseAnswer(
-                  valueX: FhirString('yes'),
+                  valueString: 'yes',
                 ),
               ],
             ),
             // q2 has no answer
-            QuestionnaireResponseItem(
-              linkId: FhirString('q2'),
+            const QuestionnaireResponseItem(
+              linkId: 'q2',
               answer: [],
             ),
           ],
         );
 
         final item = QuestionnaireItem(
-          linkId: FhirString('dependent'),
+          linkId: 'dependent',
           type: QuestionnaireItemType.string,
-          enableBehavior: EnableWhenBehavior('all'),
+          enableBehavior: QuestionnaireEnableBehavior.all,
           enableWhen: [
             QuestionnaireEnableWhen(
-              question: FhirString('q1'),
+              question: 'q1',
               operator_: QuestionnaireItemOperator.eq,
-              answerX: FhirString('yes'),
+              answerString: 'yes',
             ),
             QuestionnaireEnableWhen(
-              question: FhirString('q2'),
+              question: 'q2',
               operator_: QuestionnaireItemOperator.eq,
-              answerX: FhirInteger(5),
+              answerInteger: 5,
             ),
           ],
         );
@@ -158,18 +157,18 @@ void main() {
           status: QuestionnaireResponseStatus.inProgress,
           item: [
             QuestionnaireResponseItem(
-              linkId: FhirString('q1'),
+              linkId: 'q1',
               answer: [
                 QuestionnaireResponseAnswer(
-                  valueX: FhirString('yes'),
+                  valueString: 'yes',
                 ),
               ],
             ),
             QuestionnaireResponseItem(
-              linkId: FhirString('q2'),
+              linkId: 'q2',
               answer: [
                 QuestionnaireResponseAnswer(
-                  valueX: FhirInteger(3), // Different from expected
+                  valueInteger: 3, // Different from expected
                 ),
               ],
             ),
@@ -177,19 +176,19 @@ void main() {
         );
 
         final item = QuestionnaireItem(
-          linkId: FhirString('dependent'),
+          linkId: 'dependent',
           type: QuestionnaireItemType.string,
           // No enableBehavior specified = defaults to "any" (OR logic)
           enableWhen: [
             QuestionnaireEnableWhen(
-              question: FhirString('q1'),
+              question: 'q1',
               operator_: QuestionnaireItemOperator.eq,
-              answerX: FhirString('yes'),
+              answerString: 'yes',
             ),
             QuestionnaireEnableWhen(
-              question: FhirString('q2'),
+              question: 'q2',
               operator_: QuestionnaireItemOperator.eq,
-              answerX: FhirInteger(5),
+              answerInteger: 5,
             ),
           ],
         );
@@ -207,18 +206,18 @@ void main() {
           status: QuestionnaireResponseStatus.inProgress,
           item: [
             QuestionnaireResponseItem(
-              linkId: FhirString('q1'),
+              linkId: 'q1',
               answer: [
                 QuestionnaireResponseAnswer(
-                  valueX: FhirString('no'),
+                  valueString: 'no',
                 ),
               ],
             ),
             QuestionnaireResponseItem(
-              linkId: FhirString('q2'),
+              linkId: 'q2',
               answer: [
                 QuestionnaireResponseAnswer(
-                  valueX: FhirInteger(3),
+                  valueInteger: 3,
                 ),
               ],
             ),
@@ -226,18 +225,18 @@ void main() {
         );
 
         final item = QuestionnaireItem(
-          linkId: FhirString('dependent'),
+          linkId: 'dependent',
           type: QuestionnaireItemType.string,
           enableWhen: [
             QuestionnaireEnableWhen(
-              question: FhirString('q1'),
+              question: 'q1',
               operator_: QuestionnaireItemOperator.eq,
-              answerX: FhirString('yes'),
+              answerString: 'yes',
             ),
             QuestionnaireEnableWhen(
-              question: FhirString('q2'),
+              question: 'q2',
               operator_: QuestionnaireItemOperator.eq,
-              answerX: FhirInteger(5),
+              answerInteger: 5,
             ),
           ],
         );
@@ -255,34 +254,34 @@ void main() {
           status: QuestionnaireResponseStatus.inProgress,
           item: [
             QuestionnaireResponseItem(
-              linkId: FhirString('q1'),
+              linkId: 'q1',
               answer: [
                 QuestionnaireResponseAnswer(
-                  valueX: FhirString('yes'),
+                  valueString: 'yes',
                 ),
               ],
             ),
             // q2 has no answer
-            QuestionnaireResponseItem(
-              linkId: FhirString('q2'),
+            const QuestionnaireResponseItem(
+              linkId: 'q2',
               answer: [],
             ),
           ],
         );
 
         final item = QuestionnaireItem(
-          linkId: FhirString('dependent'),
+          linkId: 'dependent',
           type: QuestionnaireItemType.string,
           enableWhen: [
             QuestionnaireEnableWhen(
-              question: FhirString('q1'),
+              question: 'q1',
               operator_: QuestionnaireItemOperator.eq,
-              answerX: FhirString('yes'),
+              answerString: 'yes',
             ),
             QuestionnaireEnableWhen(
-              question: FhirString('q2'),
+              question: 'q2',
               operator_: QuestionnaireItemOperator.eq,
-              answerX: FhirInteger(5),
+              answerInteger: 5,
             ),
           ],
         );
@@ -298,13 +297,13 @@ void main() {
 
     group('Edge Cases', () {
       test('should enable item when no enableWhen conditions exist', () {
-        final response = QuestionnaireResponse(
+        const response = QuestionnaireResponse(
           status: QuestionnaireResponseStatus.inProgress,
           item: [],
         );
 
-        final item = QuestionnaireItem(
-          linkId: FhirString('no-conditions'),
+        const item = QuestionnaireItem(
+          linkId: 'no-conditions',
           type: QuestionnaireItemType.string,
           // No enableWhen conditions
         );
@@ -318,13 +317,13 @@ void main() {
       });
 
       test('should enable item when enableWhen list is empty', () {
-        final response = QuestionnaireResponse(
+        const response = QuestionnaireResponse(
           status: QuestionnaireResponseStatus.inProgress,
           item: [],
         );
 
-        final item = QuestionnaireItem(
-          linkId: FhirString('empty-conditions'),
+        const item = QuestionnaireItem(
+          linkId: 'empty-conditions',
           type: QuestionnaireItemType.string,
           enableWhen: [], // Empty list
         );
@@ -344,10 +343,10 @@ void main() {
           status: QuestionnaireResponseStatus.inProgress,
           item: [
             QuestionnaireResponseItem(
-              linkId: FhirString('age'),
+              linkId: 'age',
               answer: [
                 QuestionnaireResponseAnswer(
-                  valueX: FhirInteger(25),
+                  valueInteger: 25,
                 ),
               ],
             ),
@@ -355,13 +354,13 @@ void main() {
         );
 
         final item = QuestionnaireItem(
-          linkId: FhirString('dependent'),
+          linkId: 'dependent',
           type: QuestionnaireItemType.string,
           enableWhen: [
             QuestionnaireEnableWhen(
-              question: FhirString('age'),
+              question: 'age',
               operator_: QuestionnaireItemOperator.gt,
-              answerX: FhirInteger(18),
+              answerInteger: 18,
             ),
           ],
         );
@@ -379,10 +378,10 @@ void main() {
           status: QuestionnaireResponseStatus.inProgress,
           item: [
             QuestionnaireResponseItem(
-              linkId: FhirString('age'),
+              linkId: 'age',
               answer: [
                 QuestionnaireResponseAnswer(
-                  valueX: FhirInteger(18),
+                  valueInteger: 18,
                 ),
               ],
             ),
@@ -390,13 +389,13 @@ void main() {
         );
 
         final item = QuestionnaireItem(
-          linkId: FhirString('dependent'),
+          linkId: 'dependent',
           type: QuestionnaireItemType.string,
           enableWhen: [
             QuestionnaireEnableWhen(
-              question: FhirString('age'),
+              question: 'age',
               operator_: QuestionnaireItemOperator.le,
-              answerX: FhirInteger(18),
+              answerInteger: 18,
             ),
           ],
         );
@@ -414,10 +413,10 @@ void main() {
           status: QuestionnaireResponseStatus.inProgress,
           item: [
             QuestionnaireResponseItem(
-              linkId: FhirString('temperature'),
+              linkId: 'temperature',
               answer: [
                 QuestionnaireResponseAnswer(
-                  valueX: FhirDecimal(38.5),
+                  valueDecimal: 38.5,
                 ),
               ],
             ),
@@ -425,13 +424,13 @@ void main() {
         );
 
         final item = QuestionnaireItem(
-          linkId: FhirString('dependent'),
+          linkId: 'dependent',
           type: QuestionnaireItemType.string,
           enableWhen: [
             QuestionnaireEnableWhen(
-              question: FhirString('temperature'),
+              question: 'temperature',
               operator_: QuestionnaireItemOperator.ge,
-              answerX: FhirDecimal(37.5),
+              answerDecimal: 37.5,
             ),
           ],
         );
@@ -449,12 +448,12 @@ void main() {
           status: QuestionnaireResponseStatus.inProgress,
           item: [
             QuestionnaireResponseItem(
-              linkId: FhirString('weight'),
+              linkId: 'weight',
               answer: [
                 QuestionnaireResponseAnswer(
-                  valueX: Quantity(
-                    value: FhirDecimal(98.6),
-                    unit: FhirString('kg'),
+                  valueQuantity: Quantity(
+                    value: 98.6,
+                    unit: 'kg',
                   ),
                 ),
               ],
@@ -463,15 +462,15 @@ void main() {
         );
 
         final item = QuestionnaireItem(
-          linkId: FhirString('dependent'),
+          linkId: 'dependent',
           type: QuestionnaireItemType.string,
           enableWhen: [
             QuestionnaireEnableWhen(
-              question: FhirString('weight'),
+              question: 'weight',
               operator_: QuestionnaireItemOperator.gt,
-              answerX: Quantity(
-                value: FhirDecimal(90.0),
-                unit: FhirString('kg'),
+              answerQuantity: Quantity(
+                value: 90.0,
+                unit: 'kg',
               ),
             ),
           ],
@@ -492,10 +491,10 @@ void main() {
           status: QuestionnaireResponseStatus.inProgress,
           item: [
             QuestionnaireResponseItem(
-              linkId: FhirString('color'),
+              linkId: 'color',
               answer: [
                 QuestionnaireResponseAnswer(
-                  valueX: FhirString('red'),
+                  valueString: 'red',
                 ),
               ],
             ),
@@ -503,13 +502,13 @@ void main() {
         );
 
         final item = QuestionnaireItem(
-          linkId: FhirString('dependent'),
+          linkId: 'dependent',
           type: QuestionnaireItemType.string,
           enableWhen: [
             QuestionnaireEnableWhen(
-              question: FhirString('color'),
+              question: 'color',
               operator_: QuestionnaireItemOperator.eq,
-              answerX: FhirString('red'),
+              answerString: 'red',
             ),
           ],
         );
@@ -527,12 +526,12 @@ void main() {
           status: QuestionnaireResponseStatus.inProgress,
           item: [
             QuestionnaireResponseItem(
-              linkId: FhirString('diagnosis'),
+              linkId: 'diagnosis',
               answer: [
                 QuestionnaireResponseAnswer(
-                  valueX: Coding(
-                    system: FhirUri('http://snomed.info/sct'),
-                    code: FhirCode('38341003'),
+                  valueCoding: const Coding(
+                    system: 'http://snomed.info/sct',
+                    code: '38341003',
                   ),
                 ),
               ],
@@ -541,15 +540,15 @@ void main() {
         );
 
         final item = QuestionnaireItem(
-          linkId: FhirString('dependent'),
+          linkId: 'dependent',
           type: QuestionnaireItemType.string,
           enableWhen: [
             QuestionnaireEnableWhen(
-              question: FhirString('diagnosis'),
+              question: 'diagnosis',
               operator_: QuestionnaireItemOperator.eq,
-              answerX: Coding(
-                system: FhirUri('http://snomed.info/sct'),
-                code: FhirCode('38341003'),
+              answerCoding: const Coding(
+                system: 'http://snomed.info/sct',
+                code: '38341003',
               ),
             ),
           ],
@@ -568,10 +567,10 @@ void main() {
           status: QuestionnaireResponseStatus.inProgress,
           item: [
             QuestionnaireResponseItem(
-              linkId: FhirString('status'),
+              linkId: 'status',
               answer: [
                 QuestionnaireResponseAnswer(
-                  valueX: FhirString('active'),
+                  valueString: 'active',
                 ),
               ],
             ),
@@ -579,13 +578,13 @@ void main() {
         );
 
         final item = QuestionnaireItem(
-          linkId: FhirString('dependent'),
+          linkId: 'dependent',
           type: QuestionnaireItemType.string,
           enableWhen: [
             QuestionnaireEnableWhen(
-              question: FhirString('status'),
+              question: 'status',
               operator_: QuestionnaireItemOperator.ne,
-              answerX: FhirString('inactive'),
+              answerString: 'inactive',
             ),
           ],
         );
@@ -605,10 +604,10 @@ void main() {
           status: QuestionnaireResponseStatus.inProgress,
           item: [
             QuestionnaireResponseItem(
-              linkId: FhirString('hasCondition'),
+              linkId: 'hasCondition',
               answer: [
                 QuestionnaireResponseAnswer(
-                  valueX: FhirBoolean(true),
+                  valueBoolean: true,
                 ),
               ],
             ),
@@ -616,13 +615,13 @@ void main() {
         );
 
         final item = QuestionnaireItem(
-          linkId: FhirString('dependent'),
+          linkId: 'dependent',
           type: QuestionnaireItemType.string,
           enableWhen: [
             QuestionnaireEnableWhen(
-              question: FhirString('hasCondition'),
+              question: 'hasCondition',
               operator_: QuestionnaireItemOperator.exists,
-              answerX: FhirBoolean(true),
+              answerBoolean: true,
             ),
           ],
         );

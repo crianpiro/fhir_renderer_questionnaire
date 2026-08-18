@@ -1,4 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/questionnaire_attachment_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -13,10 +13,10 @@ void main() {
       bool? repeats,
     }) {
       return QuestionnaireItem(
-        linkId: FhirString(linkId),
+        linkId: linkId,
         type: QuestionnaireItemType.attachment,
-        text: text != null ? FhirString(text) : null,
-        repeats: repeats != null ? FhirBoolean(repeats) : null,
+        text: text,
+        repeats: repeats,
       );
     }
 
@@ -150,13 +150,13 @@ void main() {
         status: QuestionnaireResponseStatus.inProgress,
         item: [
           QuestionnaireResponseItem(
-            linkId: FhirString('document'),
+            linkId: 'document',
             answer: [
               QuestionnaireResponseAnswer(
-                valueX: Attachment(
-                  contentType: FhirCode('application/pdf'),
-                  title: FhirString('test-document.pdf'),
-                  size: FhirUnsignedInt(1024),
+                valueAttachment: const Attachment(
+                  contentType: 'application/pdf',
+                  title: 'test-document.pdf',
+                  size: 1024,
                 ),
               ),
             ],
@@ -197,13 +197,13 @@ void main() {
         status: QuestionnaireResponseStatus.inProgress,
         item: [
           QuestionnaireResponseItem(
-            linkId: FhirString('document'),
+            linkId: 'document',
             answer: [
               QuestionnaireResponseAnswer(
-                valueX: Attachment(
-                  contentType: FhirCode('application/pdf'),
-                  title: FhirString('test-document.pdf'),
-                  size: FhirUnsignedInt(1024),
+                valueAttachment: const Attachment(
+                  contentType: 'application/pdf',
+                  title: 'test-document.pdf',
+                  size: 1024,
                 ),
               ),
             ],
@@ -240,12 +240,12 @@ void main() {
         status: QuestionnaireResponseStatus.inProgress,
         item: [
           QuestionnaireResponseItem(
-            linkId: FhirString('document'),
+            linkId: 'document',
             answer: [
               QuestionnaireResponseAnswer(
-                valueX: Attachment(
-                  contentType: FhirCode('application/pdf'),
-                  title: FhirString('test.pdf'),
+                valueAttachment: const Attachment(
+                  contentType: 'application/pdf',
+                  title: 'test.pdf',
                 ),
               ),
             ],
@@ -281,12 +281,12 @@ void main() {
         status: QuestionnaireResponseStatus.inProgress,
         item: [
           QuestionnaireResponseItem(
-            linkId: FhirString('photo'),
+            linkId: 'photo',
             answer: [
               QuestionnaireResponseAnswer(
-                valueX: Attachment(
-                  contentType: FhirCode('image/png'),
-                  title: FhirString('photo.png'),
+                valueAttachment: const Attachment(
+                  contentType: 'image/png',
+                  title: 'photo.png',
                 ),
               ),
             ],

@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/models/models.dart';
 import 'package:flutter/material.dart';
 
 import '../../layout/inherited_questionnaire_renderer.dart';
@@ -32,7 +32,7 @@ final class QuestionnaireSliverFieldItem extends QuestionnaireFieldItem {
     final regexErrorMessage = itemData?.regexValidationError;
 
     return SliverBaseDecorator(
-      title: questionnaireItem.text?.valueString,
+      title: questionnaireItem.text,
       roundBottomBorder: isLastItem,
       child: SliverToBoxAdapter(
         child: TextFormField(
@@ -44,7 +44,7 @@ final class QuestionnaireSliverFieldItem extends QuestionnaireFieldItem {
               questionnaireItem,
               value.trim().isEmpty
                   ? null
-                  : QuestionnaireResponseAnswer(valueX: FhirString(value)),
+                  : QuestionnaireResponseAnswer(valueString: value),
             );
             inheritedData.onResponseChanged(resp);
           },
@@ -63,12 +63,12 @@ final class QuestionnaireSliverFieldItem extends QuestionnaireFieldItem {
               KeyboardTypeHelper.getInputFormatters(questionnaireItem.type),
           maxLines: questionnaireItem.type == QuestionnaireItemType.text
               ? 5
-              : ((questionnaireItem.maxLength?.valueInt ?? 50) /
-                      min(questionnaireItem.maxLength?.valueInt ?? 50, 50))
+              : ((questionnaireItem.maxLength ?? 50) /
+                      min(questionnaireItem.maxLength ?? 50, 50))
                   .floor(),
           minLines:
               questionnaireItem.type == QuestionnaireItemType.text ? 5 : 1,
-          maxLength: questionnaireItem.maxLength?.valueInt,
+          maxLength: questionnaireItem.maxLength,
           decoration: getOutlineInputDecoration,
         ),
       ),

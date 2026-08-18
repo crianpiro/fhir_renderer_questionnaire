@@ -1,5 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
-import 'package:fhir_renderer_questionnaire/src/core/controllers/renderer_questionnaire_controller.dart';
+import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 import 'package:fhir_renderer_questionnaire/src/core/data/item_behavioral_data.dart';
 import 'package:fhir_renderer_questionnaire/src/ui/layout/inherited_questionnaire_renderer.dart';
 import 'package:flutter/material.dart';
@@ -13,9 +12,9 @@ class WidgetTestHelpers {
     String? title,
   }) {
     return Questionnaire(
-      id: id != null ? FhirString(id) : null,
-      status: PublicationStatus.active,
-      title: title != null ? FhirString(title) : null,
+      id: id,
+      status: QuestionnairePublicationStatus.active,
+      title: title,
       item: items,
     );
   }
@@ -71,9 +70,9 @@ class WidgetTestHelpers {
     String? text,
   }) {
     return QuestionnaireItem(
-      linkId: FhirString(linkId),
+      linkId: linkId,
       type: QuestionnaireItemType.display_,
-      text: text != null ? FhirString(text) : null,
+      text: text,
     );
   }
 
@@ -86,23 +85,23 @@ class WidgetTestHelpers {
     List<QuestionnaireAnswerOption>? answerOptions,
   }) {
     return QuestionnaireItem(
-      linkId: FhirString(linkId),
+      linkId: linkId,
       type: QuestionnaireItemType.choice,
-      text: text != null ? FhirString(text) : null,
-      required_: required != null ? FhirBoolean(required) : null,
-      repeats: repeats != null ? FhirBoolean(repeats) : null,
+      text: text,
+      required_: required,
+      repeats: repeats,
       answerOption: answerOptions ??
           [
-            QuestionnaireAnswerOption(
-              valueX: Coding(
-                code: FhirCode('option1'),
-                display: FhirString('Option 1'),
+            const QuestionnaireAnswerOption(
+              valueCoding: Coding(
+                code: 'option1',
+                display: 'Option 1',
               ),
             ),
-            QuestionnaireAnswerOption(
-              valueX: Coding(
-                code: FhirCode('option2'),
-                display: FhirString('Option 2'),
+            const QuestionnaireAnswerOption(
+              valueCoding: Coding(
+                code: 'option2',
+                display: 'Option 2',
               ),
             ),
           ],
@@ -118,23 +117,23 @@ class WidgetTestHelpers {
     List<QuestionnaireAnswerOption>? answerOptions,
   }) {
     return QuestionnaireItem(
-      linkId: FhirString(linkId),
+      linkId: linkId,
       type: QuestionnaireItemType.openChoice,
-      text: text != null ? FhirString(text) : null,
-      required_: required != null ? FhirBoolean(required) : null,
-      repeats: repeats != null ? FhirBoolean(repeats) : null,
+      text: text,
+      required_: required,
+      repeats: repeats,
       answerOption: answerOptions ??
           [
-            QuestionnaireAnswerOption(
-              valueX: Coding(
-                code: FhirCode('option1'),
-                display: FhirString('Option 1'),
+            const QuestionnaireAnswerOption(
+              valueCoding: Coding(
+                code: 'option1',
+                display: 'Option 1',
               ),
             ),
-            QuestionnaireAnswerOption(
-              valueX: Coding(
-                code: FhirCode('option2'),
-                display: FhirString('Option 2'),
+            const QuestionnaireAnswerOption(
+              valueCoding: Coding(
+                code: 'option2',
+                display: 'Option 2',
               ),
             ),
           ],
@@ -149,10 +148,10 @@ class WidgetTestHelpers {
     QuestionnaireItemType type = QuestionnaireItemType.date,
   }) {
     return QuestionnaireItem(
-      linkId: FhirString(linkId),
+      linkId: linkId,
       type: type,
-      text: text != null ? FhirString(text) : null,
-      required_: required != null ? FhirBoolean(required) : null,
+      text: text,
+      required_: required,
     );
   }
 
@@ -163,9 +162,9 @@ class WidgetTestHelpers {
     List<QuestionnaireItem>? items,
   }) {
     return QuestionnaireItem(
-      linkId: FhirString(linkId),
+      linkId: linkId,
       type: QuestionnaireItemType.group,
-      text: text != null ? FhirString(text) : null,
+      text: text,
       item: items,
     );
   }
@@ -217,10 +216,10 @@ class WidgetTestHelpers {
     bool? required,
   }) {
     return QuestionnaireItem(
-      linkId: FhirString(linkId),
+      linkId: linkId,
       type: QuestionnaireItemType.url,
-      text: text != null ? FhirString(text) : null,
-      required_: required != null ? FhirBoolean(required) : null,
+      text: text,
+      required_: required,
     );
   }
 
@@ -229,7 +228,7 @@ class WidgetTestHelpers {
     return QuestionnaireResponse(
       status: QuestionnaireResponseStatus.inProgress,
       questionnaire: questionnaire.id != null
-          ? FhirCanonical('Questionnaire/${questionnaire.id}')
+          ? 'Questionnaire/${questionnaire.id}'
           : null,
       item: questionnaire.item
           ?.map((item) => QuestionnaireResponseItem(
@@ -245,9 +244,9 @@ class WidgetTestHelpers {
     required bool value,
   }) {
     return QuestionnaireResponseItem(
-      linkId: FhirString(linkId),
+      linkId: linkId,
       answer: [
-        QuestionnaireResponseAnswer(valueX: FhirBoolean(value)),
+        QuestionnaireResponseAnswer(valueBoolean: value),
       ],
     );
   }
@@ -258,9 +257,9 @@ class WidgetTestHelpers {
     required String value,
   }) {
     return QuestionnaireResponseItem(
-      linkId: FhirString(linkId),
+      linkId: linkId,
       answer: [
-        QuestionnaireResponseAnswer(valueX: FhirString(value)),
+        QuestionnaireResponseAnswer(valueString: value),
       ],
     );
   }
@@ -348,8 +347,8 @@ class _TestQuestionnaireWrapperState extends State<TestQuestionnaireWrapper> {
     if (items == null) return;
     int index = startIndex;
     for (final item in items) {
-      final linkId = item.linkId.valueString;
-      if (linkId != null && !_controller.indexedItems.containsKey(linkId)) {
+      final linkId = item.linkId;
+      if (!_controller.indexedItems.containsKey(linkId)) {
         _controller.indexedItems[linkId] = ItemBehavioralData(
           index: index,
           markAsRequired: false,

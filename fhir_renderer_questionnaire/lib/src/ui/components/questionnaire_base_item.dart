@@ -1,4 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/models/models.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/data/item_behavioral_data.dart';
@@ -28,8 +28,8 @@ abstract class QuestionnaireBaseItem extends StatelessWidget {
         itemLinkId,
       );
 
-  String? get itemLinkId => questionnaireItem.linkId.valueString;
-  String? get itemTextTitle => questionnaireItem.text?.valueString;
+  String? get itemLinkId => questionnaireItem.linkId;
+  String? get itemTextTitle => questionnaireItem.text;
 
   FocusNode assignFocusNode(
       InheritedQuestionnaireRenderer inheritedQuestionnaireRenderer) {
@@ -62,7 +62,7 @@ abstract class QuestionnaireBaseItem extends StatelessWidget {
 
       controller = TextEditingController(
         text: currentResponseItem
-                ?.answer?.firstOrNull?.valueString?.valueString ??
+                ?.answer?.firstOrNull?.valueString ??
             initialValue,
       );
 
@@ -104,7 +104,7 @@ abstract class QuestionnaireBaseItem extends StatelessWidget {
     if (!inheritedQuestionnaireRenderer.rendererController.indexedItems
         .containsKey(itemLinkId!)) {
       final dependents = questionnaireItem.enableWhen
-          ?.map((condition) => "${condition.question.valueString}")
+          ?.map((condition) => condition.question)
           .toList();
 
       final currentIndex =

@@ -1,4 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/questionnaire_date_time_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -223,10 +223,10 @@ void main() {
           status: QuestionnaireResponseStatus.inProgress,
           item: [
             QuestionnaireResponseItem(
-              linkId: FhirString('birthdate'),
+              linkId: 'birthdate',
               answer: [
                 QuestionnaireResponseAnswer(
-                  valueX: FhirDate.fromString('2000-01-15'),
+                  valueDate: const FhirDate('2000-01-15'),
                 ),
               ],
             ),

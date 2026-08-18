@@ -1,4 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/models/models.dart';
 import '../extensions/fhir_extensions.dart';
 
 /// Utility class for managing and manipulating FHIR Questionnaire Response objects.
@@ -33,7 +33,7 @@ final class FhirRendererQuestionnaireResponseUtils {
           in questionnaireResponse.item!) {
         final foundItem = _setAnswerInResponseItem(
           responseItem,
-          questionnaireItem.linkId.valueString,
+          questionnaireItem.linkId,
           responseAnswer,
         );
 
@@ -78,7 +78,7 @@ final class FhirRendererQuestionnaireResponseUtils {
     for (final option
         in questionnaireItem.answerOption ?? <QuestionnaireAnswerOption>[]) {
       if (option.isOptionExclusive) {
-        final code = option.valueCoding?.code?.valueString;
+        final code = option.valueCoding?.code;
         if (code != null) {
           exclusiveOptionCodes.add(code);
         }
@@ -90,7 +90,7 @@ final class FhirRendererQuestionnaireResponseUtils {
           in questionnaireResponse.item!) {
         final foundItem = _addAnswerToResponseItem(
           responseItem,
-          questionnaireItem.linkId.valueString,
+          questionnaireItem.linkId,
           _getQuestionnaireResponseAnswerFromAnswerOption(
             questionnaireItem.type,
             questionnaireAnswerOption,
@@ -134,7 +134,7 @@ final class FhirRendererQuestionnaireResponseUtils {
           in questionnaireResponse.item!) {
         final foundItem = _setAnswerInResponseItem(
           responseItem,
-          questionnaireItem.linkId.valueString,
+          questionnaireItem.linkId,
           _getQuestionnaireResponseAnswerFromAnswerOption(
             questionnaireItem.type,
             questionnaireAnswerOption,
@@ -169,7 +169,7 @@ final class FhirRendererQuestionnaireResponseUtils {
     String? questionnaireItemLinkId,
     QuestionnaireResponseAnswer? answer,
   ) {
-    if (responseItem.linkId.valueString == questionnaireItemLinkId) {
+    if (responseItem.linkId == questionnaireItemLinkId) {
       return _setResponseAnswer(responseItem, answer);
     } else if (responseItem.item != null) {
       List<QuestionnaireResponseItem>? items = [];
@@ -215,7 +215,7 @@ final class FhirRendererQuestionnaireResponseUtils {
     bool isOptionExclusive,
     Set<String> exclusiveOptionCodes,
   ) {
-    if (responseItem.linkId.valueString == questionnaireItemLinkId) {
+    if (responseItem.linkId == questionnaireItemLinkId) {
       return _setMultipleResponseAnswers(
         responseItem,
         answer,
@@ -285,9 +285,9 @@ final class FhirRendererQuestionnaireResponseUtils {
     bool isOptionExclusive,
     Set<String> exclusiveOptionCodes,
   ) {
-    final optionCode = responseAnswer.valueCoding?.code?.valueString;
+    final optionCode = responseAnswer.valueCoding?.code;
     bool addedAnswer = responseItem.answer?.any(
-          (i) => i.valueCoding?.code?.valueString == optionCode,
+          (i) => i.valueCoding?.code == optionCode,
         ) ??
         false;
     List<QuestionnaireResponseAnswer> answers;
@@ -295,7 +295,7 @@ final class FhirRendererQuestionnaireResponseUtils {
       // Toggle off: remove the selected option.
       answers = responseItem.answer
               ?.where(
-                (i) => i.valueCoding?.code?.valueString != optionCode,
+                (i) => i.valueCoding?.code != optionCode,
               )
               .toList() ??
           [];
@@ -307,7 +307,7 @@ final class FhirRendererQuestionnaireResponseUtils {
       answers = responseItem.answer
               ?.where(
                 (i) => !exclusiveOptionCodes
-                    .contains(i.valueCoding?.code?.valueString),
+                    .contains(i.valueCoding?.code),
               )
               .toList() ??
           [];
@@ -333,40 +333,33 @@ final class FhirRendererQuestionnaireResponseUtils {
     QuestionnaireItemType questionnaireItemType,
     QuestionnaireAnswerOption answer,
   ) {
-    ValueXQuestionnaireResponseAnswer? valueX;
     switch (questionnaireItemType) {
       case QuestionnaireItemType.string:
       case QuestionnaireItemType.text:
-        valueX = answer.valueString;
-        break;
+        return QuestionnaireResponseAnswer(valueString: answer.valueString);
       case QuestionnaireItemType.url:
-        valueX = FhirUri(answer.valueString);
-        break;
+        return QuestionnaireResponseAnswer(valueUri: answer.valueString);
       case QuestionnaireItemType.integer:
-        valueX = answer.valueInteger;
-        break;
+        return QuestionnaireResponseAnswer(valueInteger: answer.valueInteger);
       case QuestionnaireItemType.choice:
       case QuestionnaireItemType.openChoice:
-        valueX = answer.valueCoding;
-        break;
+        return QuestionnaireResponseAnswer(valueCoding: answer.valueCoding);
       case QuestionnaireItemType.date:
-        valueX = answer.valueDate;
-        break;
+        return QuestionnaireResponseAnswer(valueDate: answer.valueDate);
       case QuestionnaireItemType.time:
-        valueX = answer.valueTime;
-        break;
+        return QuestionnaireResponseAnswer(valueTime: answer.valueTime);
       case QuestionnaireItemType.decimal:
       case QuestionnaireItemType.boolean:
       case QuestionnaireItemType.dateTime:
       case QuestionnaireItemType.quantity:
       case QuestionnaireItemType.attachment:
+      case QuestionnaireItemType.reference:
+      case QuestionnaireItemType.question:
       case QuestionnaireItemType.display_:
       case QuestionnaireItemType.group:
-      default:
-        break;
+        // These types are not selected from an answer option list.
+        return QuestionnaireResponseAnswer();
     }
-
-    return QuestionnaireResponseAnswer(valueX: valueX);
   }
 
   /// Generates questionnaire response answers from a questionnaire item's initial values.
@@ -383,61 +376,101 @@ final class FhirRendererQuestionnaireResponseUtils {
   static List<QuestionnaireResponseAnswer>? generateAnswers(
     QuestionnaireItem item,
   ) {
-    List<QuestionnaireResponseAnswer>? answers;
+    final initial = item.initial?.firstOrNull;
+    if (initial == null) return null;
 
-    ValueXQuestionnaireResponseAnswer? valueX =
-        item.initial?.firstOrNull?.valueCoding;
-    if (valueX == null) {
-      switch (item.type) {
-        case QuestionnaireItemType.string:
-        case QuestionnaireItemType.text:
-          valueX = item.initial?.firstOrNull?.valueString;
-          break;
-        case QuestionnaireItemType.url:
-          valueX = item.initial?.firstOrNull?.valueUri;
-          break;
-        case QuestionnaireItemType.integer:
-          valueX = item.initial?.firstOrNull?.valueInteger;
-          break;
-        case QuestionnaireItemType.decimal:
-          valueX = item.initial?.firstOrNull?.valueDecimal;
-          break;
-        case QuestionnaireItemType.boolean:
-          valueX = item.initial?.firstOrNull?.valueBoolean;
-          break;
-        case QuestionnaireItemType.choice:
-        case QuestionnaireItemType.openChoice:
-          valueX = item.initial?.firstOrNull?.valueCoding;
-          break;
-        case QuestionnaireItemType.date:
-          valueX = item.initial?.firstOrNull?.valueDate;
-          break;
-        case QuestionnaireItemType.time:
-          valueX = item.initial?.firstOrNull?.valueTime;
-          break;
-        case QuestionnaireItemType.dateTime:
-          valueX = item.initial?.firstOrNull?.valueDateTime;
-          break;
-        case QuestionnaireItemType.quantity:
-          valueX = item.initial?.firstOrNull?.valueQuantity;
-          break;
-        case QuestionnaireItemType.attachment:
-          valueX = item.initial?.firstOrNull?.valueAttachment;
-          break;
-        case QuestionnaireItemType.display_:
-        // Exclude this type as it doesn't require an answer from the user.
-        case QuestionnaireItemType.group:
-          // The answers of a group are the answers of the children
-          break;
-        default:
-      }
+    // A coding initial value is honored whatever the item's declared type is.
+    if (initial.valueCoding != null) {
+      return [QuestionnaireResponseAnswer(valueCoding: initial.valueCoding)];
     }
 
-    if (valueX != null) {
-      answers = [QuestionnaireResponseAnswer(valueX: valueX)];
+    QuestionnaireResponseAnswer? answer;
+    switch (item.type) {
+      case QuestionnaireItemType.string:
+      case QuestionnaireItemType.text:
+        if (initial.valueString != null) {
+          answer = QuestionnaireResponseAnswer(
+            valueString: initial.valueString,
+          );
+        }
+        break;
+      case QuestionnaireItemType.url:
+        if (initial.valueUri != null) {
+          answer = QuestionnaireResponseAnswer(valueUri: initial.valueUri);
+        }
+        break;
+      case QuestionnaireItemType.integer:
+        if (initial.valueInteger != null) {
+          answer = QuestionnaireResponseAnswer(
+            valueInteger: initial.valueInteger,
+          );
+        }
+        break;
+      case QuestionnaireItemType.decimal:
+        if (initial.valueDecimal != null) {
+          answer = QuestionnaireResponseAnswer(
+            valueDecimal: initial.valueDecimal,
+          );
+        }
+        break;
+      case QuestionnaireItemType.boolean:
+        if (initial.valueBoolean != null) {
+          answer = QuestionnaireResponseAnswer(
+            valueBoolean: initial.valueBoolean,
+          );
+        }
+        break;
+      case QuestionnaireItemType.date:
+        if (initial.valueDate != null) {
+          answer = QuestionnaireResponseAnswer(valueDate: initial.valueDate);
+        }
+        break;
+      case QuestionnaireItemType.time:
+        if (initial.valueTime != null) {
+          answer = QuestionnaireResponseAnswer(valueTime: initial.valueTime);
+        }
+        break;
+      case QuestionnaireItemType.dateTime:
+        if (initial.valueDateTime != null) {
+          answer = QuestionnaireResponseAnswer(
+            valueDateTime: initial.valueDateTime,
+          );
+        }
+        break;
+      case QuestionnaireItemType.quantity:
+        if (initial.valueQuantity != null) {
+          answer = QuestionnaireResponseAnswer(
+            valueQuantity: initial.valueQuantity,
+          );
+        }
+        break;
+      case QuestionnaireItemType.attachment:
+        if (initial.valueAttachment != null) {
+          answer = QuestionnaireResponseAnswer(
+            valueAttachment: initial.valueAttachment,
+          );
+        }
+        break;
+      case QuestionnaireItemType.reference:
+        if (initial.valueReference != null) {
+          answer = QuestionnaireResponseAnswer(
+            valueReference: initial.valueReference,
+          );
+        }
+        break;
+      case QuestionnaireItemType.choice:
+      case QuestionnaireItemType.openChoice:
+        // Covered by the coding shortcut above.
+        break;
+      case QuestionnaireItemType.question:
+      case QuestionnaireItemType.display_:
+      // Display items never carry an answer.
+      case QuestionnaireItemType.group:
+        // The answers of a group are the answers of its children.
+        break;
     }
 
-    return answers;
+    return answer == null ? null : [answer];
   }
 
   /// Generates a questionnaire response item from a questionnaire item.
@@ -466,7 +499,7 @@ final class FhirRendererQuestionnaireResponseUtils {
       answer: answers
           ?.where(
             (answer) => (questionnaireItem.answerOption?.any(
-                  (option) => answer.valueX == option.valueX,
+                  (option) => answer.value == option.value,
                 ) ??
                 false),
           )
@@ -496,7 +529,7 @@ final class FhirRendererQuestionnaireResponseUtils {
 
     final responseItem = QuestionnaireResponse(
       status: QuestionnaireResponseStatus.inProgress,
-      questionnaire: questionnaire.getFhirCanonical,
+      questionnaire: questionnaire.canonicalReference,
       item: responseItems,
     );
 
@@ -525,12 +558,9 @@ final class FhirRendererQuestionnaireResponseUtils {
 
     final index = <String, QuestionnaireResponseItem>{};
     void visit(QuestionnaireResponseItem responseItem) {
-      final linkId = responseItem.linkId.valueString;
-      if (linkId != null) {
-        // putIfAbsent keeps the first pre-order match, mirroring the previous
-        // depth-first search behavior when linkIds are duplicated.
-        index.putIfAbsent(linkId, () => responseItem);
-      }
+      // putIfAbsent keeps the first pre-order match, mirroring the previous
+      // depth-first search behavior when linkIds are duplicated.
+      index.putIfAbsent(responseItem.linkId, () => responseItem);
       for (final subItem in responseItem.item ?? <QuestionnaireResponseItem>[]) {
         visit(subItem);
       }

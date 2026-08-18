@@ -1,4 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/models/models.dart';
 import 'package:flutter/material.dart';
 
 import '../../ui/layout/inherited_questionnaire_renderer.dart';
@@ -176,7 +176,7 @@ mixin ChoiceWidgetBuilderMixin {
     required InheritedQuestionnaireRenderer questionnaireRendererData,
   }) {
     final selectedCode = getSelectedCodingValue(selectedResponseItem);
-    final optionCode = answerOption.valueCoding?.code?.valueString;
+    final optionCode = answerOption.valueCoding?.code;
 
     return RadioListTile<String>(
       value: optionCode ?? '',
@@ -241,13 +241,13 @@ mixin ChoiceWidgetBuilderMixin {
         value: selectedCode,
         borderRadius: QuestionnaireStyles.cardRadius,
         decoration: InputDecoration(
-          labelText: questionnaireItem.text?.valueString,
+          labelText: questionnaireItem.text,
           isDense: true,
           border: const OutlineInputBorder(
               borderRadius: QuestionnaireStyles.cardRadius),
         ),
         items: options.map((answerOption) {
-          final code = answerOption.valueCoding?.code?.valueString ?? '';
+          final code = answerOption.valueCoding?.code ?? '';
           final display = getDisplayValue(answerOption);
 
           return DropdownMenuItem<String>(
@@ -260,7 +260,7 @@ mixin ChoiceWidgetBuilderMixin {
 
           // Find the answer option that matches the selected code
           final selectedOption = options.firstWhere(
-            (option) => option.valueCoding?.code?.valueString == value,
+            (option) => option.valueCoding?.code == value,
           );
 
           questionnaireRendererData.onResponseChanged(
@@ -297,7 +297,7 @@ mixin ChoiceWidgetBuilderMixin {
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: InputDecorator(
         decoration: InputDecoration(
-          labelText: questionnaireItem.text?.valueString,
+          labelText: questionnaireItem.text,
           isDense: true,
           border: const OutlineInputBorder(
               borderRadius: QuestionnaireStyles.cardRadius),
@@ -351,7 +351,7 @@ mixin ChoiceWidgetBuilderMixin {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: Text(questionnaireItem.text?.valueString ?? 'Select'),
+              title: Text(questionnaireItem.text ?? 'Select'),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,

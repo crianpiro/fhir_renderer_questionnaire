@@ -1,115 +1,91 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/models/models.dart';
 
-/// Extensions for FHIR [Resource] to enhance functionality specific to
-/// FHIR Renderer Questionnaire.
-extension FhirRendererQuestionnaireExtensions on Resource {
-  /// Creates a [FhirCanonical] URI pointing to the resource type and its ID.
-  ///
-  /// Combines the [resourceType] and the [id] of the resource to form
-  /// a canonical URL string, useful for referencing the resource.
-  FhirCanonical get getFhirCanonical =>
-      FhirCanonical('${resourceType.name}/$id');
+/// URLs of the FHIR extensions this package understands.
+abstract final class QuestionnaireExtensionUrls {
+  /// Regex an answer must match.
+  static const String regex = 'http://hl7.org/fhir/StructureDefinition/regex';
+
+  /// Hint text, reused here as the message shown when [regex] fails.
+  static const String entryFormat =
+      'http://hl7.org/fhir/StructureDefinition/entryFormat';
+
+  /// Which control renders a choice item.
+  static const String itemControl =
+      'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl';
+
+  /// Marks an answer option as mutually exclusive with all others.
+  static const String optionExclusive =
+      'http://hl7.org/fhir/StructureDefinition/questionnaire-optionExclusive';
 }
 
-/// Extensions for FHIR [QuestionnaireItem] to resolve display text.
+/// Looks up extensions by URL on any element that carries them.
+extension FhirExtensionListLookup on List<FhirExtension>? {
+  /// The first extension with [url], or `null` when there is none.
+  FhirExtension? withUrl(String url) {
+    final extensions = this;
+    if (extensions == null) return null;
+    for (final extension in extensions) {
+      if (extension.url == url) return extension;
+    }
+    return null;
+  }
+}
+
+/// Extensions for [QuestionnaireItem] to resolve display text.
 extension QuestionnaireItemDisplayExtensions on QuestionnaireItem {
   /// Title shown for the item, falling back to its first code when `text` is
   /// absent and to an empty string when neither is present.
-  String get displayTitle =>
-      text?.valueString ?? code?.firstOrNull?.code?.valueString ?? "";
+  String get displayTitle => text ?? code?.firstOrNull?.code ?? "";
 }
 
-/// Extensions for FHIR [QuestionnaireItem] to extract validation-related extensions.
+/// Extensions for [QuestionnaireItem] to extract validation-related extensions.
 extension QuestionnaireItemValidationExtensions on QuestionnaireItem {
-  /// Extracts the regex validation pattern from the FHIR extension.
+  /// The regex an answer must match, from the standard `regex` extension.
   ///
-  /// Looks for the standard FHIR regex extension:
-  /// http://hl7.org/fhir/StructureDefinition/regex
+  /// Returns null when the item carries no such extension.
+  String? get regexValidationPattern =>
+      extension_.withUrl(QuestionnaireExtensionUrls.regex)?.valueString;
+
+  /// A custom message to show when [regexValidationPattern] fails.
   ///
-  /// Returns the regex pattern string if found, null otherwise.
-  String? get regexValidationPattern {
-    if (extension_?.isEmpty ?? true) return null;
+  /// Read from the `entryFormat` extension. Returns null to use the default
+  /// message.
+  String? get regexValidationErrorMessage =>
+      extension_.withUrl(QuestionnaireExtensionUrls.entryFormat)?.valueString;
 
-    for (final ext in extension_!) {
-      if (ext.url.toString() == 'http://hl7.org/fhir/StructureDefinition/regex') {
-        if (ext.valueString != null) {
-          return ext.valueString!.valueString;
-        }
-      }
-    }
-
-    return null;
-  }
-
-  /// Extracts a custom validation error message from the FHIR extension.
-  ///
-  /// Looks for a custom extension for validation error messages.
-  /// This is optional and falls back to a default message if not found.
-  ///
-  /// Returns the error message string if found, null for default message.
-  String? get regexValidationErrorMessage {
-    if (extension_?.isEmpty ?? true) return null;
-
-    // Look for entryFormat extension which can provide hint text
-    for (final ext in extension_!) {
-      if (ext.url.toString() == 'http://hl7.org/fhir/StructureDefinition/entryFormat') {
-        if (ext.valueString != null) {
-          return ext.valueString!.valueString;
-        }
-      }
-    }
-
-    return null;
-  }
-
-  /// Extracts the questionnaire-itemControl extension code.
-  ///
-  /// Looks for the FHIR SDC extension:
-  /// http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl
+  /// The `questionnaire-itemControl` code, which selects how a choice item
+  /// renders.
   ///
   /// Supported control codes:
-  /// - 'drop-down': Dropdown/select menu
-  /// - 'radio-button': Radio buttons (default for single-select choice)
-  /// - 'check-box': Checkboxes (default for multi-select choice)
-  /// - 'autocomplete': Searchable dropdown with type-ahead
+  /// - `drop-down`: Dropdown/select menu
+  /// - `radio-button`: Radio buttons (default for single-select choice)
+  /// - `check-box`: Checkboxes (default for multi-select choice)
+  /// - `autocomplete`: Searchable dropdown with type-ahead
   ///
-  /// Returns the control code string if found, null otherwise.
-  String? get itemControlCode {
-    if (extension_?.isEmpty ?? true) return null;
-
-    for (final ext in extension_!) {
-      if (ext.url.toString() ==
-          'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl') {
-        return ext.valueCodeableConcept?.coding?.firstOrNull?.code?.valueString;
-      }
-    }
-
-    return null;
-  }
+  /// Returns null when the item carries no such extension.
+  String? get itemControlCode => extension_
+      .withUrl(QuestionnaireExtensionUrls.itemControl)
+      ?.valueCodeableConcept
+      ?.coding
+      ?.firstOrNull
+      ?.code;
 }
 
-/// Extensions for FHIR [QuestionnaireAnswerOption] to extract SDC behavior flags.
+/// Extensions for [QuestionnaireAnswerOption] to extract SDC behavior flags.
 extension QuestionnaireAnswerOptionExtensions on QuestionnaireAnswerOption {
   /// Whether this answer option is mutually exclusive with all others.
   ///
-  /// Looks for the standard FHIR SDC extension:
-  /// http://hl7.org/fhir/StructureDefinition/questionnaire-optionExclusive
+  /// Read from the `questionnaire-optionExclusive` extension.
   ///
   /// In a multi-select (repeats) item, selecting an exclusive option clears
   /// every other selection, and selecting any non-exclusive option clears the
   /// exclusive ones. This implements the "all"/"none" master option behavior.
   ///
-  /// Returns true when the extension is present and set to true, false otherwise.
-  bool get isOptionExclusive {
-    if (extension_?.isEmpty ?? true) return false;
-
-    for (final ext in extension_!) {
-      if (ext.url.toString() ==
-          'http://hl7.org/fhir/StructureDefinition/questionnaire-optionExclusive') {
-        return ext.valueBoolean?.valueBoolean ?? false;
-      }
-    }
-
-    return false;
-  }
+  /// Returns true when the extension is present and set to true, false
+  /// otherwise.
+  bool get isOptionExclusive =>
+      extension_
+          .withUrl(QuestionnaireExtensionUrls.optionExclusive)
+          ?.valueBoolean ??
+      false;
 }

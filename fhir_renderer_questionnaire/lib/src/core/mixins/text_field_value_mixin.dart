@@ -1,4 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/models/models.dart';
 import 'package:flutter/material.dart';
 
 /// Mixin providing text field value extraction logic for FHIR questionnaire items.
@@ -27,22 +27,14 @@ mixin TextFieldValueMixin {
   ///
   /// Returns empty string if no initial value is set.
   String getInitialValue(QuestionnaireItem questionnaireItem) {
-    if (questionnaireItem.initial != null &&
-        questionnaireItem.initial!.isNotEmpty) {
-      final initial = questionnaireItem.initial!.first;
-      if (initial.valueX is FhirString) {
-        return (initial.valueX as FhirString).valueString ?? "";
-      } else if (initial.valueX is FhirDecimal) {
-        return (initial.valueX as FhirDecimal).valueDouble?.toString() ?? "";
-      } else if (initial.valueX is FhirInteger) {
-        return (initial.valueX as FhirInteger).valueInt?.toString() ?? "";
-      } else if (initial.valueX is Quantity) {
-        return (initial.valueX as Quantity).value?.valueDouble?.toString() ??
-            "";
-      } else if (initial.valueX is FhirUri) {
-        return (initial.valueX as FhirUri).valueUri?.toString() ?? "";
-      }
-    }
-    return "";
+    final initial = questionnaireItem.initial?.firstOrNull;
+    if (initial == null) return "";
+
+    return initial.valueString ??
+        initial.valueDecimal?.toString() ??
+        initial.valueInteger?.toString() ??
+        initial.valueQuantity?.value?.toString() ??
+        initial.valueUri ??
+        "";
   }
 }

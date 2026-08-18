@@ -1,4 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/questionnaire_choice_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -33,22 +33,22 @@ void main() {
         linkId: 'gender',
         text: 'What is your gender?',
         answerOptions: [
-          QuestionnaireAnswerOption(
-            valueX: Coding(
-              code: FhirCode('male'),
-              display: FhirString('Male'),
+          const QuestionnaireAnswerOption(
+            valueCoding: Coding(
+              code: 'male',
+              display: 'Male',
             ),
           ),
-          QuestionnaireAnswerOption(
-            valueX: Coding(
-              code: FhirCode('female'),
-              display: FhirString('Female'),
+          const QuestionnaireAnswerOption(
+            valueCoding: Coding(
+              code: 'female',
+              display: 'Female',
             ),
           ),
-          QuestionnaireAnswerOption(
-            valueX: Coding(
-              code: FhirCode('other'),
-              display: FhirString('Other'),
+          const QuestionnaireAnswerOption(
+            valueCoding: Coding(
+              code: 'other',
+              display: 'Other',
             ),
           ),
         ],
@@ -101,16 +101,16 @@ void main() {
         linkId: 'gender',
         text: 'What is your gender?',
         answerOptions: [
-          QuestionnaireAnswerOption(
-            valueX: Coding(
-              code: FhirCode('male'),
-              display: FhirString('Male'),
+          const QuestionnaireAnswerOption(
+            valueCoding: Coding(
+              code: 'male',
+              display: 'Male',
             ),
           ),
-          QuestionnaireAnswerOption(
-            valueX: Coding(
-              code: FhirCode('female'),
-              display: FhirString('Female'),
+          const QuestionnaireAnswerOption(
+            valueCoding: Coding(
+              code: 'female',
+              display: 'Female',
             ),
           ),
         ],
@@ -140,10 +140,10 @@ void main() {
       // Verify response was updated
       expect(capturedResponse, isNotNull);
       final responseItem = capturedResponse!.item?.firstWhere(
-        (i) => i.linkId.valueString == 'gender',
+        (i) => i.linkId == 'gender',
       );
       expect(
-        responseItem?.answer?.first.valueCoding?.code?.valueString,
+        responseItem?.answer?.first.valueCoding?.code,
         equals('male'),
       );
     });
@@ -155,16 +155,16 @@ void main() {
         text: 'Select your hobbies',
         repeats: true,
         answerOptions: [
-          QuestionnaireAnswerOption(
-            valueX: Coding(
-              code: FhirCode('reading'),
-              display: FhirString('Reading'),
+          const QuestionnaireAnswerOption(
+            valueCoding: Coding(
+              code: 'reading',
+              display: 'Reading',
             ),
           ),
-          QuestionnaireAnswerOption(
-            valueX: Coding(
-              code: FhirCode('sports'),
-              display: FhirString('Sports'),
+          const QuestionnaireAnswerOption(
+            valueCoding: Coding(
+              code: 'sports',
+              display: 'Sports',
             ),
           ),
         ],
@@ -193,16 +193,16 @@ void main() {
         text: 'Select your hobbies',
         repeats: true,
         answerOptions: [
-          QuestionnaireAnswerOption(
-            valueX: Coding(
-              code: FhirCode('reading'),
-              display: FhirString('Reading'),
+          const QuestionnaireAnswerOption(
+            valueCoding: Coding(
+              code: 'reading',
+              display: 'Reading',
             ),
           ),
-          QuestionnaireAnswerOption(
-            valueX: Coding(
-              code: FhirCode('sports'),
-              display: FhirString('Sports'),
+          const QuestionnaireAnswerOption(
+            valueCoding: Coding(
+              code: 'sports',
+              display: 'Sports',
             ),
           ),
         ],
@@ -236,7 +236,7 @@ void main() {
       // Verify both options are selected
       expect(capturedResponse, isNotNull);
       final responseItem = capturedResponse!.item?.firstWhere(
-        (i) => i.linkId.valueString == 'hobbies',
+        (i) => i.linkId == 'hobbies',
       );
       expect(responseItem?.answer?.length, equals(2));
     });
@@ -247,16 +247,16 @@ void main() {
         linkId: 'gender',
         text: 'What is your gender?',
         answerOptions: [
-          QuestionnaireAnswerOption(
-            valueX: Coding(
-              code: FhirCode('male'),
-              display: FhirString('Male'),
+          const QuestionnaireAnswerOption(
+            valueCoding: Coding(
+              code: 'male',
+              display: 'Male',
             ),
           ),
-          QuestionnaireAnswerOption(
-            valueX: Coding(
-              code: FhirCode('female'),
-              display: FhirString('Female'),
+          const QuestionnaireAnswerOption(
+            valueCoding: Coding(
+              code: 'female',
+              display: 'Female',
             ),
           ),
         ],
@@ -267,12 +267,12 @@ void main() {
         status: QuestionnaireResponseStatus.inProgress,
         item: [
           QuestionnaireResponseItem(
-            linkId: FhirString('gender'),
+            linkId: 'gender',
             answer: [
               QuestionnaireResponseAnswer(
-                valueX: Coding(
-                  code: FhirCode('female'),
-                  display: FhirString('Female'),
+                valueCoding: const Coding(
+                  code: 'female',
+                  display: 'Female',
                 ),
               ),
             ],
@@ -407,16 +407,16 @@ void main() {
           text: 'Select a gender',
           repeats: true,
           answerOptions: [
-            QuestionnaireAnswerOption(
-              valueX: Coding(
-                code: FhirCode('male'),
-                display: FhirString('Male'),
+            const QuestionnaireAnswerOption(
+              valueCoding: Coding(
+                code: 'male',
+                display: 'Male',
               ),
             ),
-            QuestionnaireAnswerOption(
-              valueX: Coding(
-                code: FhirCode('female'),
-                display: FhirString('Female'),
+            const QuestionnaireAnswerOption(
+              valueCoding: Coding(
+                code: 'female',
+                display: 'Female',
               ),
             ),
           ],

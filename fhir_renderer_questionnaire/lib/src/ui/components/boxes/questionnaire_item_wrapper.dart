@@ -1,4 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/models/models.dart';
 import 'package:fhir_renderer_questionnaire/src/core/utils/fhir_renderer_questionnaire_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -47,7 +47,7 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem
                   .setResponseAnswerInQuestionnaireResponse(
                 inheritedQuestionnaireRenderer.questionnaireResponse,
                 questionnaireItem,
-                QuestionnaireResponseAnswer(valueX: FhirBoolean("$answer")),
+                QuestionnaireResponseAnswer(valueBoolean: answer),
               );
 
               inheritedQuestionnaireRenderer.onResponseChanged(resp);
@@ -192,7 +192,7 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem
                 answer.trim().isEmpty
                     ? null
                     : QuestionnaireResponseAnswer(
-                        valueX: FhirString(answer),
+                        valueString: answer,
                       ),
               );
 
@@ -219,7 +219,7 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem
                 inheritedQuestionnaireRenderer.questionnaireResponse,
                 questionnaireItem,
                 attachment != null
-                    ? QuestionnaireResponseAnswer(valueX: attachment)
+                    ? QuestionnaireResponseAnswer(valueAttachment: attachment)
                     : null,
               );
 
@@ -245,12 +245,12 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem
             isLastItem,
             getAssignedTextController(
               inheritedQuestionnaireRenderer,
-              existingReference?.reference?.valueString ?? '',
+              existingReference?.reference ?? '',
             ),
             getSecondaryTextController(
               inheritedQuestionnaireRenderer,
               'display',
-              existingReference?.display?.valueString ?? '',
+              existingReference?.display ?? '',
             ),
             currentResponse,
             questionnaireItem,
@@ -259,12 +259,12 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem
 
               if (referenceString.trim().isNotEmpty) {
                 final reference = Reference(
-                  reference: FhirString(referenceString.trim()),
+                  reference: referenceString.trim(),
                   display: displayName.trim().isNotEmpty
-                      ? FhirString(displayName.trim())
+                      ? displayName.trim()
                       : null,
                 );
-                answer = QuestionnaireResponseAnswer(valueX: reference);
+                answer = QuestionnaireResponseAnswer(valueReference: reference);
               }
 
               final resp = FhirRendererQuestionnaireResponseUtils
@@ -293,7 +293,7 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem
   Widget buildQuestionnaireItem(BuildContext context) {
     // Cache the inherited data to avoid multiple tree traversals
     final inheritedData = InheritedQuestionnaireRenderer.of(context);
-    final isRequired = questionnaireItem.required_?.valueBoolean ?? false;
+    final isRequired = questionnaireItem.required_ ?? false;
     final responseItem = findQuestionnaireResponseItem(
       inheritedData.questionnaireResponse,
       itemLinkId,
@@ -313,7 +313,7 @@ class QuestionnaireItemWrapper extends QuestionnaireBaseItem
         child: IgnorePointer(
           ignoring: inheritedData.readOnly
               ? inheritedData.readOnly
-              : questionnaireItem.readOnly?.valueBoolean ?? false,
+              : questionnaireItem.readOnly ?? false,
           child: assignQuestionnaireWidget(inheritedData),
         ),
       ),

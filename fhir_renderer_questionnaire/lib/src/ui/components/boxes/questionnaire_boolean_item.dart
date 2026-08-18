@@ -1,4 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/models/models.dart';
 import 'package:flutter/material.dart';
 
 import '../../layout/inherited_questionnaire_renderer.dart';
@@ -22,7 +22,7 @@ class QuestionnaireBooleanItem extends QuestionnaireBaseItem
         .setResponseAnswerInQuestionnaireResponse(
       InheritedQuestionnaireRenderer.of(context).questionnaireResponse,
       questionnaireItem,
-      QuestionnaireResponseAnswer(valueX: FhirBoolean("$value")),
+      QuestionnaireResponseAnswer(valueBoolean: value),
     );
 
     InheritedQuestionnaireRenderer.of(context).onResponseChanged(resp);

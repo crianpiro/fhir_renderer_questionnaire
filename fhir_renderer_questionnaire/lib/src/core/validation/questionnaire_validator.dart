@@ -1,4 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/models/models.dart';
 
 import '../controllers/renderer_questionnaire_controller.dart';
 import '../extensions/fhir_extensions.dart';
@@ -80,8 +80,7 @@ final class QuestionnaireValidator with RegexValidationMixin {
     required int documentLength,
   }) {
     final item = visited.item;
-    final linkId = item.linkId.valueString;
-    if (linkId == null) return null;
+    final linkId = item.linkId;
 
     // Groups hold no answer of their own and display items take no input.
     if (item.type == QuestionnaireItemType.group ||
@@ -112,12 +111,12 @@ final class QuestionnaireValidator with RegexValidationMixin {
         );
 
     if (!isAnswered) {
-      return (item.required_?.valueBoolean ?? false)
+      return (item.required_ ?? false)
           ? buildFinding(QuestionnaireFindingReason.missingRequired)
           : null;
     }
 
-    final value = answers.first.valueString?.valueString;
+    final value = answers.first.valueString;
     if (value == null || value.isEmpty) return null;
 
     final message = validateInput(

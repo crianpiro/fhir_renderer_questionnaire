@@ -1,9 +1,7 @@
-import 'package:fhir_r4/fhir_r4.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../../fhir_renderer_questionnaire.dart';
 import 'inherited_questionnaire_renderer.dart';
-import '../../core/definitions/type_definitions.dart';
 
 /// A base abstract class for FHIR Questionnaire renderers.
 ///

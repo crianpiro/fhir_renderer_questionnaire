@@ -9,6 +9,66 @@ Types of changes
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+### 2.0.0
+
+#### Removed
+* **The `fhir_r4` dependency.** The package now defines its own FHIR R4 models and has no FHIR dependency at all. `fhir_r4` is 16 MB across ~644 files and pulls in `xml`, `yaml`, `uuid` and `collection`, all to supply two resources — and it forced that library choice on every consumer.
+
+#### Added
+* **Built-in models** for `Questionnaire`, `QuestionnaireResponse` and the datatypes they use (`Coding`, `CodeableConcept`, `Attachment`, `Reference`, `Quantity`, `FhirExtension`), exported from the package's main library.
+* **`fromJson` / `toJson` on every model.** FHIR JSON is the boundary in both directions.
+* **Lossless round-trips.** Fields the renderer does not model — `contact`, `jurisdiction`, `meta`, primitive-extension siblings such as `_text`, vendor extensions — are carried through untouched and re-emitted by `toJson`, so parsing and re-serializing never silently drops data. Decimals keep their written form, so `1` does not come back as `1.0`.
+* **`FhirDate`, `FhirDateTime` and `FhirTime`** preserve FHIR partial-date precision: `2024`, `2024-03` and `2024-03-15` stay distinct instead of collapsing to a `DateTime`.
+* **`QuestionnaireExtensionUrls`** with the extension URLs the package understands, and `FhirExtensionListLookup.withUrl` for looking one up.
+
+#### Changed
+* **Plain Dart types replace the `Fhir*` primitive wrappers.** `item.text` is a `String?`, `item.required_` a `bool?`, `item.maxLength` an `int?`. Only date, dateTime and time keep a wrapper, because a `DateTime` cannot represent a partial date.
+* **`QuestionnaireResponseAnswer` takes typed `value[x]` arguments** — `valueString:`, `valueBoolean:`, `valueCoding:` and so on — in place of the polymorphic `valueX:`. The `value` getter returns whichever variant is set. The same applies to `QuestionnaireEnableWhen`'s `answer[x]` and `QuestionnaireInitial`'s `value[x]`.
+* **`linkId` is a non-nullable `String`** on both `QuestionnaireItem` and `QuestionnaireResponseItem`, removing null handling throughout.
+* **`QuestionnaireItem.enableBehavior`** is a `QuestionnaireEnableBehavior?` directly, rather than a wrapper with a `.valueEnum`.
+* `PublicationStatus` is now `QuestionnairePublicationStatus`.
+* Unknown item types and codes parse to a safe fallback instead of throwing, so a questionnaire from a newer source still renders.
+* Time comparisons in `enableWhen` no longer route through `intl`; `hh:mm:ss` is handled as well as `hh:mm`.
+
+#### Migration
+
+Questionnaires and responses now cross the boundary as JSON:
+
+```dart
+// Before
+final questionnaire = Questionnaire.fromJson(json); // from package:fhir_r4
+
+// After — same call, but the type comes from this package
+import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
+final questionnaire = Questionnaire.fromJson(json);
+```
+
+If you hold `fhir_r4` objects already, convert through JSON:
+
+```dart
+final questionnaire = Questionnaire.fromJson(fhirR4Questionnaire.toJson());
+```
+
+Reading values loses the wrappers:
+
+```dart
+// Before
+item.text?.valueString;  item.linkId.valueString;  item.required_?.valueBoolean;
+// After
+item.text;               item.linkId;              item.required_;
+```
+
+Building an answer names the variant:
+
+```dart
+// Before
+QuestionnaireResponseAnswer(valueX: FhirString('yes'));
+// After
+QuestionnaireResponseAnswer(valueString: 'yes');
+```
+
+`Resource.getFhirCanonical` is replaced by `Questionnaire.canonicalReference`.
+
 ### 1.1.2
 
 #### Added

@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/models/models.dart';
 import 'package:flutter/material.dart';
 
 import '../../layout/inherited_questionnaire_renderer.dart';
@@ -43,7 +43,7 @@ class QuestionnaireFieldItem extends QuestionnaireBaseItem
             questionnaireItem,
             value.trim().isEmpty
                 ? null
-                : QuestionnaireResponseAnswer(valueX: FhirString(value)),
+                : QuestionnaireResponseAnswer(valueString: value),
           );
           inheritedData.onResponseChanged(resp);
         },
@@ -62,11 +62,11 @@ class QuestionnaireFieldItem extends QuestionnaireBaseItem
             KeyboardTypeHelper.getInputFormatters(questionnaireItem.type),
         maxLines: questionnaireItem.type == QuestionnaireItemType.text
             ? 5
-            : ((questionnaireItem.maxLength?.valueInt ?? 50) /
-                    min(questionnaireItem.maxLength?.valueInt ?? 50, 50))
+            : ((questionnaireItem.maxLength ?? 50) /
+                    min(questionnaireItem.maxLength ?? 50, 50))
                 .floor(),
         minLines: questionnaireItem.type == QuestionnaireItemType.text ? 5 : 1,
-        maxLength: questionnaireItem.maxLength?.valueInt,
+        maxLength: questionnaireItem.maxLength,
         decoration: getOutlineInputDecoration,
       ),
     );

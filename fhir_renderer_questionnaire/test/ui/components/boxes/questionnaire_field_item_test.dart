@@ -1,4 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/questionnaire_field_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -84,11 +84,11 @@ void main() {
         // Verify response was updated
         expect(capturedResponse, isNotNull);
         final responseItem = capturedResponse!.item?.firstWhere(
-          (i) => i.linkId.valueString == 'name',
+          (i) => i.linkId == 'name',
         );
         expect(
           responseItem?.answer?.first.valueString,
-          equals(FhirString('John Doe')),
+          equals('John Doe'),
         );
       });
 
@@ -154,7 +154,7 @@ void main() {
 
         // Response item should have empty answer list (implementation uses [] not null)
         final responseItem = capturedResponse?.item?.firstWhere(
-          (i) => i.linkId.valueString == 'name',
+          (i) => i.linkId == 'name',
         );
         expect(responseItem?.answer, isEmpty);
       });

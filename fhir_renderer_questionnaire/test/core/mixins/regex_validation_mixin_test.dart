@@ -1,4 +1,3 @@
-import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 import 'package:test/test.dart';
 
@@ -65,7 +64,7 @@ void main() {
       });
 
       test('should handle complex regex patterns', () {
-        final emailPattern = r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$';
+        const emailPattern = r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$';
 
         expect(
           helper.validateInput('test@example.com', emailPattern, 'Invalid email'),

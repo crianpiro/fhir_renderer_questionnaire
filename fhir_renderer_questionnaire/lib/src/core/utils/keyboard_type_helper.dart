@@ -1,4 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/models/models.dart';
 import 'package:flutter/services.dart';
 
 /// Helper class to determine the appropriate keyboard type for questionnaire item types.

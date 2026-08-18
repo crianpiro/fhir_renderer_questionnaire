@@ -73,7 +73,7 @@ class FocusTestPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     hintText:
-                        questionnaireItem.text?.valueString ?? 'Enter text...',
+                        questionnaireItem.text ?? 'Enter text...',
                     alignLabelWithHint: true,
                   ),
                 ),

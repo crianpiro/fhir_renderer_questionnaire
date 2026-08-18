@@ -24,7 +24,7 @@ final class QuestionnaireSliverBooleanItem extends QuestionnaireBooleanItem {
         getInitialOrSelectedValue(selectedResponseItem, questionnaireItem);
 
     return SliverBaseDecorator(
-      title: questionnaireItem.text?.valueString,
+      title: questionnaireItem.text,
       roundBottomBorder: isLastItem,
       children: [
         SliverToBoxAdapter(

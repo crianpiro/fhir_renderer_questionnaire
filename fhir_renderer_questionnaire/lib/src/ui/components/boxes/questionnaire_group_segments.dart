@@ -12,7 +12,7 @@
 /// Both paths must stay visually identical, hence the shared widgets below.
 library;
 
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/models/models.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/extensions/fhir_extensions.dart';

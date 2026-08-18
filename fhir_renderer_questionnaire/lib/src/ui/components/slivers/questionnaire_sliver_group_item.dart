@@ -1,4 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/models/models.dart';
 import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/questionnaire_group_item.dart';
 import 'package:flutter/material.dart';
 
@@ -38,7 +38,7 @@ final class QuestionnaireSliverGroupItem extends QuestionnaireGroupItem {
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, i) => QuestionnaireItemWrapper(
-                key: ValueKey(items[i].linkId.valueString),
+                key: ValueKey(items[i].linkId),
                 questionnaireItem: items[i],
                 index: i,
                 isLastItem: items.length - 1 == i,

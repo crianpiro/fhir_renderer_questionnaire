@@ -13,7 +13,7 @@ final class QuestionnaireSliverDisplayItem extends QuestionnaireDisplayItem {
   @override
   Widget buildQuestionnaireItem(BuildContext context) {
     return SliverBaseDecorator(
-      title: questionnaireItem.text?.valueString,
+      title: questionnaireItem.text,
       roundBottomBorder: isLastItem,
     );
   }

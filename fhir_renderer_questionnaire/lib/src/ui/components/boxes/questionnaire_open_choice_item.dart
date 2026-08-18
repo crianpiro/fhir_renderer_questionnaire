@@ -1,4 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/models/models.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/mixins/text_field_value_mixin.dart';
@@ -27,7 +27,7 @@ class QuestionnaireOpenChoiceItem extends QuestionnaireBaseItem
   Widget buildQuestionnaireItem(BuildContext context) {
     final InheritedQuestionnaireRenderer questionnaireRendererData =
         InheritedQuestionnaireRenderer.of(context);
-    final repeats = questionnaireItem.repeats?.valueBoolean ?? false;
+    final repeats = questionnaireItem.repeats ?? false;
 
     final selectedResponseItem = findQuestionnaireResponseItem(
       questionnaireRendererData.questionnaireResponse,
@@ -67,7 +67,7 @@ class QuestionnaireOpenChoiceItem extends QuestionnaireBaseItem
 
     return BaseDecorator(
       roundBottomBorder: isLastItem,
-      title: questionnaireItem.text?.valueString,
+      title: questionnaireItem.text,
       children: widgets,
     );
   }
@@ -84,7 +84,7 @@ class QuestionnaireOpenChoiceItem extends QuestionnaireBaseItem
     } else {
       // Add/update custom text answer
       final answer = QuestionnaireResponseAnswer(
-        valueX: FhirString(value.trim()),
+        valueString: value.trim(),
       );
 
       if (repeats) {
@@ -115,13 +115,13 @@ class QuestionnaireOpenChoiceItem extends QuestionnaireBaseItem
 
     // Collect existing coding answers
     final codingAnswers = responseItem?.answer
-            ?.where((answer) => answer.valueX is Coding)
+            ?.where((answer) => answer.valueCoding != null)
             .toList() ??
         [];
 
     // Add/update string answer
     final stringAnswer = QuestionnaireResponseAnswer(
-      valueX: FhirString(value),
+      valueString: value,
     );
 
     final allAnswers = [...codingAnswers, stringAnswer];
@@ -149,7 +149,7 @@ class QuestionnaireOpenChoiceItem extends QuestionnaireBaseItem
 
     // Remove string answers, keep coding answers
     final filteredAnswers = responseItem.answer
-        ?.where((answer) => answer.valueX is! FhirString)
+        ?.where((answer) => answer.valueString == null)
         .toList();
 
     if (filteredAnswers == null || filteredAnswers.isEmpty) {
@@ -175,7 +175,7 @@ class QuestionnaireOpenChoiceItem extends QuestionnaireBaseItem
 
     if (response.item != null) {
       for (final item in response.item!) {
-        if (item.linkId.valueString == updatedItem.linkId.valueString) {
+        if (item.linkId == updatedItem.linkId) {
           modifiedItems.add(updatedItem);
         } else if (item.item != null) {
           modifiedItems.add(_replaceInNestedItems(item, updatedItem));
@@ -192,7 +192,7 @@ class QuestionnaireOpenChoiceItem extends QuestionnaireBaseItem
     QuestionnaireResponseItem parent,
     QuestionnaireResponseItem updatedItem,
   ) {
-    if (parent.linkId.valueString == updatedItem.linkId.valueString) {
+    if (parent.linkId == updatedItem.linkId) {
       return updatedItem;
     }
 

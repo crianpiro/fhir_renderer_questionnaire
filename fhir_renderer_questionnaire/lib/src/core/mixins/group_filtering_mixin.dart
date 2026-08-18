@@ -1,4 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/models/models.dart';
 
 import '../../ui/layout/inherited_questionnaire_renderer.dart';
 import '../utils/fhir_renderer_questionnaire_utils.dart';

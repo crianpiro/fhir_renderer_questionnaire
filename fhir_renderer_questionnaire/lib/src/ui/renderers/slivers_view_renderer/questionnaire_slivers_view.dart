@@ -1,4 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/models/models.dart';
 import 'package:fhir_renderer_questionnaire/src/core/utils/fhir_renderer_questionnaire_utils.dart';
 import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/base_decorator.dart';
 import 'package:fhir_renderer_questionnaire/src/ui/components/slivers/questionnaire_sliver_item_wrapper.dart';
@@ -33,11 +33,9 @@ class QuestionnaireSliversView extends StatelessWidget {
         final keyCache = inheritedData.rendererController.sliverItemKeys;
         inheritedData.rendererController.groupBundleKeys.clear();
         for (var item in items) {
-          final linkId = item.linkId.valueString;
+          final linkId = item.linkId;
           inheritedData.rendererController.groupBundleKeys.add(
-            linkId == null
-                ? GlobalKey(debugLabel: 'sliver_item_null')
-                : keyCache.putIfAbsent(
+            keyCache.putIfAbsent(
                     linkId,
                     () => GlobalKey(debugLabel: 'sliver_item_$linkId'),
                   ),

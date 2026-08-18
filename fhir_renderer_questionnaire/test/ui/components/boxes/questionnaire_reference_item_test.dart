@@ -1,4 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/questionnaire_reference_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -12,9 +12,9 @@ void main() {
       String? text,
     }) {
       return QuestionnaireItem(
-        linkId: FhirString(linkId),
+        linkId: linkId,
         type: QuestionnaireItemType.reference,
-        text: text != null ? FhirString(text) : null,
+        text: text,
       );
     }
 
@@ -124,12 +124,12 @@ void main() {
         status: QuestionnaireResponseStatus.inProgress,
         item: [
           QuestionnaireResponseItem(
-            linkId: FhirString('practitioner'),
+            linkId: 'practitioner',
             answer: [
               QuestionnaireResponseAnswer(
-                valueX: Reference(
-                  reference: FhirString('Practitioner/123'),
-                  display: FhirString('Dr. Jane Smith'),
+                valueReference: const Reference(
+                  reference: 'Practitioner/123',
+                  display: 'Dr. Jane Smith',
                 ),
               ),
             ],
@@ -213,10 +213,10 @@ void main() {
       // Verify response was updated
       expect(capturedResponse, isNotNull);
       final responseItem = capturedResponse!.item?.firstWhere(
-        (i) => i.linkId.valueString == 'practitioner',
+        (i) => i.linkId == 'practitioner',
       );
       expect(
-        responseItem?.answer?.first.valueReference?.reference?.valueString,
+        responseItem?.answer?.first.valueReference?.reference,
         equals('Practitioner/456'),
       );
     });

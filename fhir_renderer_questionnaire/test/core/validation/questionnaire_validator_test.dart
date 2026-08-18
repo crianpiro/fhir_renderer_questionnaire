@@ -1,4 +1,3 @@
-import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -12,10 +11,10 @@ QuestionnaireItem _item(
   List<FhirExtension>? extension_,
 }) =>
     QuestionnaireItem(
-      linkId: FhirString(linkId),
+      linkId: linkId,
       type: type,
-      text: FhirString(text ?? linkId),
-      required_: FhirBoolean(required),
+      text: text ?? linkId,
+      required_: required,
       item: children,
       enableWhen: enableWhen,
       extension_: extension_,
@@ -26,9 +25,9 @@ QuestionnaireResponse _response(Map<String, String> answers) =>
       status: QuestionnaireResponseStatus.inProgress,
       item: answers.entries
           .map((e) => QuestionnaireResponseItem(
-                linkId: FhirString(e.key),
+                linkId: e.key,
                 answer: [
-                  QuestionnaireResponseAnswer(valueX: FhirString(e.value)),
+                  QuestionnaireResponseAnswer(valueString: e.value),
                 ],
               ))
           .toList(),
@@ -40,7 +39,7 @@ void main() {
   group('QuestionnaireValidator', () {
     test('reports required items with no answer', () {
       final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+        status: QuestionnairePublicationStatus.active,
         item: [
           _item('name', QuestionnaireItemType.string, required: true),
           _item('nickname', QuestionnaireItemType.string),
@@ -57,7 +56,7 @@ void main() {
 
     test('accepts required items that have an answer', () {
       final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+        status: QuestionnairePublicationStatus.active,
         item: [_item('name', QuestionnaireItemType.string, required: true)],
       );
 
@@ -69,16 +68,16 @@ void main() {
 
     test('reports answers that fail the regex extension', () {
       final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+        status: QuestionnairePublicationStatus.active,
         item: [
           _item(
             'code',
             QuestionnaireItemType.string,
             extension_: [
-              FhirExtension(
+              const FhirExtension(
                 url:
-                    FhirString('http://hl7.org/fhir/StructureDefinition/regex'),
-                valueX: FhirString(r'^\d{3}$'),
+                    'http://hl7.org/fhir/StructureDefinition/regex',
+                valueString: r'^\d{3}$',
               ),
             ],
           ),
@@ -100,7 +99,7 @@ void main() {
 
     test('skips items disabled by enableWhen', () {
       final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+        status: QuestionnairePublicationStatus.active,
         item: [
           _item('trigger', QuestionnaireItemType.string),
           _item(
@@ -109,9 +108,9 @@ void main() {
             required: true,
             enableWhen: [
               QuestionnaireEnableWhen(
-                question: FhirString('trigger'),
+                question: 'trigger',
                 operator_: QuestionnaireItemOperator.eq,
-                answerX: FhirString('yes'),
+                answerString: 'yes',
               ),
             ],
           ),
@@ -130,7 +129,7 @@ void main() {
 
     test('walks nested groups and records document position', () {
       final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+        status: QuestionnairePublicationStatus.active,
         item: [
           _item('intro', QuestionnaireItemType.display_),
           _item('outer', QuestionnaireItemType.group, children: [
@@ -158,7 +157,7 @@ void main() {
 
     test('ignores groups and display items without answers', () {
       final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+        status: QuestionnairePublicationStatus.active,
         item: [
           _item('note', QuestionnaireItemType.display_, required: true),
           _item('section', QuestionnaireItemType.group, required: true),

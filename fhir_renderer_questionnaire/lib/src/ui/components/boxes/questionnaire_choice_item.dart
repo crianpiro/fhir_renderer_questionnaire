@@ -17,7 +17,7 @@ class QuestionnaireChoiceItem extends QuestionnaireBaseItem
 
   @override
   Widget buildQuestionnaireItem(BuildContext context) {
-    final repeats = questionnaireItem.repeats?.valueBoolean ?? false;
+    final repeats = questionnaireItem.repeats ?? false;
 
     final selectedResponseItem = findQuestionnaireResponseItem(
       InheritedQuestionnaireRenderer.of(context).questionnaireResponse,

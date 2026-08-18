@@ -1,4 +1,3 @@
-import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 import 'package:test/test.dart';
 
@@ -11,10 +10,10 @@ void main() {
         'status': 'active',
       });
 
-      final canonical = questionnaire.getFhirCanonical;
+      final canonical = questionnaire.canonicalReference;
 
-      expect(canonical, isA<FhirCanonical>());
-      expect(canonical.toString(), equals('Questionnaire/test-questionnaire-123'));
+      expect(canonical, isA<String>());
+      expect(canonical, equals('Questionnaire/test-questionnaire-123'));
     });
 
     test('should handle resource without ID', () {
@@ -23,7 +22,7 @@ void main() {
         'status': 'active',
       });
 
-      final canonical = questionnaire.getFhirCanonical;
+      final canonical = questionnaire.canonicalReference;
 
       expect(canonical.toString(), equals('Questionnaire/null'));
     });

@@ -1,4 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/questionnaire_attachment_item.dart';
 import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/questionnaire_boolean_item.dart';
 import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/questionnaire_choice_item.dart';
@@ -8,7 +8,6 @@ import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/questionnair
 import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/questionnaire_group_item.dart';
 import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/questionnaire_open_choice_item.dart';
 import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/questionnaire_reference_item.dart';
-import 'package:fhir_renderer_questionnaire/src/ui/factories/box_component_factory.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -21,9 +20,9 @@ void main() {
 
     QuestionnaireItem createItem(QuestionnaireItemType type, String linkId) {
       return QuestionnaireItem(
-        linkId: FhirString(linkId),
+        linkId: linkId,
         type: type,
-        text: FhirString('Test Item'),
+        text: 'Test Item',
       );
     }
 
@@ -52,15 +51,15 @@ void main() {
     });
 
     test('should create choice item', () {
-      final item = QuestionnaireItem(
-        linkId: FhirString('choice-1'),
+      const item = QuestionnaireItem(
+        linkId: 'choice-1',
         type: QuestionnaireItemType.choice,
-        text: FhirString('Test Choice'),
+        text: 'Test Choice',
         answerOption: [
           QuestionnaireAnswerOption(
-            valueX: Coding(
-              code: FhirCode('opt1'),
-              display: FhirString('Option 1'),
+            valueCoding: Coding(
+              code: 'opt1',
+              display: 'Option 1',
             ),
           ),
         ],
@@ -70,15 +69,15 @@ void main() {
     });
 
     test('should create open choice item', () {
-      final item = QuestionnaireItem(
-        linkId: FhirString('open-choice-1'),
+      const item = QuestionnaireItem(
+        linkId: 'open-choice-1',
         type: QuestionnaireItemType.openChoice,
-        text: FhirString('Test Open Choice'),
+        text: 'Test Open Choice',
         answerOption: [
           QuestionnaireAnswerOption(
-            valueX: Coding(
-              code: FhirCode('opt1'),
-              display: FhirString('Option 1'),
+            valueCoding: Coding(
+              code: 'opt1',
+              display: 'Option 1',
             ),
           ),
         ],
@@ -89,9 +88,9 @@ void main() {
 
     test('should create group item', () {
       final item = QuestionnaireItem(
-        linkId: FhirString('group-1'),
+        linkId: 'group-1',
         type: QuestionnaireItemType.group,
-        text: FhirString('Test Group'),
+        text: 'Test Group',
         item: [
           createItem(QuestionnaireItemType.string, 'nested-1'),
         ],
@@ -152,7 +151,7 @@ void main() {
       final item = createItem(QuestionnaireItemType.date, 'date-1');
       final widget = factory.createDateTimeItem(0, false, item)
           as QuestionnaireDateTimeItem;
-      expect(widget.questionnaireItem.linkId.valueString, equals('date-1'));
+      expect(widget.questionnaireItem.linkId, equals('date-1'));
     });
   });
 }

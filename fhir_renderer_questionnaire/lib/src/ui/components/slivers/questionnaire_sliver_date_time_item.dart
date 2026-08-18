@@ -24,7 +24,7 @@ final class QuestionnaireSliverDateTimeItem extends QuestionnaireDateTimeItem {
         extractDisplayText(currentResponseItem, questionnaireItem);
 
     return SliverBaseDecorator(
-      title: questionnaireItem.text?.valueString,
+      title: questionnaireItem.text,
       roundBottomBorder: isLastItem,
       child: SliverToBoxAdapter(
         child: ElevatedButton(

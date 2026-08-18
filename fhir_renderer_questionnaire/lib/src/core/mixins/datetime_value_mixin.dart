@@ -1,4 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -20,67 +20,28 @@ mixin DateTimeValueMixin {
 
     switch (questionnaireItem.type) {
       case QuestionnaireItemType.dateTime:
-        if (responseItem?.answer?.firstOrNull?.valueDateTime?.valueDateTime !=
-            null) {
-          displayText = DateFormat.yMd()
-              .add_jm()
-              .format(responseItem!.answer!.first.valueDateTime!.valueDateTime!)
-              .toString();
-        } else if (questionnaireItem.initial != null &&
-            questionnaireItem.initial!.isNotEmpty &&
-            questionnaireItem.initial!.first.valueX is FhirDateTime &&
-            (questionnaireItem.initial!.first.valueX as FhirDateTime)
-                    .valueDateTime !=
-                null) {
-          displayText = DateFormat.yMd()
-              .add_jm()
-              .format(
-                (questionnaireItem.initial!.first.valueX as FhirDateTime)
-                    .valueDateTime!,
-              )
-              .toString();
-        } else {
-          displayText = "Select date & time";
-        }
+        final selected =
+            responseItem?.answer?.firstOrNull?.valueDateTime?.toDateTime();
+        final initial =
+            questionnaireItem.initial?.firstOrNull?.valueDateTime?.toDateTime();
+        final value = selected ?? initial;
+        displayText = value != null
+            ? DateFormat.yMd().add_jm().format(value)
+            : "Select date & time";
         break;
       case QuestionnaireItemType.date:
-        if (responseItem?.answer?.firstOrNull?.valueDate?.valueDateTime !=
-            null) {
-          displayText = DateFormat.yMd()
-              .format(
-                responseItem!.answer!.first.valueDate!.valueDateTime!,
-              )
-              .toString();
-        } else if (questionnaireItem.initial != null &&
-            questionnaireItem.initial!.isNotEmpty &&
-            questionnaireItem.initial!.first.valueX is FhirDate &&
-            (questionnaireItem.initial!.first.valueX as FhirDate)
-                    .valueDateTime !=
-                null) {
-          displayText = DateFormat.yMd()
-              .format(
-                (questionnaireItem.initial!.first.valueX as FhirDate)
-                    .valueDateTime!,
-              )
-              .toString();
-        } else {
-          displayText = "Select date";
-        }
+        final selected =
+            responseItem?.answer?.firstOrNull?.valueDate?.toDateTime();
+        final initial =
+            questionnaireItem.initial?.firstOrNull?.valueDate?.toDateTime();
+        final value = selected ?? initial;
+        displayText =
+            value != null ? DateFormat.yMd().format(value) : "Select date";
         break;
       case QuestionnaireItemType.time:
-        if (responseItem?.answer?.firstOrNull?.valueTime?.valueString != null) {
-          displayText =
-              responseItem!.answer!.firstOrNull!.valueTime!.valueString!;
-        } else if (questionnaireItem.initial != null &&
-            questionnaireItem.initial!.isNotEmpty &&
-            questionnaireItem.initial!.first.valueX is FhirTime &&
-            (questionnaireItem.initial!.first.valueX as FhirTime).valueString !=
-                null) {
-          displayText = (questionnaireItem.initial!.first.valueX as FhirTime)
-              .valueString!;
-        } else {
-          displayText = "Select time";
-        }
+        final selected = responseItem?.answer?.firstOrNull?.valueTime?.value;
+        final initial = questionnaireItem.initial?.firstOrNull?.valueTime?.value;
+        displayText = selected ?? initial ?? "Select time";
         break;
       default:
         break;
@@ -125,20 +86,23 @@ mixin DateTimeValueMixin {
     DateTime? selectedDate;
     TimeOfDay? selectedTime;
 
-    ValueXQuestionnaireResponseAnswer? selectedAnswer;
+    // Only one of these ends up set, matching the item's type.
+    FhirDate? answerDate;
+    FhirDateTime? answerDateTime;
+    FhirTime? answerTime;
 
     if (questionnaireItem.type == QuestionnaireItemType.dateTime ||
         questionnaireItem.type == QuestionnaireItemType.date) {
       selectedDate = await showDatePicker(
         context: context,
         initialDate:
-            currentResponseItem?.answer?.firstOrNull?.valueDate?.valueDateTime,
+            currentResponseItem?.answer?.firstOrNull?.valueDate?.toDateTime(),
         firstDate: DateTime.now(),
         lastDate: DateTime.now().add(const Duration(days: 365)),
       );
 
       if (selectedDate != null) {
-        selectedAnswer = FhirDate.fromDateTime(selectedDate);
+        answerDate = FhirDate.fromDateTime(selectedDate);
       }
     }
 
@@ -149,13 +113,14 @@ mixin DateTimeValueMixin {
       selectedTime = await showTimePicker(
         context: context,
         initialTime: TimeOfDay.fromDateTime(
-          currentResponseItem?.answer?.firstOrNull?.valueDate?.valueDateTime ??
+          currentResponseItem?.answer?.firstOrNull?.valueDate?.toDateTime() ??
               DateTime.now(),
         ),
       );
 
       if (selectedDate != null && selectedTime != null) {
-        selectedAnswer = FhirDateTime.fromDateTime(
+        answerDate = null;
+        answerDateTime = FhirDateTime.fromDateTime(
           DateTime(
             selectedDate.year,
             selectedDate.month,
@@ -165,14 +130,18 @@ mixin DateTimeValueMixin {
           ),
         );
       } else if (selectedTime != null) {
-        selectedAnswer = FhirTime.fromUnits(
-          hour: selectedTime.hour,
-          minute: selectedTime.minute,
+        answerTime = FhirTime.fromDateTime(
+          DateTime(0, 1, 1, selectedTime.hour, selectedTime.minute),
         );
       }
     }
-    if (selectedAnswer != null) {
-      return QuestionnaireResponseAnswer(valueX: selectedAnswer);
+
+    if (answerDate != null || answerDateTime != null || answerTime != null) {
+      return QuestionnaireResponseAnswer(
+        valueDate: answerDate,
+        valueDateTime: answerDateTime,
+        valueTime: answerTime,
+      );
     }
 
     return null;

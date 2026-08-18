@@ -1,4 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/questionnaire_boolean_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -82,9 +82,9 @@ void main() {
       // Verify response was updated
       expect(capturedResponse, isNotNull);
       final responseItem = capturedResponse!.item?.firstWhere(
-        (i) => i.linkId.valueString == 'consent',
+        (i) => i.linkId == 'consent',
       );
-      expect(responseItem?.answer?.first.valueBoolean, equals(FhirBoolean(true)));
+      expect(responseItem?.answer?.first.valueBoolean, equals(true));
     });
 
     testWidgets('should select No when tapped', (WidgetTester tester) async {
@@ -117,9 +117,9 @@ void main() {
       // Verify response was updated
       expect(capturedResponse, isNotNull);
       final responseItem = capturedResponse!.item?.firstWhere(
-        (i) => i.linkId.valueString == 'consent',
+        (i) => i.linkId == 'consent',
       );
-      expect(responseItem?.answer?.first.valueBoolean, equals(FhirBoolean(false)));
+      expect(responseItem?.answer?.first.valueBoolean, equals(false));
     });
 
     testWidgets('should show initial value when set to true',
@@ -290,9 +290,9 @@ void main() {
       // Verify response changed to false
       expect(capturedResponse, isNotNull);
       final responseItem = capturedResponse!.item?.firstWhere(
-        (i) => i.linkId.valueString == 'consent',
+        (i) => i.linkId == 'consent',
       );
-      expect(responseItem?.answer?.first.valueBoolean, equals(FhirBoolean(false)));
+      expect(responseItem?.answer?.first.valueBoolean, equals(false));
     });
   });
 }

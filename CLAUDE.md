@@ -56,8 +56,21 @@ cd example && flutter run
 
 ### Layer Separation
 
+- **`lib/src/core/models/`** - The package's own FHIR R4 models (no `fhir_r4` dependency)
 - **`lib/src/core/`** - Business logic: controllers, mixins, utils, validation
 - **`lib/src/ui/`** - Presentation: renderers, components, factories
+
+### Models (`lib/src/core/models/`)
+
+The package models FHIR R4 itself rather than depending on `fhir_r4`, keeping it light and leaving the FHIR library choice to the consumer. JSON is the only boundary: `Questionnaire.fromJson(map)` in, `response.toJson()` out.
+
+- **Plain Dart types.** `item.text` is `String?`, `item.required_` is `bool?`, `item.maxLength` is `int?`. There are no `Fhir*` primitive wrappers.
+- **Except dates.** `FhirDate`, `FhirDateTime` and `FhirTime` (`fhir_primitives.dart`) keep the source literal, because FHIR partial dates (`2024`, `2024-03`) carry meaning a `DateTime` cannot express. Call `.toDateTime()` when you need one; `.value` is the literal.
+- **Lossless round-trips.** Every model keeps the JSON keys it does not type in an extra map and re-emits them from `toJson`. When adding a typed field, also add its key to that class's `_modelledKeys`, or it will be written twice.
+- **Decimals keep their written form** via `DecimalValue`, so a JSON `1` does not come back as `1.0`.
+- **`value[x]` is explicit.** `QuestionnaireResponseAnswer` has `valueString`, `valueBoolean`, `valueCoding`, … and a `value` getter returning whichever is set. Same for `enableWhen`'s `answer[x]` and `initial`'s `value[x]`.
+- **Parsing is tolerant.** Unknown enum codes yield `null`; an unknown item `type` falls back to `display_` so a questionnaire from a newer source still renders.
+- Value equality and `hashCode` are deep — the enableWhen cache keys on `response.hashCode`, so this matters.
 
 ### Three Renderer Options
 
@@ -91,9 +104,8 @@ Each item type has two implementations:
 
 ## Important Technical Notes
 
-1. **FHIR R4 Primitives**: Types like `FhirInteger`, `FhirBoolean` don't expose `.value` - compare directly with FHIR type instances
-2. **Sliver Builders**: Custom builders for `QuestionnaireSliversViewRenderer` must return `Sliver*` widgets
-3. **EnableWhen Cache**: Cleared when response hashCode changes; evaluates AND/OR behavior via `enableBehavior` field
+1. **Sliver Builders**: Custom builders for `QuestionnaireSliversViewRenderer` must return `Sliver*` widgets
+2. **EnableWhen Cache**: Cleared when response hashCode changes; evaluates AND/OR behavior via `enableBehavior` field
 
 ## FHIR Extensions Supported
 

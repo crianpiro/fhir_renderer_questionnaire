@@ -1,7 +1,6 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/models/models.dart';
 import 'package:fhir_renderer_questionnaire/src/core/controllers/renderer_questionnaire_controller.dart';
 import 'fhir_renderer_questionnaire_response_utils.dart';
-import 'package:intl/intl.dart';
 
 /// Utility class for evaluating and processing FHIR Questionnaire conditions.
 ///
@@ -32,10 +31,10 @@ final class FhirRendererQuestionnaireUtils {
     RendererQuestionnaireController? controller,
   }) {
     // Check cache if controller is provided
-    if (controller != null && questionnaireItem.linkId.valueString != null) {
+    if (controller != null) {
       final responseHash = questionnaireResponse.hashCode;
       final cached = controller.getCachedEnableWhen(
-        questionnaireItem.linkId.valueString!,
+        questionnaireItem.linkId,
         responseHash,
       );
       if (cached != null) {
@@ -47,9 +46,9 @@ final class FhirRendererQuestionnaireUtils {
     final result = _evaluateEnableWhen(questionnaireResponse, questionnaireItem);
 
     // Cache the result if controller is provided
-    if (controller != null && questionnaireItem.linkId.valueString != null) {
+    if (controller != null) {
       controller.cacheEnableWhen(
-        questionnaireItem.linkId.valueString!,
+        questionnaireItem.linkId,
         questionnaireResponse.hashCode,
         result,
       );
@@ -67,15 +66,15 @@ final class FhirRendererQuestionnaireUtils {
       List<QuestionnaireEnableWhen> enableWhen = questionnaireItem.enableWhen!;
 
       // Determine the behavior (default is "any" / OR logic)
-      final isAndBehavior = questionnaireItem.enableBehavior?.valueEnum ==
-          EnableWhenBehaviorEnum.all;
+      final isAndBehavior =
+          questionnaireItem.enableBehavior == QuestionnaireEnableBehavior.all;
 
       // Evaluate each enableWhen condition
       for (QuestionnaireEnableWhen enableWhenCondition in enableWhen) {
         QuestionnaireResponseItem? questionnaireResponseItem =
             FhirRendererQuestionnaireResponseUtils.findIsolatedItem(
           questionnaireResponse,
-          enableWhenCondition.question.valueString,
+          enableWhenCondition.question,
         );
 
         // Check if this condition is satisfied
@@ -139,12 +138,12 @@ final class FhirRendererQuestionnaireUtils {
     QuestionnaireEnableWhen questionnaireEnableWhen,
   ) {
     final double? numericValue = _getNumericValueFromResponseAnswer(
-      questionnaireResponseAnswer.valueX,
+      questionnaireResponseAnswer,
     );
 
     final double? enableWhenNumericValue =
         _getNumericValueFromQuestionnaireAnswerEnableWhen(
-      questionnaireEnableWhen.answerX,
+      questionnaireEnableWhen,
     );
 
     if (numericValue != null && enableWhenNumericValue != null) {
@@ -166,15 +165,15 @@ final class FhirRendererQuestionnaireUtils {
       }
     } else {
       final dynamic enableWhenAnswerCondition =
-          questionnaireEnableWhen.answerCoding?.code?.valueString ??
-              questionnaireEnableWhen.answerBoolean?.valueBoolean ??
-              questionnaireEnableWhen.answerReference?.reference?.valueString ??
-              questionnaireEnableWhen.answerString?.valueString;
+          questionnaireEnableWhen.answerCoding?.code ??
+              questionnaireEnableWhen.answerBoolean ??
+              questionnaireEnableWhen.answerReference?.reference ??
+              questionnaireEnableWhen.answerString;
       final dynamic responseAnswer = questionnaireResponseAnswer
-              .valueCoding?.code?.valueString ??
-          questionnaireResponseAnswer.valueBoolean?.valueBoolean ??
-          questionnaireResponseAnswer.valueReference?.reference?.valueString ??
-          questionnaireResponseAnswer.valueString?.valueString;
+              .valueCoding?.code ??
+          questionnaireResponseAnswer.valueBoolean ??
+          questionnaireResponseAnswer.valueReference?.reference ??
+          questionnaireResponseAnswer.valueString;
 
       switch (questionnaireEnableWhen.operator_) {
         case QuestionnaireItemOperator.eq:
@@ -191,153 +190,65 @@ final class FhirRendererQuestionnaireUtils {
     }
   }
 
-  /// Extracts a numeric value from a questionnaire enable/disable condition answer.
+  /// Reduces a comparable answer value to a number, so `>`/`<`/`>=`/`<=`
+  /// work uniformly across the types that have an ordering.
   ///
-  /// Converts various FHIR answer types (Date, DateTime, Time, Decimal, Integer, Quantity, String)
-  /// to numeric values for comparison. Unsupported types return null.
-  ///
-  /// Parameters:
-  ///   * [questResponseAnswer] - The enable/disable condition answer to extract from
-  ///
-  /// Returns:
-  ///   A numeric value as a `double` if conversion is possible, `null` otherwise.
-  ///   Dates/DateTimes are converted to milliseconds since epoch.
-  ///   Times are parsed and converted to milliseconds since epoch.
+  /// Dates and dateTimes become milliseconds since epoch; times become
+  /// milliseconds since midnight. Both sides of a comparison go through this
+  /// same conversion, so the units only need to be consistent, not absolute.
+  /// Types with no natural ordering (boolean, coding, reference, attachment)
+  /// return null, which sends the caller down the equality path instead.
+  static double? _numericValue({
+    FhirDate? date,
+    FhirDateTime? dateTime,
+    FhirTime? time,
+    double? decimal,
+    int? integer,
+    Quantity? quantity,
+    String? string,
+  }) {
+    if (date != null) {
+      return date.toDateTime()?.millisecondsSinceEpoch.toDouble();
+    }
+    if (dateTime != null) {
+      return dateTime.toDateTime()?.millisecondsSinceEpoch.toDouble();
+    }
+    if (time != null) {
+      final seconds = time.secondsSinceMidnight;
+      return seconds == null ? null : (seconds * Duration.millisecondsPerSecond)
+          .toDouble();
+    }
+    if (decimal != null) return decimal;
+    if (integer != null) return integer.toDouble();
+    if (quantity != null) return quantity.value ?? 0.0;
+    // A numeric answer stored as a string still compares numerically.
+    if (string != null) return double.tryParse(string);
+    return null;
+  }
+
+  /// The numeric form of an `enableWhen` condition's answer, if it has one.
   static double? _getNumericValueFromQuestionnaireAnswerEnableWhen(
-    AnswerXQuestionnaireEnableWhen? questResponseAnswer,
-  ) {
-    if (questResponseAnswer == null) {
-      return null;
-    }
-    switch (questResponseAnswer) {
-      case FhirDate _:
-        if (questResponseAnswer.valueDateTime != null) {
-          return questResponseAnswer.valueDateTime!.millisecondsSinceEpoch
-              .toDouble();
-        }
-        break;
-      case FhirDateTime _:
-        if (questResponseAnswer.valueDateTime != null) {
-          return questResponseAnswer.valueDateTime!.millisecondsSinceEpoch
-              .toDouble();
-        }
-        break;
-      case FhirTime _:
-        if (questResponseAnswer.valueString != null) {
-          return DateFormat.Hm()
-              .parse(questResponseAnswer.valueString!)
-              .millisecondsSinceEpoch
-              .toDouble();
-        }
-        break;
-      case FhirDecimal _:
-        if (questResponseAnswer.valueDouble != null) {
-          return questResponseAnswer.valueDouble!;
-        }
-        break;
-      case FhirInteger _:
-        if (questResponseAnswer.valueInt != null) {
-          return questResponseAnswer.valueInt!.toDouble();
-        }
-        break;
-      case Quantity _:
-        if (questResponseAnswer.value != null) {
-          return questResponseAnswer.value!.valueDouble ??
-              questResponseAnswer.value!.valueInt?.toDouble() ??
-              0.0;
-        }
-        break;
-      case FhirString _:
-        if (questResponseAnswer.valueString != null &&
-            (questResponseAnswer.valueString!.isInteger ||
-                questResponseAnswer.valueString!.isDecimal())) {
-          return double.parse(questResponseAnswer.valueString!);
-        }
-        break;
-      case FhirBoolean _:
-      case Reference _:
-      case Attachment _:
-      case Coding _:
-      case FhirUri _:
-      default:
-        break;
-    }
+    QuestionnaireEnableWhen enableWhen,
+  ) => _numericValue(
+        date: enableWhen.answerDate,
+        dateTime: enableWhen.answerDateTime,
+        time: enableWhen.answerTime,
+        decimal: enableWhen.answerDecimal,
+        integer: enableWhen.answerInteger,
+        quantity: enableWhen.answerQuantity,
+        string: enableWhen.answerString,
+      );
 
-    return null;
-  }
-
-  /// Extracts a numeric value from a questionnaire response answer.
-  ///
-  /// Converts various FHIR answer types (Date, DateTime, Time, Decimal, Integer, Quantity, String)
-  /// to numeric values for comparison. Unsupported types return null.
-  ///
-  /// Parameters:
-  ///   * [questResponseAnswer] - The response answer to extract from
-  ///
-  /// Returns:
-  ///   A numeric value as a `double` if conversion is possible, `null` otherwise.
-  ///   Dates/DateTimes are converted to milliseconds since epoch.
-  ///   Times are parsed and converted to milliseconds since epoch.
+  /// The numeric form of a response answer, if it has one.
   static double? _getNumericValueFromResponseAnswer(
-    ValueXQuestionnaireResponseAnswer? questResponseAnswer,
-  ) {
-    if (questResponseAnswer == null) {
-      return null;
-    }
-    switch (questResponseAnswer) {
-      case FhirDate _:
-        if (questResponseAnswer.valueDateTime != null) {
-          return questResponseAnswer.valueDateTime!.millisecondsSinceEpoch
-              .toDouble();
-        }
-        break;
-      case FhirDateTime _:
-        if (questResponseAnswer.valueDateTime != null) {
-          return questResponseAnswer.valueDateTime!.millisecondsSinceEpoch
-              .toDouble();
-        }
-        break;
-      case FhirTime _:
-        if (questResponseAnswer.valueString != null) {
-          return DateFormat.Hm()
-              .parse(questResponseAnswer.valueString!)
-              .millisecondsSinceEpoch
-              .toDouble();
-        }
-        break;
-      case FhirDecimal _:
-        if (questResponseAnswer.valueDouble != null) {
-          return questResponseAnswer.valueDouble!;
-        }
-        break;
-      case FhirInteger _:
-        if (questResponseAnswer.valueInt != null) {
-          return questResponseAnswer.valueInt!.toDouble();
-        }
-        break;
-      case Quantity _:
-        if (questResponseAnswer.value != null) {
-          return questResponseAnswer.value!.valueDouble ??
-              questResponseAnswer.value!.valueInt?.toDouble() ??
-              0.0;
-        }
-        break;
-      case FhirString _:
-        if (questResponseAnswer.valueString != null &&
-            (questResponseAnswer.valueString!.isInteger ||
-                questResponseAnswer.valueString!.isDecimal())) {
-          return double.parse(questResponseAnswer.valueString!);
-        }
-        break;
-      case FhirBoolean _:
-      case Reference _:
-      case Attachment _:
-      case Coding _:
-      case FhirUri _:
-      default:
-        break;
-    }
-
-    return null;
-  }
+    QuestionnaireResponseAnswer answer,
+  ) => _numericValue(
+        date: answer.valueDate,
+        dateTime: answer.valueDateTime,
+        time: answer.valueTime,
+        decimal: answer.valueDecimal,
+        integer: answer.valueInteger,
+        quantity: answer.valueQuantity,
+        string: answer.valueString,
+      );
 }

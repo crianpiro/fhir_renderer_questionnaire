@@ -1,6 +1,6 @@
 name: fhir_renderer_questionnaire
 description: "A flutter package to render FHIR questionnaires, based on the FHIR R4 specification."
-version: 1.1.2
+version: 2.0.0
 homepage: https://alphacodelabs.de/
 repository: https://github.com/crianpiro/fhir_renderer_questionnaire
 funding:
@@ -19,7 +19,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  fhir_r4: ^0.4.2
   intl: ^0.20.2
   file_picker: ^8.1.4
   mime: ^2.0.0

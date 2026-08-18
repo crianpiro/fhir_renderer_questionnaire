@@ -155,10 +155,22 @@ export 'src/core/mixins/choice_widget_builder_mixin.dart'
 /// Extension methods for FHIR objects
 export 'src/core/extensions/fhir_extensions.dart'
     show
-        FhirRendererQuestionnaireExtensions,
+        FhirExtensionListLookup,
+        QuestionnaireExtensionUrls,
         QuestionnaireItemDisplayExtensions,
         QuestionnaireItemValidationExtensions,
         QuestionnaireAnswerOptionExtensions;
+
+// ============================================================================
+// MODELS
+// ============================================================================
+
+/// The FHIR R4 Questionnaire and QuestionnaireResponse models.
+///
+/// This package defines its own models rather than depending on `fhir_r4`, so
+/// it stays light and does not force a FHIR library choice on its users.
+/// Build them from FHIR JSON with `fromJson` and serialize with `toJson`.
+export 'src/core/models/models.dart';
 
 // ============================================================================
 // FACTORIES

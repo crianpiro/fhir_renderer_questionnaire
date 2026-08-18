@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 import 'package:flutter/material.dart';
 
@@ -90,7 +89,7 @@ class _QuestionnaireExamplePageState extends State<QuestionnaireExamplePage> {
                   const SizedBox(height: 8),
                   Text('Items: ${response.item?.length ?? 0}'),
                   const SizedBox(height: 8),
-                  Text('Authored: ${response.authored?.valueString ?? "N/A"}'),
+                  Text('Authored: ${response.authored?.value ?? "N/A"}'),
                   const Divider(),
                   const Text(
                     'Full response logged to console.',
@@ -198,7 +197,7 @@ class _QuestionnaireExamplePageState extends State<QuestionnaireExamplePage> {
     return SliverMainAxisGroup(
       slivers: [
         SliverAppBar(
-          key: Key("${questionnaireItem.linkId.valueString}"),
+          key: Key(questionnaireItem.linkId),
           pinned: true,
           automaticallyImplyLeading: false,
           backgroundColor: Theme.of(context).colorScheme.primaryContainer,
@@ -211,7 +210,7 @@ class _QuestionnaireExamplePageState extends State<QuestionnaireExamplePage> {
               ),
               Flexible(
                 child: Text(
-                  "${questionnaireItem.text?.valueString}",
+                  "${questionnaireItem.text}",
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(fontSize: 16),

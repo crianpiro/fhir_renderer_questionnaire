@@ -69,6 +69,7 @@ QuestionnaireSliversViewRenderer(
 
 ## 🔆 Core Capabilities
 
+- **No FHIR dependency**: ships its own FHIR R4 Questionnaire models, so the package stays light and does not force a FHIR library on your app
 - **Validation Support**: Custom regex validation via FHIR extensions plus automatic default validation for integer, decimal, url, and quantity types
 - **Smart Keyboard Types**: Automatically selects appropriate keyboard (number pad for integers, decimal pad for decimals, URL keyboard for URLs, multiline for text)
 - **Conditional Logic**: Full support for `enableWhen` with AND/OR behavior to show/hide items based on user responses
@@ -79,6 +80,36 @@ QuestionnaireSliversViewRenderer(
 - **Custom Builders**: Replace any default widget with your own implementation for complete UI control
 - **Performance Optimized**: EnableWhen caching system and optimized rendering for large questionnaires
 - **Memory Management**: Proper cleanup of resources (FocusNode, TextEditingController) to prevent memory leaks
+
+## 🔆 Models
+
+This package defines its own FHIR R4 models, so it does not depend on `fhir_r4` (16 MB across ~644 files, plus `xml`, `yaml` and `uuid`) and does not force a FHIR library choice on your app. JSON is the boundary in both directions:
+
+```dart
+import 'dart:convert';
+import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
+
+final questionnaire = Questionnaire.fromJson(jsonDecode(source));
+
+final response = controller.generateQuestionnaireResponse();
+await http.post(url, body: jsonEncode(response.toJson()));
+```
+
+Already using `fhir_r4` elsewhere in your app? Convert through JSON:
+
+```dart
+final questionnaire = Questionnaire.fromJson(fhirR4Questionnaire.toJson());
+```
+
+Only the fields needed to render are typed. Everything else in the source JSON — `contact`, `jurisdiction`, `meta`, vendor extensions — is preserved and written back by `toJson`, so a parse/serialize cycle never silently drops data.
+
+Partial dates keep their precision, which a plain `DateTime` cannot express:
+
+```dart
+FhirDate('2024-03').precision;    // FhirDatePrecision.month
+FhirDate('2024-03').toString();   // '2024-03', not '2024-03-01'
+FhirDate('2024-03').toDateTime(); // DateTime(2024, 3, 1) when you want one
+```
 
 ## 🔆 Usage
 
@@ -97,7 +128,6 @@ The following example uses the choiceItemBuilder to replace the default UI of th
 
 ```dart
 import 'package:fhir_renderer_questionnaire_example/widgets/segmented_choice.dart';
-import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 import 'package:flutter/material.dart';
 

@@ -1,4 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/models/models.dart';
 
 import 'choice_base_mixin.dart';
 
@@ -15,8 +15,8 @@ mixin OpenChoiceValueMixin on ChoiceBaseMixin {
     if (responseItem?.answer == null) return null;
 
     for (final answer in responseItem!.answer!) {
-      if (answer.valueX is FhirString) {
-        return (answer.valueX as FhirString).valueString;
+      if (answer.valueString != null) {
+        return answer.valueString;
       }
     }
     return null;

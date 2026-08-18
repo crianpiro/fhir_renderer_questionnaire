@@ -1,4 +1,3 @@
-import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/questionnaire_group_segments.dart';
 import 'package:fhir_renderer_questionnaire/src/ui/components/slivers/questionnaire_sliver_item_wrapper.dart';
@@ -7,24 +6,24 @@ import 'package:flutter_test/flutter_test.dart';
 
 QuestionnaireItem _string(String linkId, String text, {bool required = false}) =>
     QuestionnaireItem(
-      linkId: FhirString(linkId),
+      linkId: linkId,
       type: QuestionnaireItemType.string,
-      text: FhirString(text),
-      required_: FhirBoolean(required),
+      text: text,
+      required_: required,
     );
 
 QuestionnaireItem _group(String linkId, String text,
         {required List<QuestionnaireItem> children}) =>
     QuestionnaireItem(
-      linkId: FhirString(linkId),
+      linkId: linkId,
       type: QuestionnaireItemType.group,
-      text: FhirString(text),
+      text: text,
       item: children,
     );
 
 /// A questionnaire long enough that its tail sits outside the cache extent.
 Questionnaire _longQuestionnaire() => Questionnaire(
-      status: PublicationStatus.active,
+      status: QuestionnairePublicationStatus.active,
       item: [
         for (var i = 0; i < 40; i++) _string('q$i', 'Question $i'),
         _string('last', 'Last question', required: true),
@@ -92,19 +91,19 @@ void main() {
     testWidgets('validate() is side-effect free and enableWhen aware',
         (WidgetTester tester) async {
       final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+        status: QuestionnairePublicationStatus.active,
         item: [
           _string('trigger', 'Trigger'),
           QuestionnaireItem(
-            linkId: FhirString('conditional'),
+            linkId: 'conditional',
             type: QuestionnaireItemType.string,
-            text: FhirString('Conditional'),
-            required_: FhirBoolean(true),
+            text: 'Conditional',
+            required_: true,
             enableWhen: [
               QuestionnaireEnableWhen(
-                question: FhirString('trigger'),
+                question: 'trigger',
                 operator_: QuestionnaireItemOperator.eq,
-                answerX: FhirString('yes'),
+                answerString: 'yes',
               ),
             ],
           ),
@@ -139,7 +138,7 @@ void main() {
     testWidgets('hoists nested group entries into the list',
         (WidgetTester tester) async {
       final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+        status: QuestionnairePublicationStatus.active,
         item: [
           _group('outer', 'Outer group', children: [
             _string('direct', 'Direct child'),
@@ -178,7 +177,7 @@ void main() {
     testWidgets('builds group children through a lazy SliverList',
         (WidgetTester tester) async {
       final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+        status: QuestionnairePublicationStatus.active,
         item: [
           _group('section', 'Section', children: [
             _string('a', 'Question A'),
@@ -207,7 +206,7 @@ void main() {
     testWidgets('keeps eager sliver children when a custom builder is set',
         (WidgetTester tester) async {
       final questionnaire = Questionnaire(
-        status: PublicationStatus.active,
+        status: QuestionnairePublicationStatus.active,
         item: [
           _group('section', 'Section', children: [
             _string('a', 'Question A'),
@@ -225,7 +224,7 @@ void main() {
             fieldItemBuilder: (index, isLastItem, fieldController,
                     selectedResponse, item, onAnswerChanged) =>
                 SliverToBoxAdapter(
-              child: Text('custom ${item.text?.valueString}'),
+              child: Text('custom ${item.text}'),
             ),
           ),
         ),

@@ -1,4 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/models/models.dart';
 
 /// Mixin providing boolean value extraction logic for FHIR questionnaire items.
 ///
@@ -16,12 +16,7 @@ mixin BooleanValueMixin {
     QuestionnaireResponseItem? responseItem,
     QuestionnaireItem questionnaireItem,
   ) {
-    return responseItem?.answer?.firstOrNull?.valueBoolean?.valueBoolean ??
-        (questionnaireItem.initial != null &&
-                questionnaireItem.initial!.isNotEmpty &&
-                questionnaireItem.initial!.first.valueX is FhirBoolean
-            ? (questionnaireItem.initial!.first.valueX as FhirBoolean)
-                .valueBoolean
-            : null);
+    return responseItem?.answer?.firstOrNull?.valueBoolean ??
+        questionnaireItem.initial?.firstOrNull?.valueBoolean;
   }
 }

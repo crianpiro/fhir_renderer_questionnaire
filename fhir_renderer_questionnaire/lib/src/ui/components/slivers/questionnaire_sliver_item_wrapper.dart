@@ -23,7 +23,7 @@ final class QuestionnaireSliverItemWrapper extends QuestionnaireItemWrapper {
     final inheritedData = InheritedQuestionnaireRenderer.of(context);
     assignDependents(inheritedData);
 
-    final isRequired = questionnaireItem.required_?.valueBoolean ?? false;
+    final isRequired = questionnaireItem.required_ ?? false;
     final responseItem = findQuestionnaireResponseItem(
       inheritedData.questionnaireResponse,
       itemLinkId,
@@ -51,7 +51,7 @@ final class QuestionnaireSliverItemWrapper extends QuestionnaireItemWrapper {
         sliver: SliverIgnorePointer(
           ignoring: inheritedData.readOnly
               ? inheritedData.readOnly
-              : questionnaireItem.readOnly?.valueBoolean ?? false,
+              : questionnaireItem.readOnly ?? false,
           sliver: assignQuestionnaireWidget(inheritedData),
         ),
       )

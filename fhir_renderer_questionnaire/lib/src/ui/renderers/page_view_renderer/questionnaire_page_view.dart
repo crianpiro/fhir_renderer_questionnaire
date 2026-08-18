@@ -1,4 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/models/models.dart';
 import 'package:fhir_renderer_questionnaire/src/core/utils/fhir_renderer_questionnaire_utils.dart';
 import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/base_decorator.dart';
 import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/questionnaire_item_wrapper.dart';
@@ -38,7 +38,7 @@ class QuestionnairePageView extends StatelessWidget {
               final item = items[index];
               return SingleChildScrollView(
                 child: QuestionnaireItemWrapper(
-                  key: ValueKey(item.linkId.valueString),
+                  key: ValueKey(item.linkId),
                   questionnaireItem: item,
                   index: index,
                   isLastItem: items.length - 1 == index,

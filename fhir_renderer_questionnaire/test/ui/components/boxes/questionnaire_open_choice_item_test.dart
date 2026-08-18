@@ -1,4 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 import 'package:fhir_renderer_questionnaire/src/ui/components/boxes/questionnaire_open_choice_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -33,16 +33,16 @@ void main() {
         linkId: 'color',
         text: 'What is your favorite color?',
         answerOptions: [
-          QuestionnaireAnswerOption(
-            valueX: Coding(
-              code: FhirCode('red'),
-              display: FhirString('Red'),
+          const QuestionnaireAnswerOption(
+            valueCoding: Coding(
+              code: 'red',
+              display: 'Red',
             ),
           ),
-          QuestionnaireAnswerOption(
-            valueX: Coding(
-              code: FhirCode('blue'),
-              display: FhirString('Blue'),
+          const QuestionnaireAnswerOption(
+            valueCoding: Coding(
+              code: 'blue',
+              display: 'Blue',
             ),
           ),
         ],
@@ -120,11 +120,11 @@ void main() {
       // Verify response was updated with custom text
       expect(capturedResponse, isNotNull);
       final responseItem = capturedResponse!.item?.firstWhere(
-        (i) => i.linkId.valueString == 'color',
+        (i) => i.linkId == 'color',
       );
       expect(
         responseItem?.answer?.first.valueString,
-        equals(FhirString('Purple')),
+        equals('Purple'),
       );
     });
 
@@ -158,16 +158,16 @@ void main() {
         text: 'Select your hobbies',
         repeats: true,
         answerOptions: [
-          QuestionnaireAnswerOption(
-            valueX: Coding(
-              code: FhirCode('reading'),
-              display: FhirString('Reading'),
+          const QuestionnaireAnswerOption(
+            valueCoding: Coding(
+              code: 'reading',
+              display: 'Reading',
             ),
           ),
-          QuestionnaireAnswerOption(
-            valueX: Coding(
-              code: FhirCode('sports'),
-              display: FhirString('Sports'),
+          const QuestionnaireAnswerOption(
+            valueCoding: Coding(
+              code: 'sports',
+              display: 'Sports',
             ),
           ),
         ],
@@ -202,10 +202,10 @@ void main() {
         status: QuestionnaireResponseStatus.inProgress,
         item: [
           QuestionnaireResponseItem(
-            linkId: FhirString('color'),
+            linkId: 'color',
             answer: [
               QuestionnaireResponseAnswer(
-                valueX: FhirString('Purple'),
+                valueString: 'Purple',
               ),
             ],
           ),
@@ -265,11 +265,11 @@ void main() {
 
       // Response should have no string answer
       final responseItem = capturedResponse?.item?.firstWhere(
-        (i) => i.linkId.valueString == 'color',
+        (i) => i.linkId == 'color',
       );
       // Either null or no string type answers
       final stringAnswers = responseItem?.answer?.where(
-        (a) => a.valueX is FhirString,
+        (a) => a.valueString != null,
       );
       expect(stringAnswers?.isEmpty ?? true, isTrue);
     });
@@ -281,16 +281,16 @@ void main() {
         text: 'What is your favorite color?',
         repeats: false,
         answerOptions: [
-          QuestionnaireAnswerOption(
-            valueX: Coding(
-              code: FhirCode('red'),
-              display: FhirString('Red'),
+          const QuestionnaireAnswerOption(
+            valueCoding: Coding(
+              code: 'red',
+              display: 'Red',
             ),
           ),
-          QuestionnaireAnswerOption(
-            valueX: Coding(
-              code: FhirCode('blue'),
-              display: FhirString('Blue'),
+          const QuestionnaireAnswerOption(
+            valueCoding: Coding(
+              code: 'blue',
+              display: 'Blue',
             ),
           ),
         ],
@@ -320,10 +320,10 @@ void main() {
       // Verify response was updated with coding
       expect(capturedResponse, isNotNull);
       final responseItem = capturedResponse!.item?.firstWhere(
-        (i) => i.linkId.valueString == 'color',
+        (i) => i.linkId == 'color',
       );
       expect(
-        responseItem?.answer?.first.valueCoding?.code?.valueString,
+        responseItem?.answer?.first.valueCoding?.code,
         equals('red'),
       );
     });

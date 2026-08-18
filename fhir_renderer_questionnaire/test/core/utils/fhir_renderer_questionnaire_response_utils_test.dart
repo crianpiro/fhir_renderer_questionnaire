@@ -1,4 +1,3 @@
-import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 import 'package:test/test.dart';
 
@@ -10,15 +9,15 @@ void main() {
           status: QuestionnaireResponseStatus.inProgress,
           item: [
             QuestionnaireResponseItem(
-              linkId: FhirString('q1'),
+              linkId: 'q1',
               answer: [
-                QuestionnaireResponseAnswer(valueX: FhirString('answer1')),
+                QuestionnaireResponseAnswer(valueString: 'answer1'),
               ],
             ),
             QuestionnaireResponseItem(
-              linkId: FhirString('q2'),
+              linkId: 'q2',
               answer: [
-                QuestionnaireResponseAnswer(valueX: FhirString('answer2')),
+                QuestionnaireResponseAnswer(valueString: 'answer2'),
               ],
             ),
           ],
@@ -30,7 +29,7 @@ void main() {
         );
 
         expect(result, isNotNull);
-        expect(result!.linkId.valueString, equals('q1'));
+        expect(result!.linkId, equals('q1'));
       });
 
       test('should find nested item in groups', () {
@@ -38,12 +37,12 @@ void main() {
           status: QuestionnaireResponseStatus.inProgress,
           item: [
             QuestionnaireResponseItem(
-              linkId: FhirString('group1'),
+              linkId: 'group1',
               item: [
                 QuestionnaireResponseItem(
-                  linkId: FhirString('nested_q1'),
+                  linkId: 'nested_q1',
                   answer: [
-                    QuestionnaireResponseAnswer(valueX: FhirString('nested_answer')),
+                    QuestionnaireResponseAnswer(valueString: 'nested_answer'),
                   ],
                 ),
               ],
@@ -57,14 +56,14 @@ void main() {
         );
 
         expect(result, isNotNull);
-        expect(result!.linkId.valueString, equals('nested_q1'));
+        expect(result!.linkId, equals('nested_q1'));
       });
 
       test('should return null when item not found', () {
-        final response = QuestionnaireResponse(
+        const response = QuestionnaireResponse(
           status: QuestionnaireResponseStatus.inProgress,
           item: [
-            QuestionnaireResponseItem(linkId: FhirString('q1')),
+            QuestionnaireResponseItem(linkId: 'q1'),
           ],
         );
 
@@ -79,10 +78,10 @@ void main() {
 
     group('findIsolatedItem', () {
       test('should handle null linkId', () {
-        final response = QuestionnaireResponse(
+        const response = QuestionnaireResponse(
           status: QuestionnaireResponseStatus.inProgress,
           item: [
-            QuestionnaireResponseItem(linkId: FhirString('q1')),
+            QuestionnaireResponseItem(linkId: 'q1'),
           ],
         );
 
@@ -97,20 +96,20 @@ void main() {
 
     group('setResponseAnswerInQuestionnaireResponse', () {
       test('should set string answer for existing item', () {
-        final response = QuestionnaireResponse(
+        const response = QuestionnaireResponse(
           status: QuestionnaireResponseStatus.inProgress,
           item: [
-            QuestionnaireResponseItem(linkId: FhirString('q1')),
+            QuestionnaireResponseItem(linkId: 'q1'),
           ],
         );
 
-        final questionnaireItem = QuestionnaireItem(
-          linkId: FhirString('q1'),
+        const questionnaireItem = QuestionnaireItem(
+          linkId: 'q1',
           type: QuestionnaireItemType.string,
         );
 
         final answer = QuestionnaireResponseAnswer(
-          valueX: FhirString('test answer'),
+          valueString: 'test answer',
         );
 
         final result = FhirRendererQuestionnaireResponseUtils
@@ -121,26 +120,26 @@ void main() {
         );
 
         final item = result.item?.firstWhere(
-          (i) => i.linkId.valueString == 'q1',
+          (i) => i.linkId == 'q1',
         );
-        expect(item?.answer?.first.valueString?.valueString, equals('test answer'));
+        expect(item?.answer?.first.valueString, equals('test answer'));
       });
 
       test('should handle integer answers', () {
-        final response = QuestionnaireResponse(
+        const response = QuestionnaireResponse(
           status: QuestionnaireResponseStatus.inProgress,
           item: [
-            QuestionnaireResponseItem(linkId: FhirString('age')),
+            QuestionnaireResponseItem(linkId: 'age'),
           ],
         );
 
-        final questionnaireItem = QuestionnaireItem(
-          linkId: FhirString('age'),
+        const questionnaireItem = QuestionnaireItem(
+          linkId: 'age',
           type: QuestionnaireItemType.integer,
         );
 
         final answer = QuestionnaireResponseAnswer(
-          valueX: FhirInteger(25),
+          valueInteger: 25,
         );
 
         final result = FhirRendererQuestionnaireResponseUtils
@@ -151,26 +150,26 @@ void main() {
         );
 
         final item = result.item?.firstWhere(
-          (i) => i.linkId.valueString == 'age',
+          (i) => i.linkId == 'age',
         );
-        expect(item?.answer?.first.valueInteger, equals(FhirInteger(25)));
+        expect(item?.answer?.first.valueInteger, equals(25));
       });
 
       test('should handle decimal answers', () {
-        final response = QuestionnaireResponse(
+        const response = QuestionnaireResponse(
           status: QuestionnaireResponseStatus.inProgress,
           item: [
-            QuestionnaireResponseItem(linkId: FhirString('weight')),
+            QuestionnaireResponseItem(linkId: 'weight'),
           ],
         );
 
-        final questionnaireItem = QuestionnaireItem(
-          linkId: FhirString('weight'),
+        const questionnaireItem = QuestionnaireItem(
+          linkId: 'weight',
           type: QuestionnaireItemType.decimal,
         );
 
         final answer = QuestionnaireResponseAnswer(
-          valueX: FhirDecimal(75.5),
+          valueDecimal: 75.5,
         );
 
         final result = FhirRendererQuestionnaireResponseUtils
@@ -181,26 +180,26 @@ void main() {
         );
 
         final item = result.item?.firstWhere(
-          (i) => i.linkId.valueString == 'weight',
+          (i) => i.linkId == 'weight',
         );
-        expect(item?.answer?.first.valueDecimal, equals(FhirDecimal(75.5)));
+        expect(item?.answer?.first.valueDecimal, equals(75.5));
       });
 
       test('should handle boolean answers', () {
-        final response = QuestionnaireResponse(
+        const response = QuestionnaireResponse(
           status: QuestionnaireResponseStatus.inProgress,
           item: [
-            QuestionnaireResponseItem(linkId: FhirString('consent')),
+            QuestionnaireResponseItem(linkId: 'consent'),
           ],
         );
 
-        final questionnaireItem = QuestionnaireItem(
-          linkId: FhirString('consent'),
+        const questionnaireItem = QuestionnaireItem(
+          linkId: 'consent',
           type: QuestionnaireItemType.boolean,
         );
 
         final answer = QuestionnaireResponseAnswer(
-          valueX: FhirBoolean(true),
+          valueBoolean: true,
         );
 
         final result = FhirRendererQuestionnaireResponseUtils
@@ -211,30 +210,30 @@ void main() {
         );
 
         final item = result.item?.firstWhere(
-          (i) => i.linkId.valueString == 'consent',
+          (i) => i.linkId == 'consent',
         );
-        expect(item?.answer?.first.valueBoolean, equals(FhirBoolean(true)));
+        expect(item?.answer?.first.valueBoolean, equals(true));
       });
     });
 
     group('setAnswerOptionInQuestionnaireResponse', () {
       test('should set coding answer from answer option', () {
-        final response = QuestionnaireResponse(
+        const response = QuestionnaireResponse(
           status: QuestionnaireResponseStatus.inProgress,
           item: [
-            QuestionnaireResponseItem(linkId: FhirString('gender')),
+            QuestionnaireResponseItem(linkId: 'gender'),
           ],
         );
 
-        final questionnaireItem = QuestionnaireItem(
-          linkId: FhirString('gender'),
+        const questionnaireItem = QuestionnaireItem(
+          linkId: 'gender',
           type: QuestionnaireItemType.choice,
         );
 
-        final answerOption = QuestionnaireAnswerOption(
-          valueX: Coding(
-            code: FhirCode('male'),
-            display: FhirString('Male'),
+        const answerOption = QuestionnaireAnswerOption(
+          valueCoding: Coding(
+            code: 'male',
+            display: 'Male',
           ),
         );
 
@@ -246,9 +245,9 @@ void main() {
         );
 
         final item = result.item?.firstWhere(
-          (i) => i.linkId.valueString == 'gender',
+          (i) => i.linkId == 'gender',
         );
-        expect(item?.answer?.first.valueCoding?.code?.valueString, equals('male'));
+        expect(item?.answer?.first.valueCoding?.code, equals('male'));
       });
     });
 
@@ -258,24 +257,24 @@ void main() {
           status: QuestionnaireResponseStatus.inProgress,
           item: [
             QuestionnaireResponseItem(
-              linkId: FhirString('hobbies'),
+              linkId: 'hobbies',
               answer: [
                 QuestionnaireResponseAnswer(
-                  valueX: Coding(code: FhirCode('reading')),
+                  valueCoding: const Coding(code: 'reading'),
                 ),
               ],
             ),
           ],
         );
 
-        final questionnaireItem = QuestionnaireItem(
-          linkId: FhirString('hobbies'),
+        const questionnaireItem = QuestionnaireItem(
+          linkId: 'hobbies',
           type: QuestionnaireItemType.choice,
-          repeats: FhirBoolean(true),
+          repeats: true,
         );
 
-        final answerOption = QuestionnaireAnswerOption(
-          valueX: Coding(code: FhirCode('sports')),
+        const answerOption = QuestionnaireAnswerOption(
+          valueCoding: Coding(code: 'sports'),
         );
 
         final result = FhirRendererQuestionnaireResponseUtils
@@ -286,7 +285,7 @@ void main() {
         );
 
         final item = result.item?.firstWhere(
-          (i) => i.linkId.valueString == 'hobbies',
+          (i) => i.linkId == 'hobbies',
         );
         expect(item?.answer?.length, equals(2));
       });
@@ -296,27 +295,27 @@ void main() {
           status: QuestionnaireResponseStatus.inProgress,
           item: [
             QuestionnaireResponseItem(
-              linkId: FhirString('hobbies'),
+              linkId: 'hobbies',
               answer: [
                 QuestionnaireResponseAnswer(
-                  valueX: Coding(code: FhirCode('reading')),
+                  valueCoding: const Coding(code: 'reading'),
                 ),
                 QuestionnaireResponseAnswer(
-                  valueX: Coding(code: FhirCode('sports')),
+                  valueCoding: const Coding(code: 'sports'),
                 ),
               ],
             ),
           ],
         );
 
-        final questionnaireItem = QuestionnaireItem(
-          linkId: FhirString('hobbies'),
+        const questionnaireItem = QuestionnaireItem(
+          linkId: 'hobbies',
           type: QuestionnaireItemType.choice,
-          repeats: FhirBoolean(true),
+          repeats: true,
         );
 
-        final answerOption = QuestionnaireAnswerOption(
-          valueX: Coding(code: FhirCode('sports')),
+        const answerOption = QuestionnaireAnswerOption(
+          valueCoding: Coding(code: 'sports'),
         );
 
         final result = FhirRendererQuestionnaireResponseUtils
@@ -327,10 +326,10 @@ void main() {
         );
 
         final item = result.item?.firstWhere(
-          (i) => i.linkId.valueString == 'hobbies',
+          (i) => i.linkId == 'hobbies',
         );
         expect(item?.answer?.length, equals(1));
-        expect(item?.answer?.first.valueCoding?.code?.valueString, equals('reading'));
+        expect(item?.answer?.first.valueCoding?.code, equals('reading'));
       });
 
       // An "all"/"none" master option carries the FHIR SDC
@@ -365,7 +364,7 @@ void main() {
         String code,
       ) =>
           item.answerOption!.firstWhere(
-            (o) => o.valueCoding?.code?.valueString == code,
+            (o) => o.valueCoding?.code == code,
           );
 
       test('selecting an exclusive option clears all other selections', () {
@@ -374,13 +373,13 @@ void main() {
           status: QuestionnaireResponseStatus.inProgress,
           item: [
             QuestionnaireResponseItem(
-              linkId: FhirString('symptoms'),
+              linkId: 'symptoms',
               answer: [
                 QuestionnaireResponseAnswer(
-                  valueX: Coding(code: FhirCode('cough')),
+                  valueCoding: const Coding(code: 'cough'),
                 ),
                 QuestionnaireResponseAnswer(
-                  valueX: Coding(code: FhirCode('fever')),
+                  valueCoding: const Coding(code: 'fever'),
                 ),
               ],
             ),
@@ -395,11 +394,11 @@ void main() {
         );
 
         final item = result.item?.firstWhere(
-          (i) => i.linkId.valueString == 'symptoms',
+          (i) => i.linkId == 'symptoms',
         );
         expect(item?.answer?.length, equals(1));
         expect(
-          item?.answer?.first.valueCoding?.code?.valueString,
+          item?.answer?.first.valueCoding?.code,
           equals('none'),
         );
       });
@@ -410,10 +409,10 @@ void main() {
           status: QuestionnaireResponseStatus.inProgress,
           item: [
             QuestionnaireResponseItem(
-              linkId: FhirString('symptoms'),
+              linkId: 'symptoms',
               answer: [
                 QuestionnaireResponseAnswer(
-                  valueX: Coding(code: FhirCode('none')),
+                  valueCoding: const Coding(code: 'none'),
                 ),
               ],
             ),
@@ -428,11 +427,11 @@ void main() {
         );
 
         final item = result.item?.firstWhere(
-          (i) => i.linkId.valueString == 'symptoms',
+          (i) => i.linkId == 'symptoms',
         );
         expect(item?.answer?.length, equals(1));
         expect(
-          item?.answer?.first.valueCoding?.code?.valueString,
+          item?.answer?.first.valueCoding?.code,
           equals('cough'),
         );
       });
@@ -443,10 +442,10 @@ void main() {
           status: QuestionnaireResponseStatus.inProgress,
           item: [
             QuestionnaireResponseItem(
-              linkId: FhirString('symptoms'),
+              linkId: 'symptoms',
               answer: [
                 QuestionnaireResponseAnswer(
-                  valueX: Coding(code: FhirCode('none')),
+                  valueCoding: const Coding(code: 'none'),
                 ),
               ],
             ),
@@ -461,7 +460,7 @@ void main() {
         );
 
         final item = result.item?.firstWhere(
-          (i) => i.linkId.valueString == 'symptoms',
+          (i) => i.linkId == 'symptoms',
         );
         expect(item?.answer?.isEmpty, isTrue);
       });
@@ -469,15 +468,15 @@ void main() {
 
     group('generateInitialQuestionnaireResponse', () {
       test('should generate response from questionnaire', () {
-        final questionnaire = Questionnaire(
-          status: PublicationStatus.active,
+        const questionnaire = Questionnaire(
+          status: QuestionnairePublicationStatus.active,
           item: [
             QuestionnaireItem(
-              linkId: FhirString('name'),
+              linkId: 'name',
               type: QuestionnaireItemType.string,
             ),
             QuestionnaireItem(
-              linkId: FhirString('age'),
+              linkId: 'age',
               type: QuestionnaireItemType.integer,
             ),
           ],
@@ -491,15 +490,15 @@ void main() {
       });
 
       test('should handle nested group items', () {
-        final questionnaire = Questionnaire(
-          status: PublicationStatus.active,
+        const questionnaire = Questionnaire(
+          status: QuestionnairePublicationStatus.active,
           item: [
             QuestionnaireItem(
-              linkId: FhirString('demographics'),
+              linkId: 'demographics',
               type: QuestionnaireItemType.group,
               item: [
                 QuestionnaireItem(
-                  linkId: FhirString('name'),
+                  linkId: 'name',
                   type: QuestionnaireItemType.string,
                 ),
               ],
@@ -513,21 +512,21 @@ void main() {
         expect(result.item?.length, equals(1));
 
         final group = result.item?.first;
-        expect(group?.linkId.valueString, equals('demographics'));
+        expect(group?.linkId, equals('demographics'));
         expect(group?.item?.length, equals(1));
 
         final nestedItem = group?.item?.first;
-        expect(nestedItem?.linkId.valueString, equals('name'));
+        expect(nestedItem?.linkId, equals('name'));
       });
     });
 
     group('generateAnswers', () {
       test('should generate answers from initial string value', () {
         final item = QuestionnaireItem(
-          linkId: FhirString('name'),
+          linkId: 'name',
           type: QuestionnaireItemType.string,
           initial: [
-            QuestionnaireInitial(valueX: FhirString('John Doe')),
+            QuestionnaireInitial(valueString: 'John Doe'),
           ],
         );
 
@@ -535,15 +534,15 @@ void main() {
 
         expect(answers, isNotNull);
         expect(answers?.length, equals(1));
-        expect(answers?.first.valueString?.valueString, equals('John Doe'));
+        expect(answers?.first.valueString, equals('John Doe'));
       });
 
       test('should generate answers from initial integer value', () {
         final item = QuestionnaireItem(
-          linkId: FhirString('age'),
+          linkId: 'age',
           type: QuestionnaireItemType.integer,
           initial: [
-            QuestionnaireInitial(valueX: FhirInteger(30)),
+            QuestionnaireInitial(valueInteger: 30),
           ],
         );
 
@@ -551,15 +550,15 @@ void main() {
 
         expect(answers, isNotNull);
         expect(answers?.length, equals(1));
-        expect(answers?.first.valueInteger, equals(FhirInteger(30)));
+        expect(answers?.first.valueInteger, equals(30));
       });
 
       test('should generate answers from initial boolean value', () {
         final item = QuestionnaireItem(
-          linkId: FhirString('consent'),
+          linkId: 'consent',
           type: QuestionnaireItemType.boolean,
           initial: [
-            QuestionnaireInitial(valueX: FhirBoolean(true)),
+            QuestionnaireInitial(valueBoolean: true),
           ],
         );
 
@@ -567,18 +566,18 @@ void main() {
 
         expect(answers, isNotNull);
         expect(answers?.length, equals(1));
-        expect(answers?.first.valueBoolean, equals(FhirBoolean(true)));
+        expect(answers?.first.valueBoolean, equals(true));
       });
 
       test('should generate answers from initial coding value', () {
         final item = QuestionnaireItem(
-          linkId: FhirString('gender'),
+          linkId: 'gender',
           type: QuestionnaireItemType.choice,
           initial: [
             QuestionnaireInitial(
-              valueX: Coding(
-                code: FhirCode('female'),
-                display: FhirString('Female'),
+              valueCoding: const Coding(
+                code: 'female',
+                display: 'Female',
               ),
             ),
           ],
@@ -588,12 +587,12 @@ void main() {
 
         expect(answers, isNotNull);
         expect(answers?.length, equals(1));
-        expect(answers?.first.valueCoding?.code?.valueString, equals('female'));
+        expect(answers?.first.valueCoding?.code, equals('female'));
       });
 
       test('should return null for item without initial value', () {
-        final item = QuestionnaireItem(
-          linkId: FhirString('empty'),
+        const item = QuestionnaireItem(
+          linkId: 'empty',
           type: QuestionnaireItemType.string,
         );
 
@@ -603,8 +602,8 @@ void main() {
       });
 
       test('should return null for display item', () {
-        final item = QuestionnaireItem(
-          linkId: FhirString('info'),
+        const item = QuestionnaireItem(
+          linkId: 'info',
           type: QuestionnaireItemType.display_,
         );
 

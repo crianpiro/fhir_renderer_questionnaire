@@ -1,4 +1,4 @@
-import 'package:fhir_r4/fhir_r4.dart';
+import 'package:fhir_renderer_questionnaire/src/core/models/models.dart';
 import '../validation/default_validation_patterns.dart';
 
 /// Mixin providing regex validation logic for FHIR questionnaire text field items.

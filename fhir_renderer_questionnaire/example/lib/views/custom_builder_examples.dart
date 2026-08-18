@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:fhir_renderer_questionnaire_example/data/questionnaires_mock.dart';
 import 'package:fhir_renderer_questionnaire_example/widgets/segmented_choice.dart';
-import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_renderer_questionnaire/fhir_renderer_questionnaire.dart';
 import 'package:flutter/material.dart';
 
@@ -69,7 +68,7 @@ class CustomChoiceBuilderPage extends StatelessWidget {
                           .firstOrNull,
                   values: questionnaireItem.answerOption!,
                   valueNameResolver:
-                      (value) => "${value.valueCoding?.display?.valueString}",
+                      (value) => "${value.valueCoding?.display}",
                   enabled: true,
                   onSelectedValueChanged: (value) {
                     onAnswerOptionSelected(value);
@@ -122,7 +121,7 @@ class CustomBooleanBuilderPage extends StatelessWidget {
           onAnswerChanged,
         ) {
           final currentValue =
-              selectedResponse?.answer?.firstOrNull?.valueBoolean?.valueBoolean;
+              selectedResponse?.answer?.firstOrNull?.valueBoolean;
 
           return Card(
             margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -192,7 +191,7 @@ class CustomFieldBuilderPage extends StatelessWidget {
         ) {
           final isMultiline =
               questionnaireItem.type == QuestionnaireItemType.text;
-          final isRequired = questionnaireItem.required_?.valueBoolean ?? false;
+          final isRequired = questionnaireItem.required_ ?? false;
 
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -253,7 +252,7 @@ class CustomFieldBuilderPage extends StatelessWidget {
                       ),
                     ),
                     hintText:
-                        'Enter ${questionnaireItem.text?.valueString?.toLowerCase() ?? "value"}',
+                        'Enter ${questionnaireItem.text?.toLowerCase() ?? "value"}',
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 12,
@@ -314,20 +313,20 @@ class CustomDateTimeBuilderPage extends StatelessWidget {
             icon = Icons.calendar_month;
             final date = selectedResponse?.answer?.firstOrNull?.valueDate;
             if (date != null) {
-              displayValue = date.valueString ?? 'Selected';
+              displayValue = date.value;
             }
           } else if (itemType == QuestionnaireItemType.time) {
             icon = Icons.access_time;
             final time = selectedResponse?.answer?.firstOrNull?.valueTime;
             if (time != null) {
-              displayValue = time.valueString ?? 'Selected';
+              displayValue = time.value;
             }
           } else if (itemType == QuestionnaireItemType.dateTime) {
             icon = Icons.event;
             final dateTime =
                 selectedResponse?.answer?.firstOrNull?.valueDateTime;
             if (dateTime != null) {
-              displayValue = dateTime.valueString ?? 'Selected';
+              displayValue = dateTime.value;
             }
           }
 
@@ -370,9 +369,8 @@ class CustomDateTimeBuilderPage extends StatelessWidget {
                       if (time != null) {
                         onAnswerChanged(
                           QuestionnaireResponseAnswer(
-                            valueTime: FhirTime.fromUnits(
-                              hour: time.hour,
-                              minute: time.minute,
+                            valueTime: FhirTime.fromDateTime(
+                              DateTime(0, 1, 1, time.hour, time.minute),
                             ),
                           ),
                         );
@@ -540,7 +538,7 @@ class CustomReferenceBuilderPage extends StatelessWidget {
           questionnaireItem,
           onReferenceChanged,
         ) {
-          final itemText = questionnaireItem.text?.valueString ?? '';
+          final itemText = questionnaireItem.text ?? '';
           final isPractitioner = itemText.toLowerCase().contains('physician') ||
               itemText.toLowerCase().contains('referral');
           final isPharmacy = itemText.toLowerCase().contains('pharmacy');
@@ -776,7 +774,7 @@ class CustomDisplayBuilderPage extends StatelessWidget {
       body: QuestionnaireListViewRenderer(
         rendererController: controller,
         displayItemBuilder: (index, isLastItem, questionnaireItem) {
-          final text = questionnaireItem.text?.valueString ?? '';
+          final text = questionnaireItem.text ?? '';
           final isWarning = text.toLowerCase().contains('warning');
 
           return Container(
